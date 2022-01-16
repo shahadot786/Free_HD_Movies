@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.watchfreemovies.freehdcinema786">
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.Ad_ID" />
+
+    <!--this is deprecated permission-->
+    <!--but this permission is required to allow receive push notification on android below Lollipop-->
+    <!--suppress DeprecatedClassUsageInspection -->
+    <uses-permission
+        android:name="android.permission.GET_TASKS"
+        android:maxSdkVersion="19" />
+
+    <queries>
+        <intent>
+            <action android:name="com.google.android.youtube.api.service.START" />
+        </intent>
+    </queries>
+
+    <application
+        android:name="com.watchfreemovies.freehdcinema786.activities.MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:hardwareAccelerated="true"
+        >
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5412707848566717~9186911418"/>
+        <!--Original App ID-->
+        <!--ca-app-pub-5412707848566717~9186911418-->
+
+
+        <meta-data
+            android:name="com.startapp.sdk.APPLICATION_ID"
+            android:value="205948484" />
+
+        <meta-data
+            android:name="com.startapp.sdk.RETURN_ADS_ENABLED"
+            android:value="true" />
+
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivitySplash"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityUserLogin"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityUserRegister"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityEditProfile"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityForgotPassword"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityFullScreenImage"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityComments"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityCategoryDetails"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityPrivacyPolicy"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityYoutubePlayer"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityVideoPlayer"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityWebView"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityWebViewImage"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityPostDetail"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityPostDetailOffline"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityNotificationDetail"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityImageSlider"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivityProfile"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="com.watchfreemovies.freehdcinema786.activities.ActivitySearch"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="stateVisible" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+
+        <service
+            android:name="com.watchfreemovies.freehdcinema786.notification.MyOneSignalMessagingService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <intent-filter>
+                <action android:name="com.onesignal.NotificationExtender" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="com.watchfreemovies.freehdcinema786.notification.MyFirebaseMessagingService"
+            android:exported="false"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_onesignal_default" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+    </application>
+
+</manifest>
