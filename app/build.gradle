@@ -10,6 +10,7 @@ apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
 
 repositories {
     maven { url 'https://maven.google.com' }
+    mavenCentral()
 }
 
 apply plugin: 'com.android.application'
@@ -25,8 +26,8 @@ android {
 
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 11
-        versionName "1.11.2"
+        versionCode 13
+        versionName "1.13.2"
         multiDexEnabled true
     }
     buildTypes {
@@ -82,7 +83,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-perf'
     //noinspection GradleDynamicVersion
-    implementation 'com.startapp:inapp-sdk:4.9.1'
+    implementation 'com.startapp:inapp-sdk:4.9.+'
 
 }
 
