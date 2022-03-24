@@ -8,27 +8,28 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.activities.MyApplication;
-import com.watchfreemovies.freehdcinema786.config.AppConfig;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
 import com.watchfreemovies.freehdcinema786.models.Comments;
 import com.watchfreemovies.freehdcinema786.utils.Tools;
-import com.squareup.picasso.Picasso;
-
-import org.ocpsoft.prettytime.PrettyTime;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class AdapterComments extends RecyclerView.Adapter<AdapterComments.ViewHolder> {
 
-    private List<Comments> items;
+    Context context;
+    private List<Comments> comments;
     MyApplication myApplication;
-    private Context ctx;
     private OnItemClickListener mOnItemClickListener;
+    SharedPref sharedPref;
 
     public interface OnItemClickListener {
         void onItemClick(View view, Comments obj, int position, Context context);
@@ -39,12 +40,13 @@ public class AdapterComments extends RecyclerView.Adapter<AdapterComments.ViewHo
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public AdapterComments(Context context, List<Comments> items) {
-        this.items = items;
-        ctx = context;
+    public AdapterComments(Context context, List<Comments> comments) {
+        this.comments = comments;
+        this.context = context;
+        this.sharedPref = new SharedPref(context);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView user_name;
         public ImageView user_image;
@@ -62,6 +64,7 @@ public class AdapterComments extends RecyclerView.Adapter<AdapterComments.ViewHo
         }
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
@@ -73,51 +76,47 @@ public class AdapterComments extends RecyclerView.Adapter<AdapterComments.ViewHo
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-        final Comments c = items.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        final Comments c = comments.get(position);
 
         if (myApplication.getIsLogin() && myApplication.getUserId().equals(c.user_id)) {
-            holder.user_name.setText(c.name + " ( " + ctx.getResources().getString(R.string.txt_you) + " )");
+            holder.user_name.setText(c.name + " ( " + context.getResources().getString(R.string.txt_you) + " )");
         } else {
             holder.user_name.setText(c.name);
         }
 
-        Picasso.get()
-                .load(AppConfig.ADMIN_PANEL_URL + "/upload/avatar/" + c.image.replace(" ", "%20"))
-                .resize(200, 200)
-                .centerCrop()
+        Glide.with(context)
+                .load(sharedPref.getBaseUrl() + "/upload/avatar/" + c.image.replace(" ", "%20"))
                 .placeholder(R.drawable.ic_user_account)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(new RequestOptions().override(200, 200))
+                .centerCrop()
                 .into(holder.user_image);
 
-
-        //holder.comment_date.setText(c.date_time);
-        PrettyTime prettyTime = new PrettyTime();
-        long timeAgo = Tools.timeStringtoMilis(c.date_time);
-        holder.comment_date.setText(prettyTime.format(new Date(timeAgo)));
-
+        holder.comment_date.setText(Tools.getTimeAgo(c.date_time));
         holder.comment_message.setText(c.content);
 
         holder.lyt_parent.setOnClickListener(view -> {
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(view, c, position, ctx);
+                mOnItemClickListener.onItemClick(view, c, position, context);
             }
         });
     }
 
-    public void setListData(List<Comments> items){
-        this.items = items;
+    public void setListData(List<Comments> items) {
+        this.comments = items;
         notifyDataSetChanged();
     }
 
     public void resetListData() {
-        this.items = new ArrayList<>();
+        this.comments = new ArrayList<>();
         notifyDataSetChanged();
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return items.size();
+        return comments.size();
     }
 
 }

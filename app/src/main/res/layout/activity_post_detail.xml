@@ -9,7 +9,7 @@
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/lyt_banner_ad"
+        android:layout_above="@+id/bannerAdView"
         android:focusableInTouchMode="true">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -68,15 +68,20 @@
                     layout="@layout/include_no_network"
                     android:visibility="gone" />
 
+                <FrameLayout
+                    android:id="@+id/customViewContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
             </RelativeLayout>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <include
-        android:id="@+id/lyt_banner_ad"
-        layout="@layout/include_banner_ad"
+    <com.solodroid.ads.sdk.ui.BannerAdView
+        android:id="@+id/bannerAdView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"/>

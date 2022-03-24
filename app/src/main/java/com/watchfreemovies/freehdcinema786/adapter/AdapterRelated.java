@@ -10,38 +10,41 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.config.AppConfig;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
-import com.watchfreemovies.freehdcinema786.models.News;
+import com.watchfreemovies.freehdcinema786.database.prefs.AdsPref;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
+import com.watchfreemovies.freehdcinema786.models.Post;
 import com.watchfreemovies.freehdcinema786.utils.Constant;
 import com.watchfreemovies.freehdcinema786.utils.Tools;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import org.ocpsoft.prettytime.PrettyTime;
-
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class AdapterRelated extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    Context context;
     private final int VIEW_PROG = 0;
     private final int VIEW_ITEM = 1;
 
-    private List<News> items = new ArrayList<>();
+    List<Post> posts;
 
     private boolean loading;
     private OnLoadMoreListener onLoadMoreListener;
 
-    private Context ctx;
     private OnItemClickListener mOnItemClickListener;
+    boolean scrolling = false;
+
+    SharedPref sharedPref;
+    AdsPref adsPref;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, News obj, int position);
+        void onItemClick(View view, Post obj, int position);
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -49,38 +52,54 @@ public class AdapterRelated extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public AdapterRelated(Context context, RecyclerView view, List<News> items) {
-        this.items = items;
-        ctx = context;
+    public AdapterRelated(Context context, RecyclerView view, List<Post> posts) {
+        this.posts = posts;
+        this.context = context;
+        this.sharedPref = new SharedPref(context);
+        this.adsPref = new AdsPref(context);
         lastItemViewDetector(view);
+        view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    scrolling = true;
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    scrolling = false;
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
 
-    public class OriginalViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
+    public static class OriginalViewHolder extends RecyclerView.ViewHolder {
+
         public TextView title;
-        public ImageView ic_date;
+        public TextView excerpt;
+        public ImageView icDate;
         public TextView date;
         public TextView comment;
         public ImageView image;
-        public ImageView thumbnail_video;
-        public LinearLayout lyt_parent;
-        public LinearLayout lyt_comment;
+        public ImageView thumbnailVideo;
+        public LinearLayout lytParent;
+        public LinearLayout lytComment;
 
         public OriginalViewHolder(View v) {
             super(v);
             title = v.findViewById(R.id.title);
-            ic_date = v.findViewById(R.id.ic_date);
+            icDate = v.findViewById(R.id.ic_date);
             date = v.findViewById(R.id.date);
+            excerpt = v.findViewById(R.id.excerpt);
             comment = v.findViewById(R.id.comment);
             image = v.findViewById(R.id.image);
-            thumbnail_video = v.findViewById(R.id.thumbnail_video);
-            lyt_parent = v.findViewById(R.id.lyt_parent);
-            lyt_comment = v.findViewById(R.id.lyt_comment);
+            thumbnailVideo = v.findViewById(R.id.thumbnail_video);
+            lytParent = v.findViewById(R.id.lyt_parent);
+            lytComment = v.findViewById(R.id.lyt_comment);
         }
+
     }
 
-
     public static class ProgressViewHolder extends RecyclerView.ViewHolder {
+
         public ProgressBar progressBar;
 
         public ProgressViewHolder(View v) {
@@ -89,11 +108,12 @@ public class AdapterRelated extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder vh;
         if (viewType == VIEW_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_related, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_news, parent, false);
             vh = new OriginalViewHolder(v);
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_load_more, parent, false);
@@ -102,56 +122,66 @@ public class AdapterRelated extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return vh;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof OriginalViewHolder) {
-            final News p = items.get(position);
-            OriginalViewHolder vItem = (OriginalViewHolder) holder;
-            vItem.title.setText(Html.fromHtml(p.news_title));
+            final Post p = (Post) posts.get(position);
+            final OriginalViewHolder vItem = (OriginalViewHolder) holder;
 
-            if (UiConfig.ENABLE_DATE_DISPLAY) {
+            vItem.title.setText(Html.fromHtml(p.news_title));
+            vItem.excerpt.setText(Html.fromHtml(p.news_description));
+
+            if (AppConfig.ENABLE_EXCERPT_IN_POST_LIST) {
+                vItem.title.setMaxLines(2);
+                vItem.excerpt.setVisibility(View.VISIBLE);
+            } else {
+                vItem.title.setMaxLines(4);
+                vItem.excerpt.setVisibility(View.GONE);
+            }
+
+            if (AppConfig.ENABLE_DATE_DISPLAY) {
                 vItem.date.setVisibility(View.VISIBLE);
-                vItem.ic_date.setVisibility(View.VISIBLE);
+                vItem.icDate.setVisibility(View.VISIBLE);
             } else {
                 vItem.date.setVisibility(View.GONE);
-                vItem.ic_date.setVisibility(View.GONE);
+                vItem.icDate.setVisibility(View.GONE);
             }
 
-            if (UiConfig.DISABLE_COMMENT) {
-                vItem.lyt_comment.setVisibility(View.GONE);
-            }
-
-            if (UiConfig.DATE_DISPLAY_AS_TIME_AGO) {
-                PrettyTime prettyTime = new PrettyTime();
-                long timeAgo = Tools.timeStringtoMilis(p.news_date);
-                vItem.date.setText(prettyTime.format(new Date(timeAgo)));
+            if (AppConfig.DATE_DISPLAY_AS_TIME_AGO) {
+                vItem.date.setText(Tools.getTimeAgo(p.news_date));
             } else {
                 vItem.date.setText(Tools.getFormatedDateSimple(p.news_date));
+            }
+
+            if (!sharedPref.getLoginFeature().equals("yes")) {
+                vItem.lytComment.setVisibility(View.GONE);
             }
 
             vItem.comment.setText(p.comments_count + "");
 
             if (p.content_type != null && p.content_type.equals("Post")) {
-                vItem.thumbnail_video.setVisibility(View.GONE);
+                vItem.thumbnailVideo.setVisibility(View.GONE);
             } else {
-                vItem.thumbnail_video.setVisibility(View.VISIBLE);
+                vItem.thumbnailVideo.setVisibility(View.VISIBLE);
             }
 
             if (p.content_type != null && p.content_type.equals("youtube")) {
-                Picasso.get()
+                Glide.with(context)
                         .load(Constant.YOUTUBE_IMG_FRONT + p.video_id + Constant.YOUTUBE_IMG_BACK)
                         .placeholder(R.drawable.ic_thumbnail)
+                        .thumbnail(0.1f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(vItem.image);
             } else {
-                Picasso.get()
-                        .load(AppConfig.ADMIN_PANEL_URL + "/upload/" + p.news_image.replace(" ", "%20"))
+                Glide.with(context)
+                        .load(sharedPref.getBaseUrl() + "/upload/" + p.news_image.replace(" ", "%20"))
                         .placeholder(R.drawable.ic_thumbnail)
+                        .thumbnail(0.1f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(vItem.image);
             }
 
-            vItem.lyt_parent.setOnClickListener(view -> {
+            vItem.lytParent.setOnClickListener(view -> {
                 if (mOnItemClickListener != null) {
                     mOnItemClickListener.onItemClick(view, p, position);
                 }
@@ -159,36 +189,38 @@ public class AdapterRelated extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else {
             ((ProgressViewHolder) holder).progressBar.setIndeterminate(true);
         }
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return items.size();
+        return posts.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) != null) {
+        Post post = posts.get(position);
+        if (post != null) {
             return VIEW_ITEM;
         } else {
             return VIEW_PROG;
         }
     }
 
-    public void insertData(List<News> items) {
+    public void insertData(List<Post> items) {
         setLoaded();
         int positionStart = getItemCount();
         int itemCount = items.size();
-        this.items.addAll(items);
+        this.posts.addAll(items);
         notifyItemRangeInserted(positionStart, itemCount);
     }
 
     public void setLoaded() {
         loading = false;
         for (int i = 0; i < getItemCount(); i++) {
-            if (items.get(i) == null) {
-                items.remove(i);
+            if (posts.get(i) == null) {
+                posts.remove(i);
                 notifyItemRemoved(i);
             }
         }
@@ -196,14 +228,14 @@ public class AdapterRelated extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void setLoading() {
         if (getItemCount() != 0) {
-            this.items.add(null);
+            this.posts.add(null);
             notifyItemInserted(getItemCount() - 1);
             loading = true;
         }
     }
 
     public void resetListData() {
-        this.items = new ArrayList<>();
+        this.posts.clear();
         notifyDataSetChanged();
     }
 
@@ -212,18 +244,17 @@ public class AdapterRelated extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void lastItemViewDetector(RecyclerView recyclerView) {
-        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
-            final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+        if (recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
+            final StaggeredGridLayoutManager layoutManager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    int lastPos = layoutManager.findLastVisibleItemPosition();
+                    int lastPos = getLastVisibleItem(layoutManager.findLastVisibleItemPositions(null));
                     if (!loading && lastPos == getItemCount() - 1 && onLoadMoreListener != null) {
-                        if (onLoadMoreListener != null) {
-                            int current_page = getItemCount() / UiConfig.LOAD_MORE;
-                            onLoadMoreListener.onLoadMore(current_page);
-                        }
+                        int current_page = getItemCount() / (AppConfig.LOAD_MORE);
+                        onLoadMoreListener.onLoadMore(current_page);
                         loading = true;
                     }
                 }
@@ -233,6 +264,14 @@ public class AdapterRelated extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public interface OnLoadMoreListener {
         void onLoadMore(int current_page);
+    }
+
+    private int getLastVisibleItem(int[] into) {
+        int lastIdx = into[0];
+        for (int i : into) {
+            if (lastIdx < i) lastIdx = i;
+        }
+        return lastIdx;
     }
 
 }

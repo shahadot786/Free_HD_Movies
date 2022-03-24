@@ -1,76 +1,80 @@
 package com.watchfreemovies.freehdcinema786.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.watchfreemovies.freehdcinema786.R;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
+import com.watchfreemovies.freehdcinema786.models.Value;
+import com.watchfreemovies.freehdcinema786.rests.ApiInterface;
+import com.watchfreemovies.freehdcinema786.rests.RestAdapter;
 import com.watchfreemovies.freehdcinema786.utils.Constant;
-import com.watchfreemovies.freehdcinema786.utils.NetworkCheck;
 import com.watchfreemovies.freehdcinema786.utils.Tools;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import id.solodroid.validationlibrary.Rule;
 import id.solodroid.validationlibrary.Validator;
 import id.solodroid.validationlibrary.annotation.Email;
 import id.solodroid.validationlibrary.annotation.Required;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ActivityForgotPassword extends AppCompatActivity implements Validator.ValidationListener {
 
     @Required(order = 1)
     @Email(order = 2, message = "Please Check and Enter a valid Email Address")
     EditText edtEmail;
-    String strEmail, strMessage;
+    String strEmail;
     private Validator validator;
-    Button btn_forgot;
-    ProgressBar progressBar;
-    LinearLayout layout;
+    Button btnForgot;
+    ProgressDialog progressDialog;
+    SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Tools.getTheme(this);
         setContentView(R.layout.activity_user_forgot);
+        Tools.setNavigation(this);
 
-        if (UiConfig.ENABLE_RTL_MODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            }
-        }
+        sharedPref = new SharedPref(this);
 
         edtEmail = findViewById(R.id.etUserName);
-        btn_forgot = findViewById(R.id.btnForgot);
-        progressBar = findViewById(R.id.progressBar);
-        layout = findViewById(R.id.view);
+        btnForgot = findViewById(R.id.btnForgot);
 
-        btn_forgot.setOnClickListener(v -> validator.validateAsync());
+        btnForgot.setOnClickListener(v -> validator.validateAsync());
 
         validator = new Validator(this);
         validator.setValidationListener(this);
 
     }
 
+    public void showProgress(String title, String message) {
+        progressDialog = new ProgressDialog(ActivityForgotPassword.this);
+        progressDialog.setTitle(title);
+        progressDialog.setMessage(message);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
     @Override
     public void onValidationSucceeded() {
         strEmail = edtEmail.getText().toString();
-        if (NetworkCheck.isNetworkAvailable(ActivityForgotPassword.this)) {
-            new MyTaskForgot().execute(Constant.FORGET_PASSWORD_URL + strEmail);
+        if (Tools.isConnect(getApplicationContext())) {
+            showProgress(getString(R.string.title_please_wait), getString(R.string.forgot_verify_email));
+            new Handler(Looper.getMainLooper()).postDelayed(() -> requestForgotAPI(strEmail), Constant.DELAY_TIME);
         } else {
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.msg_no_network), Toast.LENGTH_SHORT).show();
         }
@@ -87,83 +91,72 @@ public class ActivityForgotPassword extends AppCompatActivity implements Validat
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private class MyTaskForgot extends AsyncTask<String, Void, String> {
+    private void requestForgotAPI(String email) {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-            layout.setVisibility(View.INVISIBLE);
-        }
+        ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
+        Call<Value> call = apiInterface.checkEmail(email);
 
-        @Override
-        protected String doInBackground(String... params) {
-            return NetworkCheck.getJSONString(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            if (null == result || result.length() == 0) {
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.msg_no_network), Toast.LENGTH_SHORT).show();
-
-            } else {
-
-                try {
-                    JSONObject mainJson = new JSONObject(result);
-                    JSONArray jsonArray = mainJson.getJSONArray(Constant.CATEGORY_ARRAY_NAME);
-                    JSONObject objJson = null;
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        objJson = jsonArray.getJSONObject(i);
-                        strMessage = objJson.getString(Constant.MSG);
-                        Constant.GET_SUCCESS_MSG = objJson.getInt(Constant.SUCCESS);
+        call.enqueue(new Callback<Value>() {
+            @Override
+            public void onResponse(Call<Value> call, Response<Value> response) {
+                final Value resp = response.body();
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    if (resp != null) {
+                        if (resp.value.equals("1")) {
+                            progressDialog.dismiss();
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                showProgress(getString(R.string.title_please_wait), getString(R.string.forgot_send_email));
+                            }, 100);
+                            sendMail(resp.message);
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), getString(R.string.forgot_failed_message), Toast.LENGTH_SHORT).show();
+                        }
                     }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                new Handler().postDelayed(() -> {
-                    progressBar.setVisibility(View.GONE);
-                    setResult();
-                }, Constant.DELAY_PROGRESS_DIALOG);
+                }, Constant.DELAY_TIME);
             }
 
-        }
+            @Override
+            public void onFailure(Call<Value> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), getString(R.string.msg_no_network), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    public void setResult() {
+    public void sendMail(String password) {
 
-        if (Constant.GET_SUCCESS_MSG == 0) {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle(R.string.whops);
-            dialog.setMessage(R.string.forgot_failed_message);
-            dialog.setPositiveButton(R.string.dialog_ok, null);
-            dialog.setCancelable(false);
-            dialog.show();
+        ApiInterface apiInterface = RestAdapter.phpMailerAPI(sharedPref.getBaseUrl());
+        Call<Value> call = apiInterface.forgotPassword(strEmail, password);
+        call.enqueue(new Callback<Value>() {
+            @Override
+            public void onResponse(Call<Value> call, Response<Value> response) {
+                final Value resp = response.body();
+                progressDialog.dismiss();
+                if (resp != null) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(ActivityForgotPassword.this);
+                    dialog.setTitle(R.string.dialog_success);
+                    dialog.setMessage(R.string.forgot_success_message);
+                    dialog.setPositiveButton(R.string.dialog_ok, (dialogInterface, i) -> {
+                        Intent intent = new Intent(ActivityForgotPassword.this, ActivityUserLogin.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    });
+                    dialog.setCancelable(false);
+                    dialog.show();
+                    Log.d("SMTP", resp.value + " " + resp.message);
+                }
+            }
 
-            layout.setVisibility(View.VISIBLE);
-            edtEmail.setText("");
-            edtEmail.requestFocus();
-
-        } else {
-
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle(R.string.dialog_success);
-            dialog.setMessage(R.string.forgot_success_message);
-            dialog.setPositiveButton(R.string.dialog_ok, (dialogInterface, i) -> {
-                Intent intent = new Intent(ActivityForgotPassword.this, ActivityUserLogin.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
-            });
-            dialog.setCancelable(false);
-            dialog.show();
-
-        }
-
+            @Override
+            public void onFailure(Call<Value> call, Throwable t) {
+                t.printStackTrace();
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), getString(R.string.msg_no_network), Toast.LENGTH_SHORT).show();
+                Log.d("SMTP", "Error" + t);
+            }
+        });
     }
 
     @Override

@@ -25,7 +25,7 @@
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:textSize="16sp"
-            android:text="@string/msg_no_Movies" />
+            android:text="@string/msg_no_news" />
 
     </LinearLayout>
 

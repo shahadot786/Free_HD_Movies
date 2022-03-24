@@ -1,9 +1,9 @@
 package com.watchfreemovies.freehdcinema786.rests;
 
-import com.watchfreemovies.freehdcinema786.callbacks.CallbackAds;
 import com.watchfreemovies.freehdcinema786.callbacks.CallbackCategories;
 import com.watchfreemovies.freehdcinema786.callbacks.CallbackCategoryDetails;
 import com.watchfreemovies.freehdcinema786.callbacks.CallbackComments;
+import com.watchfreemovies.freehdcinema786.callbacks.CallbackLogin;
 import com.watchfreemovies.freehdcinema786.callbacks.CallbackPostDetail;
 import com.watchfreemovies.freehdcinema786.callbacks.CallbackRecent;
 import com.watchfreemovies.freehdcinema786.callbacks.CallbackSettings;
@@ -22,16 +22,16 @@ import retrofit2.http.Query;
 public interface ApiInterface {
 
     String CACHE = "Cache-Control: max-age=0";
-    String AGENT = "Data-Agent: Gameplay Walkthrough";
+    String AGENT = "Data-Agent: Android News App";
 
     @Headers({CACHE, AGENT})
-    @GET("api/get_news_detail")
+    @GET("api.php?get_news_detail")
     Call<CallbackPostDetail> getNewsDetail(
             @Query("id") long id
     );
 
     @Headers({CACHE, AGENT})
-    @GET("api/get_recent_posts")
+    @GET("api.php?get_recent_posts")
     Call<CallbackRecent> getRecentPost(
             @Query("api_key") String api_key,
             @Query("page") int page,
@@ -39,7 +39,7 @@ public interface ApiInterface {
     );
 
     @Headers({CACHE, AGENT})
-    @GET("api/get_video_posts")
+    @GET("api.php?get_video_posts")
     Call<CallbackRecent> getVideoPost(
             @Query("api_key") String api_key,
             @Query("page") int page,
@@ -47,13 +47,13 @@ public interface ApiInterface {
     );
 
     @Headers({CACHE, AGENT})
-    @GET("api/get_category_index")
+    @GET("api.php?get_category_index")
     Call<CallbackCategories> getAllCategories(
             @Query("api_key") String api_key
     );
 
     @Headers({CACHE, AGENT})
-    @GET("api/get_category_posts")
+    @GET("api.php?get_category_posts")
     Call<CallbackCategoryDetails> getCategoryDetailsByPage(
             @Query("id") long id,
             @Query("api_key") String api_key,
@@ -62,37 +62,62 @@ public interface ApiInterface {
     );
 
     @Headers({CACHE, AGENT})
-    @GET("api/get_search_results")
+    @GET("api.php?get_search_results")
     Call<CallbackRecent> getSearchPosts(
             @Query("api_key") String api_key,
             @Query("search") String search,
+            @Query("page") int page,
             @Query("count") int count
     );
 
     @Headers({CACHE, AGENT})
-    @GET("api/get_comments")
+    @GET("api.php?get_search_results_rtl")
+    Call<CallbackRecent> getSearchPostsRTL(
+            @Query("api_key") String api_key,
+            @Query("search") String search,
+            @Query("page") int page,
+            @Query("count") int count
+    );
+
+    @Headers({CACHE, AGENT})
+    @GET("api.php?get_comments")
     Call<CallbackComments> getComments(@Query("nid") Long nid
     );
 
     @FormUrlEncoded
-    @POST("api/post_comment")
+    @POST("api.php?register_user")
+    Call<Value> userRegister(
+            @Field("name") String name,
+            @Field("email") String email,
+            @Field("password") String password
+    );
+
+    @FormUrlEncoded
+    @POST("api.php?login_user")
+    Call<CallbackLogin> userLogin(
+            @Field("email") String email,
+            @Field("password") String password
+    );
+
+    @FormUrlEncoded
+    @POST("api.php?post_comment")
     Call<Value> sendComment(@Field("nid") Long nid,
                             @Field("user_id") String user_id,
                             @Field("content") String content,
                             @Field("date_time") String date_time);
 
     @FormUrlEncoded
-    @POST("api/update_comment")
+    @POST("api.php?update_comment")
     Call<Value> updateComment(@Field("comment_id") String comment_id,
                               @Field("date_time") String date_time,
                               @Field("content") String content);
 
     @FormUrlEncoded
-    @POST("api/delete_comment")
+    @POST("api.php?delete_comment")
     Call<Value> deleteComment(@Field("comment_id") String comment_id);
 
     @FormUrlEncoded
-    @POST("api/update_user_data")
+    @POST("api.php?update_user_data")
     Call<User> updateUserData(
             @Field("id") String id,
             @Field("name") String name,
@@ -101,7 +126,7 @@ public interface ApiInterface {
     );
 
     @FormUrlEncoded
-    @POST("api/update_photo_profile")
+    @POST("api.php?update_photo_profile")
     Call<User> updatePhotoProfile(
             @Field("id") String id,
             @Field("name") String name,
@@ -112,24 +137,33 @@ public interface ApiInterface {
     );
 
     @Headers({CACHE, AGENT})
-    @GET("api/get_settings")
-    Call<CallbackSettings> getSettings();
-
-    @Headers({CACHE, AGENT})
-    @GET("api/get_user_data")
+    @GET("api.php?get_user_data")
     Call<CallbackUser> getUser(
             @Query("id") String id
     );
 
-    @Headers({CACHE, AGENT})
-    @GET("api/get_user_token")
-    Call<CallbackUser> getUserToken(
-            @Query("user_unique_id") String user_unique_id
+    @FormUrlEncoded
+    @POST("api.php?check_email")
+    Call<Value> checkEmail(
+            @Field("email") String email
+    );
+
+    @FormUrlEncoded
+    @POST("php-mailer.php")
+    Call<Value> forgotPassword(
+            @Field("email") String email,
+            @Field("password") String password
+    );
+
+    @FormUrlEncoded
+    @POST("api.php?update_view")
+    Call<Value> updateView(
+            @Field("nid") long nid
     );
 
     @Headers({CACHE, AGENT})
-    @GET("api/get_ads")
-    Call<CallbackAds> getAds(
+    @GET("api.php?settings")
+    Call<CallbackSettings> getSettings(
             @Query("api_key") String api_key
     );
 

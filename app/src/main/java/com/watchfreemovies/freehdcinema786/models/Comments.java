@@ -1,6 +1,8 @@
 package com.watchfreemovies.freehdcinema786.models;
 
-public class Comments {
+import java.io.Serializable;
+
+public class Comments implements Serializable {
 
     public String comment_id = "";
     public String user_id = "";

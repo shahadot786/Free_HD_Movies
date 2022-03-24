@@ -1,158 +1,157 @@
 package com.watchfreemovies.freehdcinema786.activities;
 
+import static com.watchfreemovies.freehdcinema786.utils.Constant.BANNER_SEARCH;
+import static com.watchfreemovies.freehdcinema786.utils.Constant.INTERSTITIAL_POST_LIST;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdSize;
-import com.facebook.shimmer.ShimmerFrameLayout;
-import com.watchfreemovies.freehdcinema786.BuildConfig;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.adapter.AdapterNews;
 import com.watchfreemovies.freehdcinema786.adapter.AdapterSearch;
 import com.watchfreemovies.freehdcinema786.callbacks.CallbackRecent;
 import com.watchfreemovies.freehdcinema786.config.AppConfig;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
+import com.watchfreemovies.freehdcinema786.database.prefs.AdsPref;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
+import com.watchfreemovies.freehdcinema786.models.Post;
 import com.watchfreemovies.freehdcinema786.rests.ApiInterface;
 import com.watchfreemovies.freehdcinema786.rests.RestAdapter;
-import com.watchfreemovies.freehdcinema786.utils.AdsPref;
+import com.watchfreemovies.freehdcinema786.utils.AdsManager;
 import com.watchfreemovies.freehdcinema786.utils.Constant;
-import com.watchfreemovies.freehdcinema786.utils.NetworkCheck;
-import com.watchfreemovies.freehdcinema786.utils.ThemePref;
 import com.watchfreemovies.freehdcinema786.utils.Tools;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.startapp.sdk.ads.banner.Banner;
-import com.startapp.sdk.ads.banner.BannerListener;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.watchfreemovies.freehdcinema786.utils.Constant.ADMOB;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.AD_STATUS_ON;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.FAN;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.STARTAPP;
-
 public class ActivitySearch extends AppCompatActivity {
 
-    private EditText et_search;
-
-    private RecyclerView recyclerView;
-    private AdapterNews mAdapter;
-
-    private RecyclerView recyclerSuggestion;
-    private AdapterSearch mAdapterSuggestion;
-    private LinearLayout lyt_suggestion;
-    private ImageButton bt_clear;
-    private View parent_view;
-    private Call<CallbackRecent> callbackCall = null;
-    private ShimmerFrameLayout lyt_shimmer;
     public static final String EXTRA_OBJC = "key.EXTRA_OBJC";
-    private FrameLayout adContainerView;
-    private AdView adView;
-    com.facebook.ads.AdView fanAdView;
-    private AdsPref adsPref;
+    private EditText edtSearch;
+    private RecyclerView recyclerView;
+    private AdapterNews adapterNews;
+    private AdapterSearch adapterSearch;
+    private LinearLayout lytSuggestion;
+    private ImageButton btnClear;
+    Call<CallbackRecent> callbackCall = null;
+    private ShimmerFrameLayout lytShimmer;
+    RecyclerView recyclerViewSuggestion;
+    AdsPref adsPref;
+    private int postTotal = 0;
+    private int failedPage = 0;
+    private AdsManager adsManager;
+    SharedPref sharedPref;
+    List<Post> posts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Tools.getTheme(this);
         setContentView(R.layout.activity_search);
-        parent_view = findViewById(android.R.id.content);
-
+        Tools.setNavigation(this);
         adsPref = new AdsPref(this);
-
-        if (UiConfig.ENABLE_RTL_MODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            }
-        }
+        adsManager = new AdsManager(this);
+        sharedPref = new SharedPref(this);
 
         initComponent();
+        adapterNews.setOnLoadMoreListener(this::setLoadMore);
         setupToolbar();
-        loadBannerAdNetwork();
+        adsManager.loadBannerAd(BANNER_SEARCH);
+        adsManager.loadInterstitialAd(INTERSTITIAL_POST_LIST, adsPref.getInterstitialAdInterval());
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initComponent() {
-        lyt_suggestion = findViewById(R.id.lyt_suggestion);
-        et_search = findViewById(R.id.et_search);
-        bt_clear = findViewById(R.id.bt_clear);
-        bt_clear.setVisibility(View.GONE);
-        lyt_shimmer = findViewById(R.id.shimmer_view_container);
-        //progressBar = findViewById(R.id.progressBar);
+        edtSearch = findViewById(R.id.et_search);
+        btnClear = findViewById(R.id.bt_clear);
+        btnClear.setVisibility(View.GONE);
+        lytShimmer = findViewById(R.id.shimmer_view_container);
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerSuggestion = findViewById(R.id.recyclerSuggestion);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
+        recyclerViewSuggestion = findViewById(R.id.recyclerSuggestion);
+        recyclerViewSuggestion.setLayoutManager(new LinearLayoutManager(this));
 
-        recyclerSuggestion.setLayoutManager(new LinearLayoutManager(this));
-        recyclerSuggestion.setHasFixedSize(true);
-
-        et_search.addTextChangedListener(textWatcher);
+        edtSearch.addTextChangedListener(textWatcher);
 
         //set data and list adapter
-        mAdapter = new AdapterNews(this, recyclerView, new ArrayList<>());
-        recyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener((view, obj, position) -> {
+        adapterNews = new AdapterNews(this, recyclerView, posts);
+        recyclerView.setAdapter(adapterNews);
+
+        adapterNews.setOnItemClickListener((view, obj, position) -> {
             Intent intent = new Intent(getApplicationContext(), ActivityPostDetail.class);
             intent.putExtra(EXTRA_OBJC, obj);
             startActivity(intent);
+            adsManager.showInterstitialAd();
         });
+
+        lytSuggestion = findViewById(R.id.lyt_suggestion);
+        if (sharedPref.getIsDarkTheme()) {
+            lytSuggestion.setBackgroundColor(getResources().getColor(R.color.colorBackgroundDark));
+        } else {
+            lytSuggestion.setBackgroundColor(getResources().getColor(R.color.colorBackgroundLight));
+        }
 
         //set data and list adapter suggestion
-        mAdapterSuggestion = new AdapterSearch(this);
-        recyclerSuggestion.setAdapter(mAdapterSuggestion);
+        adapterSearch = new AdapterSearch(this);
+        recyclerViewSuggestion.setAdapter(adapterSearch);
         showSuggestionSearch();
-        mAdapterSuggestion.setOnItemClickListener((view, viewModel, pos) -> {
-            et_search.setText(viewModel);
-            lyt_suggestion.setVisibility(View.GONE);
+        adapterSearch.setOnItemClickListener((view, viewModel, pos) -> {
+            edtSearch.setText(viewModel);
+            edtSearch.setSelection(viewModel.length());
+            lytSuggestion.setVisibility(View.GONE);
             hideKeyboard();
-            searchAction();
+            searchAction(1);
         });
 
-        bt_clear.setOnClickListener(view -> et_search.setText(""));
+        adapterSearch.setOnItemActionClickListener((view, viewModel, pos) -> {
+            edtSearch.setText(viewModel);
+            edtSearch.setSelection(viewModel.length());
+        });
 
-        et_search.setOnEditorActionListener((v, actionId, event) -> {
+        btnClear.setOnClickListener(v -> {
+            lytSuggestion.setVisibility(View.GONE);
+            edtSearch.setText("");
+        });
+
+        edtSearch.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 hideKeyboard();
-                searchAction();
+                searchAction(1);
                 return true;
             }
             return false;
         });
 
-        et_search.setOnTouchListener((view, motionEvent) -> {
+        edtSearch.setOnTouchListener((view, motionEvent) -> {
             showSuggestionSearch();
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             return false;
@@ -164,8 +163,8 @@ public class ActivitySearch extends AppCompatActivity {
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ThemePref themePref = new ThemePref(this);
-        if (themePref.getIsDarkTheme()) {
+        SharedPref sharedPref = new SharedPref(this);
+        if (sharedPref.getIsDarkTheme()) {
             toolbar.setBackgroundColor(getResources().getColor(R.color.colorToolbarDark));
             findViewById(R.id.bg_view).setBackgroundColor(getResources().getColor(R.color.colorBackgroundDark));
         } else {
@@ -185,9 +184,9 @@ public class ActivitySearch extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence c, int i, int i1, int i2) {
             if (c.toString().trim().length() == 0) {
-                bt_clear.setVisibility(View.GONE);
+                btnClear.setVisibility(View.GONE);
             } else {
-                bt_clear.setVisibility(View.VISIBLE);
+                btnClear.setVisibility(View.VISIBLE);
             }
         }
 
@@ -200,49 +199,80 @@ public class ActivitySearch extends AppCompatActivity {
         }
     };
 
-    private void requestSearchApi(final String query) {
-        ApiInterface apiInterface = RestAdapter.createAPI();
-        callbackCall = apiInterface.getSearchPosts(AppConfig.API_KEY, query, Constant.MAX_SEARCH_RESULT);
+    private void requestSearchApi(final String query, final int page_no) {
+        ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
+        if (AppConfig.ENABLE_RTL_MODE) {
+            callbackCall = apiInterface.getSearchPostsRTL(AppConfig.REST_API_KEY, query, page_no, AppConfig.LOAD_MORE);
+        } else {
+            callbackCall = apiInterface.getSearchPosts(AppConfig.REST_API_KEY, query, page_no, AppConfig.LOAD_MORE);
+        }
         callbackCall.enqueue(new Callback<CallbackRecent>() {
             @Override
             public void onResponse(Call<CallbackRecent> call, Response<CallbackRecent> response) {
                 CallbackRecent resp = response.body();
                 if (resp != null && resp.status.equals("ok")) {
-                    mAdapter.insertData(resp.posts);
-                    if (resp.posts.size() == 0) showNotFoundView(true);
+                    postTotal = resp.count_total;
+                    displayApiResult(resp.posts);
                 } else {
-                    onFailRequest();
+                    onFailRequest(page_no);
                 }
                 swipeProgress(false);
             }
 
             @Override
             public void onFailure(Call<CallbackRecent> call, Throwable t) {
-                onFailRequest();
+                onFailRequest(page_no);
                 swipeProgress(false);
             }
 
         });
     }
 
-    private void onFailRequest() {
-        if (NetworkCheck.isConnect(this)) {
+    public void setLoadMore(int current_page) {
+        Log.d("page", "currentPage: " + current_page);
+        // Assuming final total items equal to real post items plus the ad
+        int totalItemBeforeAds = (adapterNews.getItemCount() - current_page);
+        if (postTotal > totalItemBeforeAds && current_page != 0) {
+            int next_page = current_page + 1;
+            searchAction(next_page);
+        } else {
+            adapterNews.setLoaded();
+        }
+    }
+
+    private void displayApiResult(final List<Post> posts) {
+        adapterNews.insertDataWithNativeAd(posts);
+        swipeProgress(false);
+        if (posts.size() == 0) {
+            showNotFoundView(true);
+        }
+    }
+
+    private void onFailRequest(int page_no) {
+        failedPage = page_no;
+        adapterNews.setLoaded();
+        swipeProgress(false);
+        if (Tools.isConnect(this)) {
             showFailedView(true, getString(R.string.msg_no_network));
         } else {
             showFailedView(true, getString(R.string.msg_offline));
         }
     }
 
-    private void searchAction() {
-        lyt_suggestion.setVisibility(View.GONE);
+    private void searchAction(final int page_no) {
+        lytSuggestion.setVisibility(View.GONE);
         showFailedView(false, "");
         showNotFoundView(false);
-        final String query = et_search.getText().toString().trim();
+        final String query = edtSearch.getText().toString().trim();
         if (!query.equals("")) {
-            mAdapterSuggestion.addSearchHistory(query);
-            mAdapter.resetListData();
-            swipeProgress(true);
-            new Handler().postDelayed(() -> requestSearchApi(query), Constant.DELAY_TIME);
+            if (page_no == 1) {
+                adapterSearch.addSearchHistory(query);
+                adapterNews.resetListData();
+                swipeProgress(true);
+            } else {
+                adapterNews.setLoading();
+            }
+            new Handler().postDelayed(() -> requestSearchApi(query, page_no), Constant.DELAY_TIME);
         } else {
             Toast.makeText(this, R.string.msg_search_input, Toast.LENGTH_SHORT).show();
             swipeProgress(false);
@@ -250,8 +280,8 @@ public class ActivitySearch extends AppCompatActivity {
     }
 
     private void showSuggestionSearch() {
-        mAdapterSuggestion.refreshItems();
-        lyt_suggestion.setVisibility(View.VISIBLE);
+        adapterSearch.refreshItems();
+        lytSuggestion.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -280,12 +310,12 @@ public class ActivitySearch extends AppCompatActivity {
             recyclerView.setVisibility(View.VISIBLE);
             lyt_failed.setVisibility(View.GONE);
         }
-        findViewById(R.id.failed_retry).setOnClickListener(view -> searchAction());
+        findViewById(R.id.failed_retry).setOnClickListener(view -> searchAction(failedPage));
     }
 
     private void showNotFoundView(boolean show) {
         View lyt_no_item = findViewById(R.id.lyt_no_item);
-        ((TextView) findViewById(R.id.no_item_message)).setText(R.string.msg_no_Movies_found);
+        ((TextView) findViewById(R.id.no_item_message)).setText(R.string.msg_no_news_found);
         if (show) {
             recyclerView.setVisibility(View.GONE);
             lyt_no_item.setVisibility(View.VISIBLE);
@@ -297,141 +327,24 @@ public class ActivitySearch extends AppCompatActivity {
 
     private void swipeProgress(final boolean show) {
         if (!show) {
-            lyt_shimmer.setVisibility(View.GONE);
-            lyt_shimmer.stopShimmer();
+            lytShimmer.setVisibility(View.GONE);
+            lytShimmer.stopShimmer();
             return;
         } else {
-            lyt_shimmer.setVisibility(View.VISIBLE);
-            lyt_shimmer.startShimmer();
-        }
-    }
-
-    public void loadBannerAdNetwork() {
-        if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(ADMOB)) {
-            loadAdMobBannerAd();
-        } else if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(FAN)) {
-            loadFanBannerAd();
-        } else if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(STARTAPP)) {
-            loadStartAppBannerAd();
-        }
-    }
-
-    public void loadAdMobBannerAd() {
-        if (!adsPref.getAdMobBannerId().equals("0")) {
-            adContainerView = findViewById(R.id.admob_banner_view_container);
-            adContainerView.post(() -> {
-                adView = new AdView(this);
-                adView.setAdUnitId(adsPref.getAdMobBannerId());
-                adContainerView.removeAllViews();
-                adContainerView.addView(adView);
-                adView.setAdSize(Tools.getAdSize(this));
-                adView.loadAd(Tools.getAdRequest(this));
-                adView.setAdListener(new AdListener() {
-                    @Override
-                    public void onAdLoaded() {
-                        // Code to be executed when an ad finishes loading.
-                        adContainerView.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError adError) {
-                        // Code to be executed when an ad request fails.
-                        adContainerView.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onAdOpened() {
-                        // Code to be executed when an ad opens an overlay that
-                        // covers the screen.
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        // Code to be executed when the user clicks on an ad.
-                    }
-
-                    @Override
-                    public void onAdClosed() {
-                        // Code to be executed when the user is about to return
-                        // to the app after tapping on an ad.
-                    }
-                });
-            });
-        }
-    }
-
-    private void loadFanBannerAd() {
-        if (!adsPref.getFanBannerUnitId().equals("0")) {
-            if (BuildConfig.DEBUG) {
-                fanAdView = new com.facebook.ads.AdView(this, "IMG_16_9_APP_INSTALL#" + adsPref.getFanBannerUnitId(), AdSize.BANNER_HEIGHT_50);
-            } else {
-                fanAdView = new com.facebook.ads.AdView(this, adsPref.getFanBannerUnitId(), AdSize.BANNER_HEIGHT_50);
-            }
-            LinearLayout adContainer = findViewById(R.id.fan_banner_view_container);
-            // Add the ad view to your activity layout
-            adContainer.addView(fanAdView);
-            com.facebook.ads.AdListener adListener = new com.facebook.ads.AdListener() {
-                @Override
-                public void onError(Ad ad, AdError adError) {
-                    adContainer.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    adContainer.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-
-                }
-            };
-            com.facebook.ads.AdView.AdViewLoadConfig loadAdConfig = fanAdView.buildLoadAdConfig().withAdListener(adListener).build();
-            fanAdView.loadAd(loadAdConfig);
-        }
-    }
-
-    private void loadStartAppBannerAd() {
-        if (!adsPref.getStartappAppID().equals("0")) {
-            RelativeLayout bannerLayout = findViewById(R.id.startapp_banner_view_container);
-            Banner banner = new Banner(this, new BannerListener() {
-                @Override
-                public void onReceiveAd(View banner) {
-                    bannerLayout.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onFailedToReceiveAd(View banner) {
-                    bannerLayout.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onImpression(View view) {
-
-                }
-
-                @Override
-                public void onClick(View banner) {
-                }
-            });
-            bannerLayout.addView(banner);
+            lytShimmer.setVisibility(View.VISIBLE);
+            lytShimmer.startShimmer();
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (et_search.length() > 0) {
-            et_search.setText("");
+        if (edtSearch.length() > 0) {
+            edtSearch.setText("");
+            lytSuggestion.setVisibility(View.GONE);
         } else {
             super.onBackPressed();
         }
     }
-
 
 
 }

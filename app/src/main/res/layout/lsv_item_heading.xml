@@ -2,32 +2,32 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="6dp"
-    android:layout_marginBottom="6dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingTop="8dp">
+    android:layout_height="wrap_content">
 
-    <com.balysv.materialripple.MaterialRippleLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        app:mrl_rippleAlpha="0.2"
-        app:mrl_rippleColor="@color/colorRipple"
-        app:mrl_rippleHover="true"
-        app:mrl_rippleOverlay="true">
+        android:layout_marginLeft="@dimen/padding_large"
+        android:layout_marginTop="@dimen/padding_large"
+        android:layout_marginRight="@dimen/padding_large"
+        android:layout_marginBottom="@dimen/padding_small"
+        app:cardElevation="0dp"
+        app:cardMaxElevation="0dp"
+        app:cardCornerRadius="@dimen/rounded_corner_radius"
+        app:cardPreventCornerOverlap="false">
 
         <RelativeLayout
             android:id="@+id/lyt_parent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackground"
+            android:foreground="?selectableItemBackground">
 
-            <com.makeramen.roundedimageview.RoundedImageView
+            <ImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                app:riv_corner_radius="8dp"/>
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/thumbnail_video"
@@ -58,25 +58,24 @@
                         android:maxLines="2"
                         android:text="Sample Title"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_heading_title_size"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/category_name"
+                        android:id="@+id/excerpt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:maxLines="2"
                         android:paddingBottom="2dp"
                         android:text="travel"
-                        android:visibility="gone"
                         android:textColor="@color/colorWhite"
-                        android:textStyle="italic" />
+                        android:textStyle="italic"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -84,17 +83,19 @@
                             android:id="@+id/ic_date"
                             android:layout_width="14dp"
                             android:layout_height="14dp"
+                            android:layout_marginBottom="1dp"
                             android:src="@drawable/ic_time"
-                            android:tint="@android:color/white" />
+                            app:tint="@android:color/white" />
 
                         <TextView
                             android:id="@+id/date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/spacing_small"
                             android:layout_marginStart="@dimen/spacing_small"
+                            android:layout_marginLeft="@dimen/spacing_small"
                             android:text="2 weeks ago"
-                            android:textColor="@android:color/white" />
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/text_sub_title_size" />
 
                         <LinearLayout
                             android:id="@+id/lyt_comment"
@@ -109,17 +110,17 @@
                                 android:layout_width="14dp"
                                 android:layout_height="14dp"
                                 android:src="@drawable/ic_comment"
-                                android:tint="@android:color/white" />
+                                app:tint="@android:color/white" />
 
                             <TextView
                                 android:id="@+id/comment"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="3dp"
                                 android:layout_marginStart="3dp"
+                                android:layout_marginLeft="3dp"
                                 android:text="2"
                                 android:textColor="@android:color/white"
-                                android:textSize="12sp" />
+                                android:textSize="@dimen/text_sub_title_size" />
 
                         </LinearLayout>
 
@@ -129,17 +130,8 @@
 
             </RelativeLayout>
 
-            <!--<ImageView-->
-            <!--android:id="@+id/video_thumbnail"-->
-            <!--android:layout_width="80dp"-->
-            <!--android:layout_height="80dp"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:src="@drawable/ic_thumbnail_video"-->
-            <!--android:visibility="invisible" />-->
-
         </RelativeLayout>
 
-    </com.balysv.materialripple.MaterialRippleLayout>
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

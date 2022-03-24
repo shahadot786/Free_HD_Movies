@@ -1,136 +1,128 @@
 package com.watchfreemovies.freehdcinema786.activities;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.watchfreemovies.freehdcinema786.R;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
+import com.watchfreemovies.freehdcinema786.config.AppConfig;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
-import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.dash.DashMediaSource;
-import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
-import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource;
-import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
+import com.google.android.exoplayer2.source.rtsp.RtspMediaSource;
+import com.google.android.exoplayer2.text.Cue;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Util;
+
+import java.util.List;
 
 public class ActivityVideoPlayer extends AppCompatActivity {
 
     private static final String TAG = "ActivityStreamPlayer";
-    String video_url;
+    String videoUrl;
     private PlayerView playerView;
-    private SimpleExoPlayer player;
-    private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
+    private SimpleExoPlayer simpleExoPlayer;
     private DataSource.Factory mediaDataSourceFactory;
-    private Handler mainHandler;
     private ProgressBar progressBar;
     boolean fullscreen = false;
     private ImageView fullscreenButton;
 
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_video_player);
 
-        if (UiConfig.FORCE_PLAYER_TO_LANDSCAPE) {
-            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        if (AppConfig.FORCE_VIDEO_PLAYER_TO_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
-        video_url = getIntent().getStringExtra("video_url");
+        videoUrl = getIntent().getStringExtra("video_url");
 
         progressBar = findViewById(R.id.progressBar);
 
-        mediaDataSourceFactory = buildDataSourceFactory(true);
-
-        mainHandler = new Handler();
-        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-
-        RenderersFactory renderersFactory = new DefaultRenderersFactory(this);
-
-        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+        mediaDataSourceFactory = new DefaultDataSourceFactory(getApplicationContext(), getUserAgent());
 
         LoadControl loadControl = new DefaultLoadControl();
 
-        player = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
+        AdaptiveTrackSelection.Factory trackSelectionFactory = new AdaptiveTrackSelection.Factory();
+        DefaultTrackSelector trackSelector = new DefaultTrackSelector(this, trackSelectionFactory);
+
+        simpleExoPlayer = new SimpleExoPlayer.Builder(this)
+                .setTrackSelector(trackSelector)
+                .setLoadControl(loadControl)
+                .build();
 
         playerView = findViewById(R.id.exoPlayerView);
-        playerView.setPlayer(player);
+        playerView.setPlayer(simpleExoPlayer);
         playerView.setUseController(true);
         playerView.requestFocus();
 
         playerOrientation();
 
-        Uri uri = Uri.parse(video_url);
+        Uri uri = Uri.parse(videoUrl);
 
         MediaSource mediaSource = buildMediaSource(uri, null);
+        simpleExoPlayer.setMediaSource(mediaSource);
+        simpleExoPlayer.prepare();
+        simpleExoPlayer.setPlayWhenReady(true);
 
-        player.prepare(mediaSource);
-        player.setPlayWhenReady(true);
-
-        player.addListener(new Player.EventListener() {
+        simpleExoPlayer.addListener(new Player.Listener() {
             @Override
-            public void onTimelineChanged(Timeline timeline, @Nullable Object manifest, int reason) {
-                Log.d(TAG, "onTimelineChanged: ");
+            public void onCues(@NonNull List<Cue> cues) {
+
             }
 
             @Override
-            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-                Log.d(TAG, "onTracksChanged: " + trackGroups.length);
+            public void onTimelineChanged(@NonNull Timeline timeline, int reason) {
+
             }
 
             @Override
-            public void onLoadingChanged(boolean isLoading) {
-                Log.d(TAG, "onLoadingChanged: " + isLoading);
-            }
-
-            @Override
-            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                Log.d(TAG, "onPlayerStateChanged: " + playWhenReady);
-                if (playbackState == PlaybackStateCompat.STATE_PLAYING) {
+            public void onPlaybackStateChanged(int state) {
+                if (state == PlaybackStateCompat.STATE_PLAYING) {
                     progressBar.setVisibility(View.GONE);
                 }
+            }
+
+            @Override
+            public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
+
+            }
+
+            @Override
+            public void onIsPlayingChanged(boolean isPlaying) {
+
             }
 
             @Override
@@ -144,29 +136,11 @@ public class ActivityVideoPlayer extends AppCompatActivity {
             }
 
             @Override
-            public void onPlayerError(ExoPlaybackException error) {
-                Log.e(TAG, "onPlayerError: ", error);
-                player.stop();
+            public void onPlayerError(@NonNull ExoPlaybackException error) {
+                simpleExoPlayer.stop();
                 errorDialog();
             }
-
-            @Override
-            public void onPositionDiscontinuity(int reason) {
-                Log.d(TAG, "onPositionDiscontinuity: true");
-            }
-
-            @Override
-            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
-            }
-
-            @Override
-            public void onSeekProcessed() {
-
-            }
         });
-
-        Log.d("INFO", "ActivityVideoPlayer");
 
     }
 
@@ -204,40 +178,61 @@ public class ActivityVideoPlayer extends AppCompatActivity {
     }
 
     private MediaSource buildMediaSource(Uri uri, String overrideExtension) {
-        int type = TextUtils.isEmpty(overrideExtension) ? Util.inferContentType(uri)
-                : Util.inferContentType("." + overrideExtension);
+        MediaItem mMediaItem = MediaItem.fromUri(Uri.parse(String.valueOf(uri)));
+        int type = TextUtils.isEmpty(overrideExtension) ? Util.inferContentType(uri) : Util.inferContentType("." + overrideExtension);
         switch (type) {
-            case C.TYPE_SS:
-                return new SsMediaSource.Factory(new DefaultSsChunkSource.Factory(mediaDataSourceFactory), buildDataSourceFactory(false)).createMediaSource(uri);
             case C.TYPE_DASH:
-                return new DashMediaSource.Factory(new DefaultDashChunkSource.Factory(mediaDataSourceFactory), buildDataSourceFactory(false)).createMediaSource(uri);
+                return new DashMediaSource.Factory(mediaDataSourceFactory)
+                        .createMediaSource(mMediaItem);
             case C.TYPE_HLS:
-                return new HlsMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri);
+                return new HlsMediaSource.Factory(mediaDataSourceFactory)
+                        .setAllowChunklessPreparation(true)
+                        .createMediaSource(mMediaItem);
             case C.TYPE_OTHER:
-                return new ExtractorMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri);
+                return new ProgressiveMediaSource.Factory(mediaDataSourceFactory, new DefaultExtractorsFactory())
+                        .createMediaSource(mMediaItem);
+            case C.TYPE_RTSP:
+                return new RtspMediaSource.Factory()
+                        .createMediaSource(MediaItem.fromUri(uri));
             default: {
                 throw new IllegalStateException("Unsupported type: " + type);
             }
         }
     }
 
-    private DataSource.Factory buildDataSourceFactory(boolean useBandwidthMeter) {
-        return buildDataSourceFactory(useBandwidthMeter ? BANDWIDTH_METER : null);
-    }
+    private String getUserAgent() {
 
-    public DataSource.Factory buildDataSourceFactory(DefaultBandwidthMeter bandwidthMeter) {
-        return new DefaultDataSourceFactory(this, bandwidthMeter,
-                buildHttpDataSourceFactory(bandwidthMeter));
-    }
+        StringBuilder result = new StringBuilder(64);
+        result.append("Dalvik/");
+        result.append(System.getProperty("java.vm.version"));
+        result.append(" (Linux; U; Android ");
 
-    public HttpDataSource.Factory buildHttpDataSourceFactory(DefaultBandwidthMeter bandwidthMeter) {
-        return new DefaultHttpDataSourceFactory(Util.getUserAgent(this, "ExoPlayerDemo"), bandwidthMeter);
+        String version = Build.VERSION.RELEASE;
+        result.append(version.length() > 0 ? version : "1.0");
+
+        if ("REL".equals(Build.VERSION.CODENAME)) {
+            String model = Build.MODEL;
+            if (model.length() > 0) {
+                result.append("; ");
+                result.append(model);
+            }
+        }
+
+        String id = Build.ID;
+
+        if (id.length() > 0) {
+            result.append(" Build/");
+            result.append(id);
+        }
+
+        result.append(")");
+        return result.toString();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        player.stop();
+        simpleExoPlayer.stop();
     }
 
     public void errorDialog() {
@@ -263,10 +258,11 @@ public class ActivityVideoPlayer extends AppCompatActivity {
     }
 
     public void retryLoad() {
-        Uri uri = Uri.parse(video_url);
+        Uri uri = Uri.parse(videoUrl);
         MediaSource mediaSource = buildMediaSource(uri, null);
-        player.prepare(mediaSource);
-        player.setPlayWhenReady(true);
+        simpleExoPlayer.setMediaSource(mediaSource);
+        simpleExoPlayer.prepare();
+        simpleExoPlayer.setPlayWhenReady(true);
     }
 
 }

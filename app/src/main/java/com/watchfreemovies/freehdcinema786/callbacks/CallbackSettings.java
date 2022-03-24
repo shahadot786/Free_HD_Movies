@@ -1,12 +1,14 @@
 package com.watchfreemovies.freehdcinema786.callbacks;
 
-import com.watchfreemovies.freehdcinema786.models.Setting;
+import com.watchfreemovies.freehdcinema786.models.Ads;
+import com.watchfreemovies.freehdcinema786.models.License;
+import com.watchfreemovies.freehdcinema786.models.Settings;
 
-import java.io.Serializable;
-
-public class CallbackSettings implements Serializable {
+public class CallbackSettings {
 
     public String status = "";
-    public Setting post = null;
+    public Settings settings = null;
+    public Ads ads = null;
+    public License license = null;
 
 }

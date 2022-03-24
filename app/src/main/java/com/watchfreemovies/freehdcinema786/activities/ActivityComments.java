@@ -1,9 +1,10 @@
 package com.watchfreemovies.freehdcinema786.activities;
 
+import static com.watchfreemovies.freehdcinema786.utils.Constant.BANNER_COMMENT;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -12,49 +13,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.balysv.materialripple.MaterialRippleLayout;
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdSize;
-import com.facebook.shimmer.ShimmerFrameLayout;
-import com.watchfreemovies.freehdcinema786.BuildConfig;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.adapter.AdapterComments;
 import com.watchfreemovies.freehdcinema786.callbacks.CallbackComments;
-import com.watchfreemovies.freehdcinema786.callbacks.CallbackSettings;
-import com.watchfreemovies.freehdcinema786.config.AppConfig;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
 import com.watchfreemovies.freehdcinema786.models.Comments;
-import com.watchfreemovies.freehdcinema786.models.Setting;
 import com.watchfreemovies.freehdcinema786.models.Value;
 import com.watchfreemovies.freehdcinema786.rests.ApiInterface;
 import com.watchfreemovies.freehdcinema786.rests.RestAdapter;
-import com.watchfreemovies.freehdcinema786.utils.AdsPref;
+import com.watchfreemovies.freehdcinema786.utils.AdsManager;
 import com.watchfreemovies.freehdcinema786.utils.Constant;
-import com.watchfreemovies.freehdcinema786.utils.NetworkCheck;
-import com.watchfreemovies.freehdcinema786.utils.ThemePref;
 import com.watchfreemovies.freehdcinema786.utils.Tools;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.startapp.sdk.ads.banner.Banner;
-import com.startapp.sdk.ads.banner.BannerListener;
-import com.startapp.sdk.adsbase.StartAppAd;
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,37 +47,26 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-import static com.watchfreemovies.freehdcinema786.utils.Constant.ADMOB;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.AD_STATUS_ON;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.FAN;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.STARTAPP;
 
 public class ActivityComments extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipe_refresh;
-    private AdapterComments adapterCategory;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private AdapterComments adapterComments;
     private Call<CallbackComments> callbackCall = null;
-    private Call<CallbackSettings> callbackCallSettings = null;
     StaggeredGridLayoutManager staggeredGridLayoutManager;
-    Long nid, comments_count;
+    Long nid, commentsCount;
     MyApplication myApplication;
     View view;
-    private ShimmerFrameLayout lyt_shimmer;
-    String post_title;
-    LinearLayout lyt_comment_header;
-    EditText edt_comment_message;
-    MaterialRippleLayout btn_post_comment;
-    private ProgressDialog progress;
-    Setting post;
-    private FrameLayout adContainerView;
-    private AdView adView;
-    com.facebook.ads.AdView fanAdView;
-    private AdsPref adsPref;
-    ThemePref themePref;
+    private ShimmerFrameLayout lytShimmer;
+    String postTitle;
+    LinearLayout lytCommentHeader;
+    EditText edtCommentMessage;
+    LinearLayout btnPostComment;
+    private ProgressDialog progressDialog;
+    AdsManager adsManager;
+    SharedPref sharedPref;
+    CoordinatorLayout parentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,31 +74,26 @@ public class ActivityComments extends AppCompatActivity {
         Tools.getTheme(this);
         setContentView(R.layout.activity_comments);
         view = findViewById(android.R.id.content);
-
-        themePref = new ThemePref(this);
-        adsPref = new AdsPref(this);
-
-        if (UiConfig.ENABLE_RTL_MODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            }
-        }
+        Tools.setNavigation(this);
+        sharedPref = new SharedPref(this);
+        adsManager = new AdsManager(this);
+        adsManager.loadBannerAd(BANNER_COMMENT);
 
         myApplication = MyApplication.getInstance();
 
         nid = getIntent().getLongExtra("nid", 0);
-        comments_count = getIntent().getLongExtra("count", 0);
-        post_title = getIntent().getStringExtra("post_title");
+        commentsCount = getIntent().getLongExtra("count", 0);
+        postTitle = getIntent().getStringExtra("post_title");
 
         setupToolbar();
-        loadBannerAdNetwork();
 
-        lyt_shimmer = findViewById(R.id.shimmer_view_container);
-        lyt_comment_header = findViewById(R.id.lyt_comment_header);
-        swipe_refresh = findViewById(R.id.swipe_refresh_layout_category);
-        swipe_refresh.setColorSchemeResources(R.color.colorPrimary);
-        edt_comment_message = findViewById(R.id.edt_comment_message);
-        btn_post_comment = findViewById(R.id.btn_post_comment);
+        parentView = findViewById(R.id.parent_view);
+        lytShimmer = findViewById(R.id.shimmer_view_container);
+        lytCommentHeader = findViewById(R.id.lyt_comment_header);
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout_category);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        edtCommentMessage = findViewById(R.id.edt_comment_message);
+        btnPostComment = findViewById(R.id.btn_post_comment);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -135,11 +102,11 @@ public class ActivityComments extends AppCompatActivity {
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
 
         //set data and list adapter
-        adapterCategory = new AdapterComments(ActivityComments.this, new ArrayList<>());
-        recyclerView.setAdapter(adapterCategory);
+        adapterComments = new AdapterComments(ActivityComments.this, new ArrayList<>());
+        recyclerView.setAdapter(adapterComments);
 
         // on item list clicked
-        adapterCategory.setOnItemClickListener((v, obj, position, context) -> {
+        adapterComments.setOnItemClickListener((v, obj, position, context) -> {
 
             if (myApplication.getIsLogin() && myApplication.getUserId().equals(obj.user_id)) {
 
@@ -149,8 +116,8 @@ public class ActivityComments extends AppCompatActivity {
                 final AlertDialog.Builder alert = new AlertDialog.Builder(context);
                 alert.setView(mView);
 
-                final MaterialRippleLayout btn_edit = mView.findViewById(R.id.menu_edit);
-                final MaterialRippleLayout btn_delete = mView.findViewById(R.id.menu_delete);
+                final LinearLayout btn_edit = mView.findViewById(R.id.menu_edit);
+                final LinearLayout btn_delete = mView.findViewById(R.id.menu_delete);
 
                 final AlertDialog alertDialog = alert.create();
 
@@ -164,32 +131,30 @@ public class ActivityComments extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage(getString(R.string.confirm_delete_comment));
                     builder.setPositiveButton(getString(R.string.dialog_yes), (dialog, which) -> {
-                        Retrofit retrofit = new Retrofit.Builder()
-                                .baseUrl(AppConfig.ADMIN_PANEL_URL + "/")
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .build();
-                        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+                        ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
                         Call<Value> call = apiInterface.deleteComment(obj.comment_id);
                         call.enqueue(new Callback<Value>() {
                             @Override
                             public void onResponse(Call<Value> call, Response<Value> response) {
-                                String value = response.body().getValue();
-                                String message = response.body().getMessage();
+                                assert response.body() != null;
+                                String value = response.body().value;
                                 if (value.equals("1")) {
-                                    Toast.makeText(ActivityComments.this, message, Toast.LENGTH_SHORT).show();
-                                    adapterCategory.resetListData();
-                                    edt_comment_message.setText("");
+                                    //Toast.makeText(ActivityComments.this, getString(R.string.msg_success_delete_comment), Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(parentView, getString(R.string.msg_success_delete_comment), Snackbar.LENGTH_SHORT).show();
+                                    adapterComments.resetListData();
+                                    edtCommentMessage.setText("");
                                     requestAction();
                                     hideKeyboard();
                                 } else {
-                                    Toast.makeText(ActivityComments.this, message, Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(parentView, getString(R.string.msg_failed_delete_comment), Snackbar.LENGTH_SHORT).show();
+                                    //Toast.makeText(ActivityComments.this, getString(R.string.msg_failed_delete_comment), Toast.LENGTH_SHORT).show();
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<Value> call, Throwable t) {
                                 t.printStackTrace();
-                                Toast.makeText(ActivityComments.this, "Network error!", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(parentView, getString(R.string.msg_no_comment), Snackbar.LENGTH_SHORT).show();
                             }
                         });
                     });
@@ -211,18 +176,18 @@ public class ActivityComments extends AppCompatActivity {
                 final AlertDialog.Builder alert = new AlertDialog.Builder(context);
                 alert.setView(mView);
 
-                final MaterialRippleLayout btn_reply = mView.findViewById(R.id.menu_reply);
+                final LinearLayout btn_reply = mView.findViewById(R.id.menu_reply);
 
                 final AlertDialog alertDialog = alert.create();
 
                 btn_reply.setOnClickListener(view -> {
                     alertDialog.dismiss();
 
-                    edt_comment_message.setText("@" + obj.name + " ");
-                    edt_comment_message.setSelection(edt_comment_message.getText().length());
-                    edt_comment_message.requestFocus();
+                    edtCommentMessage.setText("@" + obj.name + " ");
+                    edtCommentMessage.setSelection(edtCommentMessage.getText().length());
+                    edtCommentMessage.requestFocus();
                     InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    manager.showSoftInput(edt_comment_message, InputMethodManager.SHOW_IMPLICIT);
+                    manager.showSoftInput(edtCommentMessage, InputMethodManager.SHOW_IMPLICIT);
 
                 });
                 alertDialog.show();
@@ -232,8 +197,8 @@ public class ActivityComments extends AppCompatActivity {
         });
 
         // on swipe list
-        swipe_refresh.setOnRefreshListener(() -> {
-            adapterCategory.resetListData();
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            adapterComments.resetListData();
             requestActionOnRefresh();
         });
 
@@ -246,7 +211,7 @@ public class ActivityComments extends AppCompatActivity {
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (themePref.getIsDarkTheme()) {
+        if (sharedPref.getIsDarkTheme()) {
             toolbar.setBackgroundColor(getResources().getColor(R.color.colorToolbarDark));
             findViewById(R.id.lyt_post_comment).setBackgroundColor(getResources().getColor(R.color.colorToolbarDark));
         } else {
@@ -264,7 +229,7 @@ public class ActivityComments extends AppCompatActivity {
 
     private void displayApiResult(final List<Comments> categories) {
         swipeProgress(false);
-        adapterCategory.setListData(categories);
+        adapterComments.setListData(categories);
         if (categories.size() == 0) {
             showNoItemView(true);
         }
@@ -272,7 +237,7 @@ public class ActivityComments extends AppCompatActivity {
 
     private void onFailRequest() {
         swipeProgress(false);
-        if (NetworkCheck.isConnect(ActivityComments.this)) {
+        if (Tools.isConnect(ActivityComments.this)) {
             showFailedView(true, getString(R.string.msg_no_network));
         } else {
             showFailedView(true, getString(R.string.msg_no_network));
@@ -280,7 +245,7 @@ public class ActivityComments extends AppCompatActivity {
     }
 
     private void requestCategoriesApi() {
-        ApiInterface apiInterface = RestAdapter.createAPI();
+        ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
         callbackCall = apiInterface.getComments(nid);
         callbackCall.enqueue(new Callback<CallbackComments>() {
             @Override
@@ -318,70 +283,45 @@ public class ActivityComments extends AppCompatActivity {
     }
 
     private void initPostData() {
-        edt_comment_message.setOnClickListener(view -> {
+        edtCommentMessage.setOnClickListener(view -> {
             if (!myApplication.getIsLogin()) {
                 startActivity(new Intent(getApplicationContext(), ActivityUserLogin.class));
             }
         });
-        edt_comment_message.setOnFocusChangeListener((v, hasFocus) -> {
+        edtCommentMessage.setOnFocusChangeListener((v, hasFocus) -> {
             if (!myApplication.getIsLogin()) {
                 startActivity(new Intent(getApplicationContext(), ActivityUserLogin.class));
             }
         });
 
-        ((TextView) findViewById(R.id.txt_comment_count)).setText("" + adapterCategory.getItemCount());
+        ((TextView) findViewById(R.id.txt_comment_count)).setText("" + adapterComments.getItemCount());
 
         TextView txt_comment_text = findViewById(R.id.txt_comment_text);
-        if (adapterCategory.getItemCount() <= 1) {
+        if (adapterComments.getItemCount() <= 1) {
             txt_comment_text.setText("Comment");
         } else {
             txt_comment_text.setText("Comments");
         }
 
-        ((TextView) findViewById(R.id.txt_post_title)).setText(post_title);
+        ((TextView) findViewById(R.id.txt_post_title)).setText(postTitle);
 
-        requestPostComment();
-
-    }
-
-    private void requestPostComment() {
-        ApiInterface api = RestAdapter.createAPI();
-        callbackCallSettings = api.getSettings();
-        callbackCallSettings.enqueue(new Callback<CallbackSettings>() {
-            @Override
-            public void onResponse(Call<CallbackSettings> call, Response<CallbackSettings> response) {
-                CallbackSettings resp = response.body();
-                if (resp != null && resp.status.equals("ok")) {
-                    post = resp.post;
-                    btn_post_comment.setOnClickListener(view -> {
-                        if (edt_comment_message.getText().toString().equals("")) {
-                            Toast.makeText(getApplicationContext(), R.string.msg_write_comment, Toast.LENGTH_SHORT).show();
-                        } else if (edt_comment_message.getText().toString().length() <= 6) {
-                            Toast.makeText(getApplicationContext(), R.string.msg_write_comment_character, Toast.LENGTH_SHORT).show();
-                        } else {
-                            dialogSendComment();
-                        }
-                    });
-
-                    Log.d("ACTIVITY_COMMENT", "Ready Post Comment");
-                } else {
-                    onFailRequest();
-                }
+        btnPostComment.setOnClickListener(view -> {
+            if (edtCommentMessage.getText().toString().equals("")) {
+                Snackbar.make(parentView, getString(R.string.msg_write_comment), Snackbar.LENGTH_SHORT).show();
+            } else if (edtCommentMessage.getText().toString().length() <= 6) {
+                Snackbar.make(parentView, getString(R.string.msg_write_comment_character), Snackbar.LENGTH_SHORT).show();
+            } else {
+                dialogSendComment();
             }
-
-            @Override
-            public void onFailure(Call<CallbackSettings> call, Throwable t) {
-                if (!call.isCanceled()) onFailRequest();
-            }
-
         });
+
     }
 
     public void dialogSendComment() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ActivityComments.this);
         builder.setMessage(getString(R.string.confirm_send_comment));
         builder.setPositiveButton(getString(R.string.dialog_yes), (dialogInterface, i) -> {
-            if (post.comment_approval.equals("yes")) {
+            if (sharedPref.getCommentApproval().equals("yes")) {
                 sendCommentApproval();
             } else {
                 sendComment();
@@ -400,7 +340,7 @@ public class ActivityComments extends AppCompatActivity {
         if (callbackCall != null && callbackCall.isExecuted()) {
             callbackCall.cancel();
         }
-        lyt_shimmer.stopShimmer();
+        lytShimmer.stopShimmer();
     }
 
     private void showFailedView(boolean flag, String message) {
@@ -430,71 +370,67 @@ public class ActivityComments extends AppCompatActivity {
 
     private void swipeProgress(final boolean show) {
         if (!show) {
-            swipe_refresh.setRefreshing(false);
-            lyt_shimmer.setVisibility(View.GONE);
-            lyt_shimmer.stopShimmer();
-            lyt_comment_header.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setRefreshing(false);
+            lytShimmer.setVisibility(View.GONE);
+            lytShimmer.stopShimmer();
+            lytCommentHeader.setVisibility(View.VISIBLE);
             return;
         }
-        swipe_refresh.post(() -> {
-            swipe_refresh.setRefreshing(false);
-            lyt_shimmer.setVisibility(View.VISIBLE);
-            lyt_shimmer.startShimmer();
-            lyt_comment_header.setVisibility(View.INVISIBLE);
+        swipeRefreshLayout.post(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            lytShimmer.setVisibility(View.VISIBLE);
+            lytShimmer.startShimmer();
+            lytCommentHeader.setVisibility(View.INVISIBLE);
         });
     }
 
     private void swipeProgressOnRefresh(final boolean show) {
         if (!show) {
-            swipe_refresh.setRefreshing(show);
-            lyt_shimmer.setVisibility(View.GONE);
-            lyt_shimmer.stopShimmer();
-            lyt_comment_header.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setRefreshing(show);
+            lytShimmer.setVisibility(View.GONE);
+            lytShimmer.stopShimmer();
+            lytCommentHeader.setVisibility(View.VISIBLE);
             return;
         }
-        swipe_refresh.post(() -> {
-            swipe_refresh.setRefreshing(show);
-            lyt_shimmer.setVisibility(View.VISIBLE);
-            lyt_shimmer.startShimmer();
-            lyt_comment_header.setVisibility(View.INVISIBLE);
+        swipeRefreshLayout.post(() -> {
+            swipeRefreshLayout.setRefreshing(show);
+            lytShimmer.setVisibility(View.VISIBLE);
+            lytShimmer.startShimmer();
+            lytCommentHeader.setVisibility(View.INVISIBLE);
         });
     }
 
     public void sendComment() {
 
-        progress = new ProgressDialog(this);
-        progress.setCancelable(false);
-        progress.setMessage(getResources().getString(R.string.sending_comment));
-        progress.show();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getResources().getString(R.string.sending_comment));
+        progressDialog.show();
 
-        String content = edt_comment_message.getText().toString();
+        String content = edtCommentMessage.getText().toString();
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date_time = simpleDateFormat.format(new Date());
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(AppConfig.ADMIN_PANEL_URL + "/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+        ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
         Call<Value> call = apiInterface.sendComment(nid, myApplication.getUserId(), content, date_time);
-
         call.enqueue(new Callback<Value>() {
             @Override
             public void onResponse(Call<Value> call, Response<Value> response) {
-                final String value = response.body().getValue();
-                final String message = response.body().getMessage();
+
+                assert response.body() != null;
+                String value = response.body().value;
 
                 new Handler().postDelayed(() -> {
-                    progress.dismiss();
+                    progressDialog.dismiss();
                     if (value.equals("1")) {
-                        Toast.makeText(getApplicationContext(), R.string.msg_comment_success, Toast.LENGTH_SHORT).show();
-                        edt_comment_message.setText("");
-                        adapterCategory.resetListData();
+                        Snackbar.make(parentView, getString(R.string.msg_comment_success), Snackbar.LENGTH_SHORT).show();
+                        edtCommentMessage.setText("");
+                        adapterComments.resetListData();
                         requestAction();
                         hideKeyboard();
                     } else {
-                        Toast.makeText(getApplicationContext(), R.string.msg_comment_failed, Toast.LENGTH_SHORT).show();
+                        Snackbar.make(parentView, getString(R.string.msg_comment_failed), Snackbar.LENGTH_SHORT).show();
                     }
                 }, Constant.DELAY_REFRESH);
 
@@ -502,8 +438,8 @@ public class ActivityComments extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Value> call, Throwable t) {
-                progress.dismiss();
-                Toast.makeText(getApplicationContext(), "Network Error!", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                Snackbar.make(parentView, getString(R.string.msg_no_network), Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -511,45 +447,42 @@ public class ActivityComments extends AppCompatActivity {
 
     public void sendCommentApproval() {
 
-        progress = new ProgressDialog(this);
-        progress.setCancelable(false);
-        progress.setMessage(getResources().getString(R.string.sending_comment));
-        progress.show();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getResources().getString(R.string.sending_comment));
+        progressDialog.show();
 
-        String content = edt_comment_message.getText().toString();
+        String content = edtCommentMessage.getText().toString();
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date_time = simpleDateFormat.format(new Date());
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(AppConfig.ADMIN_PANEL_URL + "/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+        ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
         Call<Value> call = apiInterface.sendComment(nid, myApplication.getUserId(), content, date_time);
 
         call.enqueue(new Callback<Value>() {
             @Override
             public void onResponse(Call<Value> call, Response<Value> response) {
-                final String value = response.body().getValue();
-                final String message = response.body().getMessage();
+
+                assert response.body() != null;
+                final String value = response.body().value;
 
                 new Handler().postDelayed(() -> {
-                    progress.dismiss();
+                    progressDialog.dismiss();
                     if (value.equals("1")) {
                         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ActivityComments.this);
                         builder.setMessage(R.string.msg_comment_approval);
                         builder.setPositiveButton(getString(R.string.dialog_ok), (dialogInterface, i) -> {
-                            Toast.makeText(getApplicationContext(), R.string.msg_comment_success, Toast.LENGTH_SHORT).show();
-                            edt_comment_message.setText("");
-                            adapterCategory.resetListData();
+                            Snackbar.make(parentView, getString(R.string.msg_comment_success), Snackbar.LENGTH_SHORT).show();
+                            edtCommentMessage.setText("");
+                            adapterComments.resetListData();
                             requestAction();
                             hideKeyboard();
                         });
                         android.app.AlertDialog alert = builder.create();
                         alert.show();
                     } else {
-                        Toast.makeText(getApplicationContext(), R.string.msg_comment_failed, Toast.LENGTH_SHORT).show();
+                        Snackbar.make(parentView, getString(R.string.msg_comment_failed), Snackbar.LENGTH_SHORT).show();
                     }
                 }, Constant.DELAY_REFRESH);
 
@@ -557,8 +490,8 @@ public class ActivityComments extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Value> call, Throwable t) {
-                progress.dismiss();
-                Toast.makeText(getApplicationContext(), "Network Error!", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                Snackbar.make(parentView, getString(R.string.msg_no_network), Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -568,7 +501,7 @@ public class ActivityComments extends AppCompatActivity {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(ActivityComments.this);
         View view = layoutInflaterAndroid.inflate(R.layout.custom_dialog_comment, null);
 
-        if (themePref.getIsDarkTheme()) {
+        if (sharedPref.getIsDarkTheme()) {
             view.findViewById(R.id.header_update_comment).setBackgroundColor(getResources().getColor(R.color.colorToolbarDark));
         } else {
             view.findViewById(R.id.header_update_comment).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -592,44 +525,41 @@ public class ActivityComments extends AppCompatActivity {
         alert.setPositiveButton("UPDATE", (dialog, which) -> {
 
             if (edt_update_message.getText().toString().equals("")) {
-                Toast.makeText(getApplicationContext(), R.string.msg_write_comment, Toast.LENGTH_SHORT).show();
+                Snackbar.make(parentView, getString(R.string.msg_write_comment), Snackbar.LENGTH_SHORT).show();
             } else if (edt_update_message.getText().toString().length() <= 6) {
-                Toast.makeText(getApplicationContext(), R.string.msg_write_comment_character, Toast.LENGTH_SHORT).show();
+                Snackbar.make(parentView, getString(R.string.msg_write_comment_character), Snackbar.LENGTH_SHORT).show();
             } else {
 
                 dialog.dismiss();
                 hideKeyboard();
 
-                progress = new ProgressDialog(this);
-                progress.setCancelable(false);
-                progress.setMessage(getResources().getString(R.string.updating_comment));
-                progress.show();
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage(getResources().getString(R.string.updating_comment));
+                progressDialog.show();
 
                 String comment_id = edt_id.getText().toString();
                 String date_time = edt_date_time.getText().toString();
                 String content = edt_update_message.getText().toString();
 
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(AppConfig.ADMIN_PANEL_URL + "/")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+                ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
                 Call<Value> call = apiInterface.updateComment(comment_id, date_time, content);
                 call.enqueue(new Callback<Value>() {
                     @Override
                     public void onResponse(Call<Value> call, Response<Value> response) {
-                        String value = response.body().getValue();
-                        String message = response.body().getMessage();
+
+                        assert response.body() != null;
+                        String value = response.body().value;
 
                         new Handler().postDelayed(() -> {
-                            progress.dismiss();
+                            progressDialog.dismiss();
                             if (value.equals("1")) {
-                                Toast.makeText(getApplicationContext(), R.string.msg_comment_update, Toast.LENGTH_SHORT).show();
-                                adapterCategory.resetListData();
+                                Snackbar.make(parentView, getString(R.string.msg_comment_update), Snackbar.LENGTH_SHORT).show();
+                                adapterComments.resetListData();
                                 requestAction();
                                 hideKeyboard();
                             } else {
-                                Toast.makeText(getApplicationContext(), R.string.msg_update_comment_failed, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(parentView, getString(R.string.msg_update_comment_failed), Snackbar.LENGTH_SHORT).show();
                             }
                         }, Constant.DELAY_REFRESH);
                     }
@@ -637,15 +567,15 @@ public class ActivityComments extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<Value> call, Throwable t) {
                         t.printStackTrace();
-                        progress.dismiss();
-                        Toast.makeText(getApplicationContext(), "Jaringan Error!", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        Snackbar.make(parentView, getString(R.string.msg_no_network), Snackbar.LENGTH_SHORT).show();
                     }
                 });
 
             }
 
         });
-        alert.setNegativeButton("CANCEL", (dialog, which) -> {
+        alert.setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {
             dialog.dismiss();
             hideKeyboard();
         });
@@ -664,8 +594,8 @@ public class ActivityComments extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
-                if (edt_comment_message.length() > 0) {
-                    edt_comment_message.setText("");
+                if (edtCommentMessage.length() > 0) {
+                    edtCommentMessage.setText("");
                 } else {
                     onBackPressed();
                 }
@@ -679,135 +609,16 @@ public class ActivityComments extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        adapterCategory.resetListData();
+        adapterComments.resetListData();
         requestAction();
     }
 
     @Override
     public void onBackPressed() {
-        if (edt_comment_message.length() > 0) {
-            edt_comment_message.setText("");
+        if (edtCommentMessage.length() > 0) {
+            edtCommentMessage.setText("");
         } else {
-            StartAppAd.onBackPressed(this);
             super.onBackPressed();
-        }
-    }
-
-    public void loadBannerAdNetwork() {
-        if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(ADMOB)) {
-            loadAdMobBannerAd();
-        } else if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(FAN)) {
-            loadFanBannerAd();
-            Log.d("FAN", "load fan");
-        } else if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(STARTAPP)) {
-            loadStartAppBannerAd();
-        }
-    }
-
-    public void loadAdMobBannerAd() {
-        if (!adsPref.getAdMobBannerId().equals("0")) {
-            adContainerView = findViewById(R.id.admob_banner_view_container);
-            adContainerView.post(() -> {
-                adView = new AdView(this);
-                adView.setAdUnitId(adsPref.getAdMobBannerId());
-                adContainerView.removeAllViews();
-                adContainerView.addView(adView);
-                adView.setAdSize(Tools.getAdSize(this));
-                adView.loadAd(Tools.getAdRequest(this));
-                adView.setAdListener(new AdListener() {
-                    @Override
-                    public void onAdLoaded() {
-                        // Code to be executed when an ad finishes loading.
-                        adContainerView.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError adError) {
-                        // Code to be executed when an ad request fails.
-                        adContainerView.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onAdOpened() {
-                        // Code to be executed when an ad opens an overlay that
-                        // covers the screen.
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        // Code to be executed when the user clicks on an ad.
-                    }
-
-                    @Override
-                    public void onAdClosed() {
-                        // Code to be executed when the user is about to return
-                        // to the app after tapping on an ad.
-                    }
-                });
-            });
-        }
-    }
-
-    private void loadFanBannerAd() {
-        if (!adsPref.getFanBannerUnitId().equals("0")) {
-            if (BuildConfig.DEBUG) {
-                fanAdView = new com.facebook.ads.AdView(this, "IMG_16_9_APP_INSTALL#" + adsPref.getFanBannerUnitId(), AdSize.BANNER_HEIGHT_50);
-            } else {
-                fanAdView = new com.facebook.ads.AdView(this, adsPref.getFanBannerUnitId(), AdSize.BANNER_HEIGHT_50);
-            }
-            LinearLayout adContainer = findViewById(R.id.fan_banner_view_container);
-            // Add the ad view to your activity layout
-            adContainer.addView(fanAdView);
-            com.facebook.ads.AdListener adListener = new com.facebook.ads.AdListener() {
-                @Override
-                public void onError(Ad ad, AdError adError) {
-                    adContainer.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-                    adContainer.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-
-                }
-            };
-            com.facebook.ads.AdView.AdViewLoadConfig loadAdConfig = fanAdView.buildLoadAdConfig().withAdListener(adListener).build();
-            fanAdView.loadAd(loadAdConfig);
-        }
-    }
-
-    private void loadStartAppBannerAd() {
-        if (!adsPref.getStartappAppID().equals("0")) {
-            RelativeLayout bannerLayout = findViewById(R.id.startapp_banner_view_container);
-            Banner banner = new Banner(this, new BannerListener() {
-                @Override
-                public void onReceiveAd(View banner) {
-                    bannerLayout.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onFailedToReceiveAd(View banner) {
-                    bannerLayout.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onImpression(View view) {
-
-                }
-
-                @Override
-                public void onClick(View banner) {
-                }
-            });
-            bannerLayout.addView(banner);
         }
     }
 

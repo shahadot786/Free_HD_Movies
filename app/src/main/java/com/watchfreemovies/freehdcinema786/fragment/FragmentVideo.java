@@ -3,42 +3,30 @@ package com.watchfreemovies.freehdcinema786.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.InterstitialAdListener;
-import com.facebook.shimmer.ShimmerFrameLayout;
-import com.watchfreemovies.freehdcinema786.BuildConfig;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.activities.ActivityPostDetail;
+import com.watchfreemovies.freehdcinema786.activities.MainActivity;
 import com.watchfreemovies.freehdcinema786.adapter.AdapterVideo;
 import com.watchfreemovies.freehdcinema786.callbacks.CallbackRecent;
 import com.watchfreemovies.freehdcinema786.config.AppConfig;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
-import com.watchfreemovies.freehdcinema786.models.News;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
+import com.watchfreemovies.freehdcinema786.models.Post;
 import com.watchfreemovies.freehdcinema786.rests.ApiInterface;
 import com.watchfreemovies.freehdcinema786.rests.RestAdapter;
-import com.watchfreemovies.freehdcinema786.utils.AdsPref;
 import com.watchfreemovies.freehdcinema786.utils.Constant;
-import com.watchfreemovies.freehdcinema786.utils.NetworkCheck;
 import com.watchfreemovies.freehdcinema786.utils.Tools;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-import com.startapp.sdk.adsbase.StartAppAd;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,81 +35,69 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.watchfreemovies.freehdcinema786.utils.Constant.ADMOB;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.AD_STATUS_ON;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.FAN;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.STARTAPP;
-
 public class FragmentVideo extends Fragment {
 
-    private View root_view, parent_view;
+    private View rootView;
     private RecyclerView recyclerView;
-    private AdapterVideo mAdapter;
-    private SwipeRefreshLayout swipe_refresh;
+    private AdapterVideo adapterVideo;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private Call<CallbackRecent> callbackCall = null;
-    private int post_total = 0;
-    private int failed_page = 0;
-    private InterstitialAd adMobInterstitialAd;
-    private com.facebook.ads.InterstitialAd fanInterstitialAd;
-    private StartAppAd startAppAd;
-    private AdsPref adsPref;
-    int counter = 1;
-    private ArrayList<Object> feedItems = new ArrayList<>();
-    private ShimmerFrameLayout lyt_shimmer;
+    private int postTotal = 0;
+    private int failedPage = 0;
+    List<Post> posts = new ArrayList<>();
+    ShimmerFrameLayout lytShimmer;
+    SharedPref sharedPref;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        root_view = inflater.inflate(R.layout.fragment_video, null);
-        parent_view = getActivity().findViewById(R.id.main_content);
+        rootView = inflater.inflate(R.layout.fragment_video, container, false);
 
-        adsPref = new AdsPref(getActivity());
-        loadAdNetwork();
+        if (getActivity() != null)
+            sharedPref = new SharedPref(getActivity());
 
-        lyt_shimmer = root_view.findViewById(R.id.shimmer_view_container);
-        swipe_refresh = root_view.findViewById(R.id.swipe_refresh_layout_home);
-        swipe_refresh.setColorSchemeResources(R.color.colorPrimary);
-        recyclerView = root_view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
+        lytShimmer = rootView.findViewById(R.id.shimmer_view_container);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout_home);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
 
         //set data and list adapter
-        mAdapter = new AdapterVideo(getActivity(), recyclerView, feedItems);
-        recyclerView.setAdapter(mAdapter);
+        adapterVideo = new AdapterVideo(getActivity(), recyclerView, posts);
+        recyclerView.setAdapter(adapterVideo);
 
         // on item list clicked
-        mAdapter.setOnItemClickListener((v, obj, position) -> {
+        adapterVideo.setOnItemClickListener((v, obj, position) -> {
             Intent intent = new Intent(getActivity(), ActivityPostDetail.class);
             intent.putExtra(Constant.EXTRA_OBJC, obj);
             startActivity(intent);
-            startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
-            showInterstitialAdNetwork();
+            ((MainActivity) getActivity()).showInterstitialAd();
         });
 
         // detect when scroll reach bottom
-        mAdapter.setOnLoadMoreListener(current_page -> {
-            if (post_total > mAdapter.getItemCount() && current_page != 0) {
+        adapterVideo.setOnLoadMoreListener(current_page -> {
+            if (postTotal > adapterVideo.getItemCount() && current_page != 0) {
                 int next_page = current_page + 1;
                 requestAction(next_page);
             } else {
-                mAdapter.setLoaded();
+                adapterVideo.setLoaded();
             }
         });
 
         // on swipe list
-        swipe_refresh.setOnRefreshListener(() -> {
+        swipeRefreshLayout.setOnRefreshListener(() -> {
             if (callbackCall != null && callbackCall.isExecuted()) callbackCall.cancel();
-            mAdapter.resetListData();
+            adapterVideo.resetListData();
             requestAction(1);
         });
 
         requestAction(1);
 
-        return root_view;
+        return rootView;
     }
 
-    private void displayApiResult(final List<News> posts) {
-        mAdapter.insertData(posts);
+    private void displayApiResult(final List<Post> posts) {
+        adapterVideo.insertDataWithNativeAd(posts);
         swipeProgress(false);
         if (posts.size() == 0) {
             showNoItemView(true);
@@ -129,14 +105,14 @@ public class FragmentVideo extends Fragment {
     }
 
     private void requestListPostApi(final int page_no) {
-        ApiInterface apiInterface = RestAdapter.createAPI();
-        callbackCall = apiInterface.getVideoPost(AppConfig.API_KEY, page_no, UiConfig.LOAD_MORE);
+        ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
+        callbackCall = apiInterface.getVideoPost(AppConfig.REST_API_KEY, page_no, AppConfig.LOAD_MORE);
         callbackCall.enqueue(new Callback<CallbackRecent>() {
             @Override
             public void onResponse(Call<CallbackRecent> call, Response<CallbackRecent> response) {
                 CallbackRecent resp = response.body();
                 if (resp != null && resp.status.equals("ok")) {
-                    post_total = resp.count_total;
+                    postTotal = resp.count_total;
                     displayApiResult(resp.posts);
                 } else {
                     onFailRequest(page_no);
@@ -152,10 +128,10 @@ public class FragmentVideo extends Fragment {
     }
 
     private void onFailRequest(int page_no) {
-        failed_page = page_no;
-        mAdapter.setLoaded();
+        failedPage = page_no;
+        adapterVideo.setLoaded();
         swipeProgress(false);
-        if (NetworkCheck.isConnect(getActivity())) {
+        if (Tools.isConnect(getActivity())) {
             showFailedView(true, getString(R.string.msg_no_network));
         } else {
             showFailedView(true, getString(R.string.msg_offline));
@@ -168,7 +144,7 @@ public class FragmentVideo extends Fragment {
         if (page_no == 1) {
             swipeProgress(true);
         } else {
-            mAdapter.setLoading();
+            adapterVideo.setLoading();
         }
         new Handler().postDelayed(() -> requestListPostApi(page_no), Constant.DELAY_TIME);
     }
@@ -180,12 +156,12 @@ public class FragmentVideo extends Fragment {
         if (callbackCall != null && callbackCall.isExecuted()) {
             callbackCall.cancel();
         }
-        lyt_shimmer.stopShimmer();
+        lytShimmer.stopShimmer();
     }
 
     private void showFailedView(boolean show, String message) {
-        View lyt_failed = root_view.findViewById(R.id.lyt_failed_home);
-        ((TextView) root_view.findViewById(R.id.failed_message)).setText(message);
+        View lyt_failed = rootView.findViewById(R.id.lyt_failed_home);
+        ((TextView) rootView.findViewById(R.id.failed_message)).setText(message);
         if (show) {
             recyclerView.setVisibility(View.GONE);
             lyt_failed.setVisibility(View.VISIBLE);
@@ -193,12 +169,12 @@ public class FragmentVideo extends Fragment {
             recyclerView.setVisibility(View.VISIBLE);
             lyt_failed.setVisibility(View.GONE);
         }
-        root_view.findViewById(R.id.failed_retry).setOnClickListener(view -> requestAction(failed_page));
+        rootView.findViewById(R.id.failed_retry).setOnClickListener(view -> requestAction(failedPage));
     }
 
     private void showNoItemView(boolean show) {
-        View lyt_no_item = root_view.findViewById(R.id.lyt_no_item_home);
-        ((TextView) root_view.findViewById(R.id.no_item_message)).setText(R.string.msg_no_Movies);
+        View lyt_no_item = rootView.findViewById(R.id.lyt_no_item_home);
+        ((TextView) rootView.findViewById(R.id.no_item_message)).setText(R.string.msg_no_news);
         if (show) {
             recyclerView.setVisibility(View.GONE);
             lyt_no_item.setVisibility(View.VISIBLE);
@@ -210,134 +186,16 @@ public class FragmentVideo extends Fragment {
 
     private void swipeProgress(final boolean show) {
         if (!show) {
-            swipe_refresh.setRefreshing(show);
-            lyt_shimmer.setVisibility(View.GONE);
-            lyt_shimmer.stopShimmer();
+            swipeRefreshLayout.setRefreshing(show);
+            lytShimmer.setVisibility(View.GONE);
+            lytShimmer.stopShimmer();
             return;
         }
-        swipe_refresh.post(() -> {
-            swipe_refresh.setRefreshing(show);
-            lyt_shimmer.setVisibility(View.VISIBLE);
-            lyt_shimmer.startShimmer();
+        swipeRefreshLayout.post(() -> {
+            swipeRefreshLayout.setRefreshing(show);
+            lytShimmer.setVisibility(View.VISIBLE);
+            lytShimmer.startShimmer();
         });
-    }
-
-    private void loadAdNetwork() {
-        if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(ADMOB)) {
-            if (!adsPref.getAdMobInterstitialId().equals("0")) {
-                InterstitialAd.load(getActivity(), adsPref.getAdMobInterstitialId(), Tools.getAdRequest(getActivity()), new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        adMobInterstitialAd = interstitialAd;
-                        adMobInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                            @Override
-                            public void onAdDismissedFullScreenContent() {
-                                loadAdNetwork();
-                            }
-
-                            @Override
-                            public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
-                                Log.d("Interstitial", "The ad failed to show.");
-                            }
-
-                            @Override
-                            public void onAdShowedFullScreenContent() {
-                                adMobInterstitialAd = null;
-                                Log.d("Interstitial", "The ad was shown.");
-                            }
-                        });
-                        Log.i("Interstitial", "onAdLoaded");
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        Log.i("Interstitial", loadAdError.getMessage());
-                        adMobInterstitialAd = null;
-                        Log.d("Interstitial", "Failed load AdMob Interstitial Ad");
-                    }
-                });
-            }
-        } else if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(FAN)) {
-            if (BuildConfig.DEBUG) {
-                fanInterstitialAd = new com.facebook.ads.InterstitialAd(getActivity(), "IMG_16_9_APP_INSTALL#" + adsPref.getFanInterstitialUnitId());
-            } else {
-                fanInterstitialAd = new com.facebook.ads.InterstitialAd(getActivity(), adsPref.getFanInterstitialUnitId());
-            }
-            com.facebook.ads.InterstitialAdListener adListener = new InterstitialAdListener() {
-                @Override
-                public void onError(Ad ad, AdError adError) {
-
-                }
-
-                @Override
-                public void onAdLoaded(Ad ad) {
-
-                }
-
-                @Override
-                public void onAdClicked(Ad ad) {
-
-                }
-
-                @Override
-                public void onLoggingImpression(Ad ad) {
-
-                }
-
-                @Override
-                public void onInterstitialDisplayed(Ad ad) {
-
-                }
-
-                @Override
-                public void onInterstitialDismissed(Ad ad) {
-                    fanInterstitialAd.loadAd();
-                }
-            };
-
-            com.facebook.ads.InterstitialAd.InterstitialLoadAdConfig loadAdConfig = fanInterstitialAd.buildLoadAdConfig().withAdListener(adListener).build();
-            fanInterstitialAd.loadAd(loadAdConfig);
-
-        } else if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(STARTAPP)) {
-            if (!adsPref.getStartappAppID().equals("0")) {
-                startAppAd = new StartAppAd(getActivity());
-            }
-        }
-    }
-
-    private void showInterstitialAdNetwork() {
-        if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(ADMOB)) {
-            if (!adsPref.getAdMobInterstitialId().equals("0")) {
-                if (adMobInterstitialAd != null) {
-                    if (counter == adsPref.getInterstitialAdInterval()) {
-                        adMobInterstitialAd.show(getActivity());
-                        counter = 1;
-                    } else {
-                        counter++;
-                    }
-                }
-            }
-        } else if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(FAN)) {
-            if (!adsPref.getFanInterstitialUnitId().equals("0")) {
-                if (fanInterstitialAd != null && fanInterstitialAd.isAdLoaded()) {
-                    if (counter == adsPref.getInterstitialAdInterval()) {
-                        fanInterstitialAd.show();
-                        counter = 1;
-                    } else {
-                        counter++;
-                    }
-                }
-            }
-        } else if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(STARTAPP)) {
-            if (!adsPref.getStartappAppID().equals("0")) {
-                if (counter == adsPref.getInterstitialAdInterval()) {
-                    startAppAd.showAd();
-                    counter = 1;
-                } else {
-                    counter++;
-                }
-            }
-        }
     }
 
 }

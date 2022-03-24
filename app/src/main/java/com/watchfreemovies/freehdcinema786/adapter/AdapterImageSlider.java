@@ -1,120 +1,123 @@
 package com.watchfreemovies.freehdcinema786.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.viewpager.widget.PagerAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.watchfreemovies.freehdcinema786.R;
-import com.watchfreemovies.freehdcinema786.activities.ActivityVideoPlayer;
-import com.watchfreemovies.freehdcinema786.activities.ActivityYoutubePlayer;
-import com.watchfreemovies.freehdcinema786.config.AppConfig;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
 import com.watchfreemovies.freehdcinema786.models.Images;
 import com.watchfreemovies.freehdcinema786.utils.Constant;
-import com.watchfreemovies.freehdcinema786.utils.TouchImageView;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.List;
 
-public class AdapterImageSlider extends PagerAdapter {
+public class AdapterImageSlider extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context context;
-    private List<Images> items;
-    private OnItemClickListener onItemClickListener;
+    Context context;
+    List<Images> images;
+    private OnItemClickListener mOnItemClickListener;
+    SharedPref sharedPref;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, Images images);
+        void onItemClick(View view, Images obj, int position);
     }
 
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object obj) {
-        return view == obj;
+    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
+        this.mOnItemClickListener = mItemClickListener;
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-    }
-
-    public AdapterImageSlider(Context context, List<Images> list) {
+    // Provide a suitable constructor (depends on the kind of dataset)
+    public AdapterImageSlider(Context context, List<Images> images) {
+        this.images = images;
         this.context = context;
-        this.items = list;
+        this.sharedPref = new SharedPref(context);
+    }
+
+    public static class OriginalViewHolder extends RecyclerView.ViewHolder {
+        // each data item is just a string in this case
+        public PhotoView postImage;
+
+        public OriginalViewHolder(View v) {
+            super(v);
+            postImage = v.findViewById(R.id.image_detail);
+        }
     }
 
     @NonNull
-    public Object instantiateItem(ViewGroup viewGroup, final int position) {
-        final Images post = items.get(position);
-        View inflate = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.lsv_item_image_slider, viewGroup, false);
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder vh;
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_image_slider, parent, false);
+        vh = new OriginalViewHolder(v);
+        return vh;
+    }
 
-        TouchImageView news_image = inflate.findViewById(R.id.image_detail);
+    // Replace the contents of a view (invoked by the layout manager)
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+        if (holder instanceof OriginalViewHolder) {
+            final Images post = images.get(position);
+            final OriginalViewHolder vItem = (OriginalViewHolder) holder;
 
-        if (post.content_type != null && post.content_type.equals("youtube")) {
-            Picasso.get()
-                    .load(Constant.YOUTUBE_IMG_FRONT + post.video_id + Constant.YOUTUBE_IMG_BACK)
-                    .placeholder(R.drawable.ic_thumbnail)
-                    .into(news_image);
+            if (post.content_type != null && post.content_type.equals("youtube")) {
+                Glide.with(context)
+                        .load(Constant.YOUTUBE_IMG_FRONT + post.video_id + Constant.YOUTUBE_IMG_BACK)
+                        .placeholder(R.drawable.ic_thumbnail)
+                        .thumbnail(0.3f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(vItem.postImage);
+            } else {
+                Glide.with(context)
+                        .load(sharedPref.getBaseUrl() + "/upload/" + post.image_name.replace(" ", "%20"))
+                        .placeholder(R.drawable.ic_thumbnail)
+                        .thumbnail(0.3f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(vItem.postImage);
+            }
 
-            news_image.setOnClickListener(v -> {
-                Intent intent = new Intent(context, ActivityYoutubePlayer.class);
-                intent.putExtra("video_id", post.video_id);
-                context.startActivity(intent);
-            });
-
-        } else if (post.content_type != null && post.content_type.equals("Url")) {
-
-            Picasso.get()
-                    .load(AppConfig.ADMIN_PANEL_URL + "/upload/" + post.image_name.replace(" ", "%20"))
-                    .placeholder(R.drawable.ic_thumbnail)
-                    .into(news_image);
-
-            news_image.setOnClickListener(v -> {
-                Intent intent = new Intent(context, ActivityVideoPlayer.class);
-                intent.putExtra("video_url", post.video_url);
-                context.startActivity(intent);
-            });
-        } else if (post.content_type != null && post.content_type.equals("Upload")) {
-
-            Picasso.get()
-                    .load(AppConfig.ADMIN_PANEL_URL + "/upload/" + post.image_name.replace(" ", "%20"))
-                    .placeholder(R.drawable.ic_thumbnail)
-                    .into(news_image);
-
-            news_image.setOnClickListener(v -> {
-                Intent intent = new Intent(context, ActivityVideoPlayer.class);
-                intent.putExtra("video_url", AppConfig.ADMIN_PANEL_URL + "/upload/video/" + post.video_url);
-                context.startActivity(intent);
-            });
-        } else {
-            Picasso.get()
-                    .load(AppConfig.ADMIN_PANEL_URL + "/upload/" + post.image_name.replace(" ", "%20"))
-                    .placeholder(R.drawable.ic_thumbnail)
-                    .into(news_image);
-
-            news_image.setOnClickListener(view -> {
-                if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(view, post);
+            vItem.postImage.setOnClickListener(v -> {
+                if (mOnItemClickListener != null) {
+                    mOnItemClickListener.onItemClick(v, post, position);
                 }
             });
 
         }
+    }
 
-        if (UiConfig.ENABLE_RTL_MODE) {
-            news_image.setRotationY(180);
+    public void insertData(List<Images> items) {
+        setLoaded();
+        int positionStart = getItemCount();
+        int itemCount = items.size();
+        this.images.addAll(items);
+        notifyItemRangeInserted(positionStart, itemCount);
+    }
+
+    @SuppressWarnings("SuspiciousListRemoveInLoop")
+    public void setLoaded() {
+        for (int i = 0; i < getItemCount(); i++) {
+            if (images.get(i) == null) {
+                images.remove(i);
+                notifyItemRemoved(i);
+            }
         }
-
-        viewGroup.addView(inflate);
-        return inflate;
     }
 
-    public int getCount() {
-        return this.items.size();
+    public void resetListData() {
+        this.images.clear();
+        notifyDataSetChanged();
     }
 
-    public void destroyItem(ViewGroup viewGroup, int i, Object obj) {
-        viewGroup.removeView((View) obj);
+    // Return the size of your dataset (invoked by the layout manager)
+    @Override
+    public int getItemCount() {
+        return images.size();
     }
 
 }

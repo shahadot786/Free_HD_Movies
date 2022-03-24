@@ -1,16 +1,10 @@
 package com.watchfreemovies.freehdcinema786.models;
 
-public class Value {
+import java.io.Serializable;
+
+public class Value implements Serializable {
 
     public String value;
     public String message;
-
-    public String getValue() {
-        return value;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 
 }

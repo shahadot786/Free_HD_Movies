@@ -1,30 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lyt_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
-    android:clickable="true"
-    android:paddingLeft="@dimen/spacing_medium"
-    android:paddingRight="@dimen/spacing_medium"
+    android:background="?android:attr/selectableItemBackground"
+    android:foreground="?selectableItemBackground"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="8dp">
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:padding="@dimen/spacing_large"
+        android:id="@+id/ic_start"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="10dp"
+        android:layout_centerVertical="true"
         android:src="@drawable/ic_history"
-        android:tint="@color/colorGreyMedium" />
+        app:tint="@color/colorGreyMedium" />
 
-    <TextView
-        android:id="@+id/title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:text="Text Suggestion"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/colorGreyMedium" />
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/imgSetText"
+        android:layout_toEndOf="@+id/ic_start"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="Text Suggestion" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/imgSetText"
+        android:layout_width="@dimen/spacing_xxlarge"
+        android:layout_height="@dimen/spacing_xxlarge"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_arrow_up"
+        app:tint="@color/colorGreyMedium" />
+
+</RelativeLayout>

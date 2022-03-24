@@ -9,23 +9,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.config.AppConfig;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
 import com.watchfreemovies.freehdcinema786.models.Category;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.ViewHolder> {
 
+    Context context;
     private List<Category> items;
-
-    private Context ctx;
     private OnItemClickListener mOnItemClickListener;
+
+    SharedPref sharedPref;
 
     public interface OnItemClickListener {
         void onItemClick(View view, Category obj, int position);
@@ -38,51 +41,53 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.ViewHo
     // Provide a suitable constructor (depends on the kind of dataset)
     public AdapterCategory(Context context, List<Category> items) {
         this.items = items;
-        ctx = context;
+        this.context = context;
+        this.sharedPref = new SharedPref(context);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        public TextView name;
-        public TextView post_count;
-        public LinearLayout lyt_parent;
-        public ImageView category_image;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView categoryName;
+        public TextView postCount;
+        public LinearLayout lytParent;
+        public ImageView categoryImage;
 
         public ViewHolder(View v) {
             super(v);
-            category_image = v.findViewById(R.id.category_image);
-            name = v.findViewById(R.id.name);
-            post_count = v.findViewById(R.id.post_count);
-            lyt_parent = v.findViewById(R.id.lyt_parent);
+            categoryImage = v.findViewById(R.id.category_image);
+            categoryName = v.findViewById(R.id.name);
+            postCount = v.findViewById(R.id.post_count);
+            lytParent = v.findViewById(R.id.lyt_parent);
         }
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_category, parent, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final Category c = items.get(position);
-        holder.name.setText(Html.fromHtml(c.category_name));
+        holder.categoryName.setText(Html.fromHtml(c.category_name));
 
-        if (UiConfig.ENABLE_POST_COUNT_IN_CATEGORY) {
-            holder.post_count.setText("" + c.post_count + "");
+        if (AppConfig.ENABLE_POST_COUNT_IN_CATEGORY) {
+            holder.postCount.setText("( " + c.post_count + " )");
         } else {
-            holder.post_count.setVisibility(View.GONE);
+            holder.postCount.setVisibility(View.GONE);
         }
 
-        Picasso.get()
-                .load(AppConfig.ADMIN_PANEL_URL + "/upload/category/" + c.category_image.replace(" ", "%20"))
+        Glide.with(context)
+                .load(sharedPref.getBaseUrl() + "/upload/category/" + c.category_image.replace(" ", "%20"))
                 .placeholder(R.drawable.ic_thumbnail)
-                .into(holder.category_image);
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.categoryImage);
 
-        holder.lyt_parent.setOnClickListener(view -> {
+        holder.lytParent.setOnClickListener(view -> {
             if (mOnItemClickListener != null) {
                 mOnItemClickListener.onItemClick(view, c, position);
             }

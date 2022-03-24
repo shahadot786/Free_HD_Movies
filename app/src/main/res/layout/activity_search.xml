@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            android:elevation="@dimen/toolbar_elevation"
             android:paddingEnd="@dimen/spacing_middle"
             android:paddingRight="@dimen/spacing_middle"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -60,7 +61,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/lyt_banner_ad"
+        android:layout_above="@+id/bannerAdView"
         android:layout_below="@+id/appbar">
 
         <com.facebook.shimmer.ShimmerFrameLayout
@@ -69,65 +70,7 @@
             android:layout_height="wrap_content"
             app:shimmer_duration="1000">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <include
-                    layout="@layout/include_shimmer_recent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <include
-                    layout="@layout/include_shimmer_recent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp" />
-
-                <include
-                    layout="@layout/include_shimmer_recent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp" />
-
-                <include
-                    layout="@layout/include_shimmer_recent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp" />
-
-                <include
-                    layout="@layout/include_shimmer_recent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp" />
-
-                <include
-                    layout="@layout/include_shimmer_recent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp" />
-
-                <include
-                    layout="@layout/include_shimmer_recent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp" />
-
-                <include
-                    layout="@layout/include_shimmer_recent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp" />
-
-                <include
-                    layout="@layout/include_shimmer_recent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp" />
-
-            </LinearLayout>
+            <include layout="@layout/include_shimmer_recent" />
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
@@ -135,6 +78,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="@dimen/padding_small"
             android:scrollbars="none"
             android:scrollingCache="true" />
 
@@ -152,14 +96,14 @@
             android:id="@+id/lyt_suggestion"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/colorWhite"
             android:orientation="vertical"
             android:visibility="gone">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerSuggestion"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:cacheColorHint="#0000"
+                android:layout_height="match_parent"
                 android:scrollbars="none"
                 android:scrollingCache="true" />
 
@@ -173,9 +117,8 @@
 
     </RelativeLayout>
 
-    <include
-        android:id="@+id/lyt_banner_ad"
-        layout="@layout/include_banner_ad"
+    <com.solodroid.ads.sdk.ui.BannerAdView
+        android:id="@+id/bannerAdView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />

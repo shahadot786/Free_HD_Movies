@@ -19,35 +19,7 @@
                 android:layout_height="wrap_content"
                 app:shimmer_duration="1000">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp">
-
-                    <include layout="@layout/include_shimmer_video" />
-
-                    <include
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/include_shimmer_video"
-                        android:layout_marginTop="12dp" />
-
-                    <include
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/include_shimmer_video"
-                        android:layout_marginTop="12dp" />
-
-                    <include
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/include_shimmer_video"
-                        android:layout_marginTop="12dp" />
-
-                </LinearLayout>
+                <include layout="@layout/include_shimmer_video" />
 
             </com.facebook.shimmer.ShimmerFrameLayout>
 
@@ -55,7 +27,6 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="3dp"
                 android:scrollbars="none"
                 android:scrollingCache="true" />
 

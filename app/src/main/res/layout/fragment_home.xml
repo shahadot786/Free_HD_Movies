@@ -28,64 +28,15 @@
                         android:id="@+id/lyt_shimmer_head"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:background="@drawable/bg_shimmer"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginRight="12dp"
-                        android:layout_marginBottom="3dp"
-                        android:layout_marginTop="15dp" />
+                        android:layout_marginLeft="@dimen/padding_large"
+                        android:layout_marginTop="@dimen/padding_large"
+                        android:layout_marginRight="@dimen/padding_large"
+                        android:background="@drawable/bg_shimmer" />
 
                     <include
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/include_shimmer_recent" />
-
-                    <include
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         layout="@layout/include_shimmer_recent"
-                        android:layout_marginTop="6dp" />
-
-                    <include
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/include_shimmer_recent"
-                        android:layout_marginTop="6dp" />
-
-                    <include
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/include_shimmer_recent"
-                        android:layout_marginTop="6dp" />
-
-                    <include
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/include_shimmer_recent"
-                        android:layout_marginTop="6dp" />
-
-                    <include
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/include_shimmer_recent"
-                        android:layout_marginTop="6dp" />
-
-                    <include
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/include_shimmer_recent"
-                        android:layout_marginTop="6dp" />
-
-                    <include
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/include_shimmer_recent"
-                        android:layout_marginTop="6dp" />
-
-                    <include
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        layout="@layout/include_shimmer_recent"
-                        android:layout_marginTop="6dp" />
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 

@@ -9,7 +9,7 @@
         android:id="@+id/tab_coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/navigation"
+        android:layout_above="@+id/lyt_bottom"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -24,11 +24,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                android:paddingRight="@dimen/spacing_middle"
+                android:elevation="@dimen/toolbar_elevation"
                 android:paddingEnd="@dimen/spacing_middle"
+                android:paddingRight="@dimen/spacing_middle"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:layout_scrollFlags="scroll|enterAlways">
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -49,16 +50,17 @@
 
                             <TextView
                                 android:id="@+id/title_toolbar"
+                                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/app_name"
-                                android:layout_centerVertical="true"
-                                android:layout_alignParentLeft="true"
                                 android:layout_alignParentStart="true"
-                                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-                                android:textColor="@color/colorWhite"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/custom_font"
                                 android:maxLines="1"
-                                android:ellipsize="end" />
+                                android:text="@string/app_name"
+                                android:textColor="@color/colorWhite" />
 
                         </RelativeLayout>
 
@@ -77,23 +79,24 @@
                         android:layout_height="@dimen/spacing_xxlarge"
                         android:background="?selectableItemBackgroundBorderless">
 
-                        <com.makeramen.roundedimageview.RoundedImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/img_profile"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_centerInParent="true"
-                            android:src="@drawable/ic_account_circle_white"
-                            app:riv_oval="true" />
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.Image.Circular" />
 
                     </RelativeLayout>
 
                     <ImageButton
-                        android:id="@+id/btn_overflow"
+                        android:id="@+id/btn_settings"
                         android:layout_width="@dimen/spacing_xxlarge"
                         android:layout_height="@dimen/spacing_xxlarge"
                         android:background="?selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_overflow"
-                        android:visibility="gone"/>
+                        android:src="@drawable/ic_settings_white"
+                        android:visibility="visible" />
 
                 </LinearLayout>
 
@@ -101,34 +104,46 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <com.watchfreemovies.freehdcinema786.utils.RtlViewPager
+            android:id="@+id/viewpager_rtl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/lyt_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="56dp">
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-        <com.startapp.sdk.ads.banner.Banner
-            android:id="@+id/startAppBanner"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/bg_shadow" />
+
+        <com.solodroid.ads.sdk.ui.BannerAdView
+            android:id="@+id/bannerAdView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/navigation"
+            style="@style/MyBottomNavigationView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" />
+            android:background="?android:attr/windowBackground" />
 
-    </RelativeLayout>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="57dp"
-        android:layout_alignParentBottom="true"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation" />
+    </LinearLayout>
 
 </RelativeLayout>

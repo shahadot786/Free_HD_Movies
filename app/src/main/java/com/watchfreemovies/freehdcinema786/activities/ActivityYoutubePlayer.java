@@ -2,18 +2,17 @@ package com.watchfreemovies.freehdcinema786.activities;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.watchfreemovies.freehdcinema786.R;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
-import com.watchfreemovies.freehdcinema786.utils.AdsPref;
+import com.watchfreemovies.freehdcinema786.config.AppConfig;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -22,11 +21,12 @@ import com.google.android.youtube.player.YouTubePlayerView;
 
 public class ActivityYoutubePlayer extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
+    private static final String TAG = "ActivityYoutubePlayer";
     private static final int RECOVERY_REQUEST = 1;
     private YouTubePlayerView youTubeView;
     private MyPlayerStateChangeListener playerStateChangeListener;
-    private String str_video_id;
-    AdsPref adsPref;
+    private String strVideoId;
+    SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,29 +35,24 @@ public class ActivityYoutubePlayer extends YouTubeBaseActivity implements YouTub
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_youtube);
 
-        adsPref = new AdsPref(this);
+        sharedPref = new SharedPref(this);
 
-        if (UiConfig.ENABLE_RTL_MODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            }
-        }
-
-        if (UiConfig.FORCE_PLAYER_TO_LANDSCAPE) {
+        if (AppConfig.FORCE_VIDEO_PLAYER_TO_LANDSCAPE) {
             this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
         Intent intent = getIntent();
         if (null != intent) {
-            str_video_id = intent.getStringExtra("video_id");
+            strVideoId = intent.getStringExtra("video_id");
         }
 
-        //loadViewed();
-
         youTubeView = findViewById(R.id.youtube_view);
-        youTubeView.initialize(adsPref.getYoutubeAPIKey(), this);
+        youTubeView.initialize(sharedPref.getYoutubeApiKey(), this);
 
         playerStateChangeListener = new MyPlayerStateChangeListener();
+
+        Log.d(TAG, "youtube video id : " + strVideoId);
+        Log.d(TAG, "youtube api key : " + sharedPref.getYoutubeApiKey());
 
     }
 
@@ -66,7 +61,7 @@ public class ActivityYoutubePlayer extends YouTubeBaseActivity implements YouTub
         player.setPlayerStateChangeListener(playerStateChangeListener);
 
         if (!wasRestored) {
-            player.loadVideo(str_video_id);
+            player.loadVideo(strVideoId);
         }
     }
 
@@ -83,7 +78,7 @@ public class ActivityYoutubePlayer extends YouTubeBaseActivity implements YouTub
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RECOVERY_REQUEST) {
             // Retry initialization if user performed a recovery action
-            getYouTubePlayerProvider().initialize(adsPref.getYoutubeAPIKey(), this);
+            getYouTubePlayerProvider().initialize(sharedPref.getYoutubeApiKey(), this);
         }
     }
 

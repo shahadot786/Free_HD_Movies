@@ -1,63 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Free HD Movies</string>
-    <string name="app_slogan">Watch Free New Movies</string>
-    <string name="app_slogan2">World in Pocket</string>
-    <string name="app_version" translatable="false">Version 4.0.0</string>
-    <string name="copyright">Copyright © 2021 MD Shahadot Hossain Rahat. \nAll right reserved</string>
+    <!--app info-->
+    <string name="app_name">HD Movies</string>
+    <string name="app_slogan">Watch daily new free movies</string>
+    <string name="copyright">Copyright © 2021 MD Shahadot Hossain Developer. \nAll right reserved</string>
+    <string name="share_content">I Would like to share this HD Movies with you. Here You Can Download This Application from PlayStore for watching the Video.</string>
 
-    <!-- play store application link i.e more apps -->
-    <string name="play_more_apps">https://play.google.com/store/apps/dev?id=5967016763322581246</string>
-    <string name="privacy_policy_url">https://shrcreation.com/privacy/</string>
+    <!--bottom navigation title-->
+    <string name="title_nav_home">Home</string>
+    <string name="title_nav_category">Category</string>
+    <string name="title_nav_video">Movies</string>
+    <string name="title_nav_favorite">Favorite</string>
 
-    <!--share-->
-    <string name="share_content">I Would like to share this Movies with you. Here You Can Download This Application from PlayStore for reading the Movies.</string>
-
-    <!-- disclaimer-->
-    <string name="title_about_disclaimer">Disclaimer</string>
-    <string name="disclaimer_details_1">1. The app only aims to help for the creation of all videos in one place, so that users may get access to content quickly and easily.</string>
-    <string name="disclaimer_details_2">2. All the videos belong to Youtube and Youtube respective accounts, not made by the US.</string>
-    <string name="disclaimer_details_3">3. The Images displayed in-app belongs to Youtube videos.</string>
-    <string name="disclaimer_details_4">4. We do not claim right on any file in this application. All the content provided in this application has the copyrights of their respective owners.</string>
-    <string name="disclaimer_details_5">5. We do not upload any videos. this app is just an organized way to browse and view the discovered videos on the public website.</string>
-    <string name="disclaimer_details_6">6. If you are the owner of any video just email us, and we will remove your videos with 1 working day</string>
-    <string name="disclaimer_contact">Contact Us</string>
-    <string name="disclaimer_contact_details">If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at </string>
-    <string name="disclaimer_contact_email">Email: info@shrcreation.com</string>
+    <!-- toolbar and title-->
+    <string name="title_menu_profile">Profile</string>
+    <string name="title_menu_edit_profile">Edit Profile</string>
+    <string name="title_menu_close">Close</string>
+    <string name="title_menu_save">Save</string>
+    <string name="title_menu_font_size">Font Size</string>
+    <string name="title_menu_later">Favorite</string>
+    <string name="title_menu_share">Share</string>
+    <string name="title_menu_search">Search&#8230;</string>
+    <string name="title_menu_browser">Open In Browser</string>
+    <string name="title_menu_settings">Settings</string>
+    <string name="title_login">LOGIN</string>
+    <string name="title_register">REGISTER</string>
+    <string name="title_forgot_password">FORGOT PASSWORD</string>
+    <string name="txt_suggested">Suggested</string>
 
     <!--favorite-->
     <string name="whops">Whoops!</string>
     <string name="favorite_added">Added to Favorite</string>
     <string name="favorite_removed">Removed from Favorite</string>
-    <string name="no_favorite_found">Your favorite list is empty because you don\'t add any Movies in the favorite menu.</string>
-
-    <!--comments-->
-    <string name="title_comments">Comments</string>
-    <string name="txt_no_comment">Write your first Comment&#8230;</string>
-    <string name="msg_no_comment">no Comments yet, write your first Comment.</string>
-    <string name="comment_hint">Write your Comment&#8230;</string>
-    <string name="confirm_send_comment">Send this Comment?</string>
-    <string name="confirm_delete_comment">Are you sure want to delete your Comment?</string>
-    <string name="sending_comment">Sending Comment&#8230;</string>
-    <string name="updating_comment">Updating Comment&#8230;</string>
-    <string name="msg_comment_success">You have successfully posted a Comment</string>
-    <string name="msg_comment_failed">Failed post Comment!</string>
-    <string name="msg_comment_update">Your Comment successfully updated</string>
-    <string name="msg_update_comment_failed">Failed update Comment</string>
-    <string name="msg_comment_approval">Thank you, your Comments will be Commented soon and will be displayed immediately after getting approval.</string>
-    <string name="msg_write_comment">Please write your message first&#8230;</string>
-    <string name="msg_write_comment_character">your message at least 6 character&#8230;</string>
-    <string name="btn_update">UPDATE</string>
-    <string name="hint_update_comment">Update Comment</string>
-    <string name="txt_read">Read</string>
-    <string name="txt_comment">Comment</string>
-    <string name="txt_comments">Comments</string>
-    <string name="txt_you">you</string>
-    <string name="txt_title_update_comment">Update Comment</string>
-    <string name="txt_dialog_edit">Edit</string>
-    <string name="txt_dialog_delete">Delete</string>
-    <string name="txt_dialog_reply">Reply</string>
+    <string name="no_favorite_found">Your favorite list is empty because you don\'t add any news in the favorite menu.</string>
 
     <!--register-->
     <string name="register_title">Thanks for Register</string>
@@ -81,64 +57,93 @@
 
     <!--logout-->
     <string name="logout_title">Logout</string>
+    <string name="btn_logout">LOGOUT</string>
     <string name="logout_message">Are you sure want to logout?</string>
     <string name="logout_process">Processing logout to your account&#8230;</string>
     <string name="logout_success">Logout Successfully</string>
 
     <!--forgot password-->
     <string name="forgot_message">Enter the email that used during registration.</string>
+    <string name="forgot_verify_email">is verifying your email</string>
+    <string name="forgot_send_email">is sending forgot password request to your email.</string>
     <string name="forgot_failed_message">Email is not found in our database!</string>
-    <string name="forgot_success_message">Password has been sent on your mail!</string>
+    <string name="forgot_success_message">The password has been sent to your email, please check your inbox, if it is not found in your inbox, please check your spam folder.</string>
     <string name="forgot_password">Forgot Password?</string>
 
-    <!--permission-->
-    <string name="permission_msg">Need Permissions</string>
-    <string name="permission_upload">This app needs access storage to upload your profile photo</string>
-    <string name="download_msg">Downloading&#8230;</string>
-    <string name="download_success">Image has been downloaded and saved on gallery.</string>
+    <!--profile-->
+    <string name="txt_profile_welcome">Welcome!</string>
+    <string name="txt_profile_not_registered">Not registered?</string>
+    <string name="txt_profile_register_now">Register Now</string>
+    <string name="txt_profile_login">LOGIN</string>
+    <string name="updating_profile">Updating Profile</string>
+    <string name="success_updating_profile">Update Successfully</string>
+    <string name="waiting_message">Please wait&#8230;</string>
+    <string name="title_setting_share">Share to friends</string>
 
-    <!-- toolbar and title-->
-    <string name="title_menu_profile">Profile</string>
-    <string name="title_menu_edit_profile">Edit Profile</string>
-    <string name="title_menu_close">Close</string>
-    <string name="title_menu_save">Save</string>
-    <string name="title_menu_later">Favorite</string>
-    <string name="title_menu_share">Share</string>
-    <string name="title_menu_search">Search Movies&#8230;</string>
-    <string name="title_menu_browser">Open In Browser</string>
-    <string name="title_login">LOGIN</string>
-    <string name="title_register">REGISTER</string>
-    <string name="title_forgot_password">FORGOT PASSWORD</string>
-    <string name="txt_suggested">Suggested Movies</string>
+    <!--comments-->
+    <string name="title_comments">Comments</string>
+    <string name="txt_no_comment">Write your first comment&#8230;</string>
+    <string name="msg_no_comment">no comments yet, write your first comment.</string>
+    <string name="comment_hint">Write your comment&#8230;</string>
+    <string name="confirm_send_comment">Send this comment?</string>
+    <string name="confirm_delete_comment">Are you sure want to delete your comment?</string>
+    <string name="sending_comment">Sending comment&#8230;</string>
+    <string name="updating_comment">Updating comment&#8230;</string>
+    <string name="msg_comment_success">You have successfully posted a comment</string>
+    <string name="msg_comment_failed">Failed post comment!</string>
+    <string name="msg_comment_update">Your comment successfully updated</string>
+    <string name="msg_update_comment_failed">Failed update comment</string>
+    <string name="msg_comment_approval">Thank you, your comments will be reviewed soon and will be displayed immediately after getting approval.</string>
+    <string name="msg_write_comment">Please write your message first&#8230;</string>
+    <string name="msg_write_comment_character">your message at least 6 character&#8230;</string>
+    <string name="msg_success_delete_comment">Your comment was deleted successfully.</string>
+    <string name="msg_failed_delete_comment">Whoops! failed to delete comment!</string>
+    <string name="btn_update">UPDATE</string>
+    <string name="hint_update_comment">Update Comment</string>
+    <string name="txt_read">Read</string>
+    <string name="txt_comment">Comment</string>
+    <string name="txt_comments">Comments</string>
+    <string name="txt_you">you</string>
+    <string name="txt_title_update_comment">Update Comment</string>
+    <string name="txt_dialog_edit">Edit</string>
+    <string name="txt_dialog_delete">Delete</string>
+    <string name="txt_dialog_reply">Reply</string>
+    <string name="img_content_description">TODO</string>
 
-    <!--bottom navigation title-->
-    <string name="title_nav_home">Home</string>
-    <string name="title_nav_category">Categories</string>
-    <string name="title_nav_video">Movies</string>
-    <string name="title_nav_favorite">Favorites</string>
-
-    <!--about information-->
-    <string name="title_about_theme">Dark Theme</string>
+    <!--settings and others-->
+    <string name="title_setting_theme">Dark Mode</string>
+    <string name="sub_title_setting_theme">Better eyesight and power saving</string>
+    <string name="title_setting_text_size">Text Size</string>
+    <string name="sub_title_setting_text_size">Preferred text size for posts description</string>
+    <string name="title_setting_notification">Push Notification</string>
+    <string name="sub_title_setting_notification">Manage push notification settings</string>
+    <string name="title_setting_clear_search_history">Clear search history</string>
+    <string name="title_setting_privacy">Privacy Policy</string>
+    <string name="title_setting_publisher">Disclaimer</string>
+    <string name="title_setting_rate">Rate us</string>
+    <string name="title_setting_more_apps">More apps</string>
+    <string name="title_setting_about">About</string>
     <string name="title_about_privacy">Privacy Policy</string>
-    <string name="title_about_rate">Rate Us</string>
-    <string name="title_about_more">Watch More Apps</string>
-    <string name="title_about_info">About &amp; Disclaimer</string>
-    <string name="sub_title_about_theme">Better for eyesight and battery life</string>
-    <string name="sub_title_about_privacy">App Terms &amp; Policies</string>
-    <string name="sub_title_about_rate">Leave a Comment on the Google Play</string>
-    <string name="sub_title_about_more">More apps from developer</string>
-    <string name="sub_title_about_info">App Info, Build Version, Copyright &amp; Disclaimer</string>
+    <string name="title_about_publisher">Disclaimer Info</string>
+    <string name="title_dialog_clear_search_history">Clear Search History</string>
+    <string name="msg_dialog_clear_search_history">Are you sure want to clear your search history?</string>
+    <string name="clearing_process">Clearing search history&#8230;</string>
+    <string name="clearing_success">Search history cleared successfully&#8230;</string>
+    <string name="clearing_empty">Your search history is empty</string>
 
     <!--network message-->
     <string name="offline">You\'re offline</string>
-    <string name="msg_offline">The next time you\'re online, try saving some Movies to favorite that you can read later without Internet connection.</string>
-    <string name="msg_no_Movies">Oops, it looks like there are no Movies available for this Category at this time.</string>
-    <string name="msg_no_category">Oops, No Categories Found!</string>
-    <string name="msg_no_Movies_found">Oops, No Movies Found! if you want to continue search, please try to enter another keyword!Like [ action,romance,drama,thriller,horror movie search with categories name, countries name or type the exact movie name.]</string>
+    <string name="msg_offline">The next time you\'re online, try saving some videos to favorite that you can watch without an Internet connection.</string>
+    <string name="msg_no_news">Oops, it looks like there are no videos available for this category at this time.</string>
+    <string name="msg_no_category">Oops, No Category Found!</string>
+    <string name="msg_no_news_found">Oops, No Videos Found! if you want to continue search, please try enter another keyword!</string>
     <string name="msg_no_network">Oops, there is something problem with your network or the server is currently down, please try it again later.</string>
     <string name="msg_search_input">Please Fill Search Input</string>
     <string name="btn_retry">RETRY</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+    <string name="msg_cancel_update">Update canceled</string>
+    <string name="msg_success_update">Update success!</string>
+    <string name="msg_failed_update">Update Failed!</string>
 
     <!--dialog choose option-->
     <string name="dialog_success">Success!</string>
@@ -146,13 +151,18 @@
     <string name="dialog_no">No</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
-    <string name="dialog_read_more">Read More</string>
-    <string name="dialog_dismiss">Dismiss</string>
-    <string name="dialog_settings">GOTO SETTINGS</string>
+
+    <!--font size name -->
+    <string name="title_dialog_font_size">Select Font Size</string>
+    <string name="font_size_xsmall">Extra Small</string>
+    <string name="font_size_small">Small</string>
+    <string name="font_size_medium">Medium</string>
+    <string name="font_size_large">Large</string>
+    <string name="font_size_xlarge">Extra Large</string>
 
     <!--dialog close app-->
     <string name="dialog_close_title">Thank You</string>
-    <string name="dialog_close_msg">Thank you for using our app, please give us your suggestions or Rate US. Watch Our More Apps.</string>
+    <string name="dialog_close_msg">Thank you for using our app, please give us your suggestions or feedback</string>
     <string name="dialog_option_quit">QUIT</string>
     <string name="dialog_option_rate_us">RATE US</string>
     <string name="dialog_option_more">MORE APPS</string>
@@ -168,16 +178,5 @@
     <string name="btn_register">REGISTER</string>
     <string name="btn_send">SEND</string>
 
-    <!--profile-->
-    <string name="txt_profile_welcome">Welcome!</string>
-    <string name="txt_profile_not_registered">Not registered?</string>
-    <string name="txt_profile_register_now">Register Now</string>
-    <string name="txt_profile_login">LOGIN</string>
-    <string name="updating_profile">Updating Profile</string>
-    <string name="success_updating_profile">Update Successfully</string>
-    <string name="waiting_message">Please wait&#8230;</string>
-
-    <!--package validation-->
-    <string name="msg_validate">Unfortunately, your applicationId or package name is not registered.\n\nplease login to your admin panel and register your applicationId or package name in settings menu in the admin panel to continue using app.</string>
 
 </resources>

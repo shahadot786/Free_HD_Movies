@@ -1,90 +1,79 @@
-@if "%DEBUG%" == "" @echo off
-@rem ##########################################################################
-@rem
-@rem  Gradle startup script for Windows
-@rem
-@rem ##########################################################################
+package com.solodroid.ads.sdk.format;
 
-@rem Set local scope for the variables with windows NT shell
-if "%OS%"=="Windows_NT" setlocal
+import static com.solodroid.ads.sdk.util.Constant.ADMOB;
+import static com.solodroid.ads.sdk.util.Constant.AD_STATUS_ON;
+import static com.solodroid.ads.sdk.util.Constant.APPLOVIN;
+import static com.solodroid.ads.sdk.util.Constant.NONE;
+import static com.solodroid.ads.sdk.util.Constant.STARTAPP;
+import static com.solodroid.ads.sdk.util.Constant.UNITY;
 
-@rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
-set DEFAULT_JVM_OPTS=
+import android.app.Activity;
+import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-set DIRNAME=%~dp0
-if "%DIRNAME%" == "" set DIRNAME=.
-set APP_BASE_NAME=%~n0
-set APP_HOME=%DIRNAME%
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
-@rem Find java.exe
-if defined JAVA_HOME goto findJavaFromJavaHome
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.nativead.MediaView;
+import com.solodroid.ads.sdk.R;
+import com.solodroid.ads.sdk.util.Constant;
+import com.solodroid.ads.sdk.util.NativeTemplateStyle;
+import com.solodroid.ads.sdk.util.TemplateView;
+import com.solodroid.ads.sdk.util.Tools;
+import com.startapp.sdk.ads.nativead.NativeAdDetails;
+import com.startapp.sdk.ads.nativead.NativeAdPreferences;
+import com.startapp.sdk.ads.nativead.StartAppNativeAd;
+import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 
-set JAVA_EXE=java.exe
-%JAVA_EXE% -version >NUL 2>&1
-if "%ERRORLEVEL%" == "0" goto init
+import java.util.ArrayList;
 
-echo.
-echo ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
-echo.
-echo Please set the JAVA_HOME variable in your environment to match the
-echo location of your Java installation.
+public class NativeAdViewPager {
 
-goto fail
+    public static class Builder {
 
-:findJavaFromJavaHome
-set JAVA_HOME=%JAVA_HOME:"=%
-set JAVA_EXE=%JAVA_HOME%/bin/java.exe
+        private static final String TAG = "AdNetwork";
+        private final Activity activity;
 
-if exist "%JAVA_EXE%" goto init
+        View view;
+        MediaView mediaView;
+        TemplateView admob_native_ad;
+        LinearLayout admob_native_background;
+        View startapp_native_ad;
+        ImageView startapp_native_image;
+        TextView startapp_native_title;
+        TextView startapp_native_description;
+        Button startapp_native_button;
+        LinearLayout startapp_native_background;
 
-echo.
-echo ERROR: JAVA_HOME is set to an invalid directory: %JAVA_HOME%
-echo.
-echo Please set the JAVA_HOME variable in your environment to match the
-echo location of your Java installation.
+        ProgressBar progress_bar_ad;
 
-goto fail
+        private String adStatus = "";
+        private String adNetwork = "";
+        private String backupAdNetwork = "";
+        private String adMobNativeId = "";
+        private int placementStatus = 1;
+        private boolean darkTheme = false;
+        private boolean legacyGDPR = false;
 
-:init
-@rem Get command-line arguments, handling Windowz variants
+        public Builder(Activity activity, View view) {
+            this.activity = activity;
+            this.view = view;
+        }
 
-if not "%OS%" == "Windows_NT" goto win9xME_args
-if "%@eval[2+2]" == "4" goto 4NT_args
+        public NativeAdViewPager.Builder build() {
+            loadNativeAd();
+            return this;
+        }
 
-:win9xME_args
-@rem Slurp the command line arguments.
-set CMD_LINE_ARGS=
-set _SKIP=2
-
-:win9xME_args_slurp
-if "x%~1" == "x" goto execute
-
-set CMD_LINE_ARGS=%*
-goto execute
-
-:4NT_args
-@rem Get arguments from the 4NT Shell from JP Software
-set CMD_LINE_ARGS=%$
-
-:execute
-@rem Setup the command line
-
-set CLASSPATH=%APP_HOME%\gradle\wrapper\gradle-wrapper.jar
-
-@rem Execute Gradle
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% "-Dorg.gradle.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" org.gradle.wrapper.GradleWrapperMain %CMD_LINE_ARGS%
-
-:end
-@rem End local scope for the variables with windows NT shell
-if "%ERRORLEVEL%"=="0" goto mainEnd
-
-:fail
-rem Set variable GRADLE_EXIT_CONSOLE if you need the _script_ return code instead of
-rem the _cmd.exe /c_ return code!
-if  not "" == "%GRADLE_EXIT_CONSOLE%" exit 1
-exit /b 1
-
-:mainEnd
-if "%OS%"=="Windows_NT" endlocal
-
-:omega
+        public NativeAdViewPager.Builder setAdStatus(String adStatus) {
+            this.adStatus = adStatus;
+        

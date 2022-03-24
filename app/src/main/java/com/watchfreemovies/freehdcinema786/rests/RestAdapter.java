@@ -1,7 +1,6 @@
 package com.watchfreemovies.freehdcinema786.rests;
 
 import com.watchfreemovies.freehdcinema786.BuildConfig;
-import com.watchfreemovies.freehdcinema786.config.AppConfig;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RestAdapter {
 
-    public static ApiInterface createAPI() {
+    public static ApiInterface createAPI(String apiUrl) {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(Level.BODY);
@@ -22,19 +21,41 @@ public class RestAdapter {
         builder.connectTimeout(10, TimeUnit.SECONDS);
         builder.writeTimeout(10, TimeUnit.SECONDS);
         builder.readTimeout(30, TimeUnit.SECONDS);
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             builder.addInterceptor(logging);
         }
         builder.cache(null);
         OkHttpClient okHttpClient = builder.build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(AppConfig.ADMIN_PANEL_URL + "/")
+                .baseUrl(apiUrl + "/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
 
         return retrofit.create(ApiInterface.class);
+    }
+
+    public static ApiInterface phpMailerAPI(String apiUrl) {
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(Level.BODY);
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .cache(null)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(apiUrl + "/includes/smtp/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+
+        return retrofit.create(ApiInterface.class);
+
     }
 
 }

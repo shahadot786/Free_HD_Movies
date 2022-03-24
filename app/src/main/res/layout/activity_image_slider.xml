@@ -3,15 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager_image"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <include
-        android:id="@+id/lyt_failed_home"
-        layout="@layout/include_no_network"
-        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -5,14 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,15 +21,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.watchfreemovies.freehdcinema786.R;
-import com.watchfreemovies.freehdcinema786.config.AppConfig;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
 import com.watchfreemovies.freehdcinema786.models.User;
 import com.watchfreemovies.freehdcinema786.rests.ApiInterface;
 import com.watchfreemovies.freehdcinema786.rests.RestAdapter;
 import com.watchfreemovies.freehdcinema786.utils.Constant;
-import com.watchfreemovies.freehdcinema786.utils.ThemePref;
 import com.watchfreemovies.freehdcinema786.utils.Tools;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,35 +41,32 @@ import retrofit2.Response;
 
 public class ActivityEditProfile extends AppCompatActivity {
 
-    EditText edt_email, edt_name, edt_password;
+    EditText edtEmail, edtName, edtPassword;
     MyApplication myApplication;
-    Button btn_update;
-    RelativeLayout lyt_profile;
-    ImageView img_change;
+    Button btnUpdate;
+    Button btnLogout;
+    RelativeLayout lytProfile;
+    FloatingActionButton imgChange;
     Bitmap bitmap;
-    ImageView profile_image;
-    ImageView tmp_image;
+    ImageView profileImage;
+    ImageView tmpImage;
     ProgressDialog progressDialog;
-    String str_name, str_email, str_image, str_password, str_new_image, str_old_image;
+    String strName, strEmail, strImage, strPassword, strNewImage, strOldImage;
     private static final int IMAGE = 100;
+    SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Tools.getTheme(this);
         setContentView(R.layout.activity_edit_profile);
-
-        if (UiConfig.ENABLE_RTL_MODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            }
-        }
+        Tools.setNavigation(this);
 
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ThemePref themePref = new ThemePref(this);
-        if (themePref.getIsDarkTheme()) {
+        sharedPref = new SharedPref(this);
+        if (sharedPref.getIsDarkTheme()) {
             toolbar.setBackgroundColor(getResources().getColor(R.color.colorToolbarDark));
         } else {
             toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -84,10 +80,10 @@ public class ActivityEditProfile extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        str_name = intent.getStringExtra("name");
-        str_email = intent.getStringExtra("email");
-        str_image = intent.getStringExtra("user_image");
-        str_password = intent.getStringExtra("password");
+        strName = intent.getStringExtra("name");
+        strEmail = intent.getStringExtra("email");
+        strImage = intent.getStringExtra("user_image");
+        strPassword = intent.getStringExtra("password");
 
         progressDialog = new ProgressDialog(ActivityEditProfile.this);
         progressDialog.setTitle(getResources().getString(R.string.title_please_wait));
@@ -96,38 +92,72 @@ public class ActivityEditProfile extends AppCompatActivity {
 
         myApplication = MyApplication.getInstance();
 
-        profile_image = findViewById(R.id.profile_image);
-        tmp_image = findViewById(R.id.tmp_image);
-        img_change = findViewById(R.id.btn_change_image);
+        profileImage = findViewById(R.id.profile_image);
+        tmpImage = findViewById(R.id.tmp_image);
+        imgChange = findViewById(R.id.btn_change_image);
 
-        lyt_profile = findViewById(R.id.lyt_profile);
+        lytProfile = findViewById(R.id.lyt_profile);
 
-        edt_email = findViewById(R.id.edt_email);
-        edt_name = findViewById(R.id.edt_user);
-        edt_password = findViewById(R.id.edt_password);
+        edtEmail = findViewById(R.id.edt_email);
+        edtName = findViewById(R.id.edt_user);
+        edtPassword = findViewById(R.id.edt_password);
 
-        edt_name.setText(str_name);
-        edt_email.setText(str_email);
-        edt_password.setText(str_password);
+        edtName.setText(strName);
+        edtEmail.setText(strEmail);
+        edtPassword.setText(strPassword);
         displayProfileImage();
 
-        img_change.setOnClickListener(view -> selectImage());
+        imgChange.setOnClickListener(view -> selectImage());
 
-        btn_update = findViewById(R.id.btn_update);
-        btn_update.setOnClickListener(view -> updateUserData());
+        btnUpdate = findViewById(R.id.btn_update);
+        btnUpdate.setOnClickListener(view -> updateUserData());
+
+        btnLogout = findViewById(R.id.btn_logout);
+        btnLogout.setOnClickListener(view -> logoutDialog());
+
+    }
+
+    public void logoutDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityEditProfile.this);
+        builder.setTitle(R.string.logout_title);
+        builder.setMessage(R.string.logout_message);
+        builder.setPositiveButton(R.string.dialog_yes, (di, i) -> {
+
+            progressDialog = new ProgressDialog(ActivityEditProfile.this);
+            progressDialog.setTitle(getResources().getString(R.string.title_please_wait));
+            progressDialog.setMessage(getResources().getString(R.string.logout_process));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            MyApplication.getInstance().saveIsLogin(false);
+
+            new Handler().postDelayed(() -> {
+                progressDialog.dismiss();
+                androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(ActivityEditProfile.this);
+                builder1.setMessage(R.string.logout_success);
+                builder1.setPositiveButton(R.string.dialog_ok, (dialogInterface, i1) -> finish());
+                builder1.setCancelable(false);
+                builder1.show();
+            }, Constant.DELAY_PROGRESS_DIALOG);
+
+        });
+        builder.setNegativeButton(R.string.dialog_cancel, null);
+        builder.show();
 
     }
 
     private void displayProfileImage() {
-        if (str_image.equals("")) {
-            profile_image.setImageResource(R.drawable.ic_user_account);
+        if (strImage.equals("")) {
+            profileImage.setImageResource(R.drawable.ic_user_account);
         } else {
-            Picasso.get()
-                    .load(AppConfig.ADMIN_PANEL_URL + "/upload/avatar/" + str_image.replace(" ", "%20"))
-                    .resize(300, 300)
-                    .centerCrop()
+            Glide.with(this)
+                    .load(sharedPref.getBaseUrl() + "/upload/avatar/" + strImage.replace(" ", "%20"))
                     .placeholder(R.drawable.ic_user_account)
-                    .into(profile_image);
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .apply(new RequestOptions().override(256, 256))
+                    .centerCrop()
+                    .into(profileImage);
         }
     }
 
@@ -152,7 +182,7 @@ public class ActivityEditProfile extends AppCompatActivity {
             Uri path = data.getData();
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
-                tmp_image.setImageBitmap(bitmap);
+                tmpImage.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -167,9 +197,9 @@ public class ActivityEditProfile extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        str_name = edt_name.getText().toString();
-        str_email = edt_email.getText().toString();
-        str_password = edt_password.getText().toString();
+        strName = edtName.getText().toString();
+        strEmail = edtEmail.getText().toString();
+        strPassword = edtPassword.getText().toString();
 
         if (bitmap != null) {
             uploadImage();
@@ -180,8 +210,8 @@ public class ActivityEditProfile extends AppCompatActivity {
 
     private void updateData() {
 
-        ApiInterface apiInterface = RestAdapter.createAPI();
-        Call<User> call = apiInterface.updateUserData(myApplication.getUserId(), str_name, str_email, str_password);
+        ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
+        Call<User> call = apiInterface.updateUserData(myApplication.getUserId(), strName, strEmail, strPassword);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -205,11 +235,11 @@ public class ActivityEditProfile extends AppCompatActivity {
 
     private void uploadImage() {
 
-        str_old_image = str_image;
-        str_new_image = convertToString();
+        strOldImage = strImage;
+        strNewImage = convertToString();
 
-        ApiInterface apiInterface = RestAdapter.createAPI();
-        Call<User> call = apiInterface.updatePhotoProfile(myApplication.getUserId(), str_name, str_email, str_password, str_old_image, str_new_image);
+        ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
+        Call<User> call = apiInterface.updatePhotoProfile(myApplication.getUserId(), strName, strEmail, strPassword, strOldImage, strNewImage);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

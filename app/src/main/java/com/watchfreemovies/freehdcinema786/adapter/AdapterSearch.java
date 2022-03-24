@@ -2,12 +2,15 @@ package com.watchfreemovies.freehdcinema786.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.watchfreemovies.freehdcinema786.R;
@@ -21,38 +24,54 @@ import java.util.List;
 public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder> {
 
     private static final String SEARCH_HISTORY_KEY = "_SEARCH_HISTORY_KEY";
-    private static final int MAX_HISTORY_ITEMS = 0;
+    private static final int MAX_HISTORY_ITEMS = 25;
 
     private List<String> items;
     private OnItemClickListener onItemClickListener;
-    private SharedPreferences prefs;
+    private OnItemActionClickListener onItemActionClickListener;
+    SharedPreferences sharedPreferences;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
-        public LinearLayout lyt_parent;
+    public interface OnItemClickListener {
+        void onItemClick(View view, String viewModel, int pos);
+    }
 
-        public ViewHolder(View v) {
-            super(v);
-            title = v.findViewById(R.id.title);
-            lyt_parent = v.findViewById(R.id.lyt_parent);
-        }
+    public interface OnItemActionClickListener {
+        void onItemActionClick(View view, String viewModel, int pos);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
+    public void setOnItemActionClickListener(OnItemActionClickListener onItemActionClickListener) {
+        this.onItemActionClickListener = onItemActionClickListener;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView title;
+        public RelativeLayout lytParent;
+        public ImageButton imgSetText;
+
+        public ViewHolder(View v) {
+            super(v);
+            title = v.findViewById(R.id.title);
+            lytParent = v.findViewById(R.id.lyt_parent);
+            imgSetText = v.findViewById(R.id.imgSetText);
+        }
+    }
+
     public AdapterSearch(Context context) {
-        prefs = context.getSharedPreferences("PREF_RECENT_SEARCH", Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences("PREF_RECENT_SEARCH", Context.MODE_PRIVATE);
         this.items = getSearchHistory();
         Collections.reverse(this.items);
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_suggestion, parent, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
@@ -60,7 +79,8 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
         final String p = items.get(position);
         final int pos = position;
         holder.title.setText(p);
-        holder.lyt_parent.setOnClickListener(v -> onItemClickListener.onItemClick(v, p, pos));
+        holder.lytParent.setOnClickListener(v -> new Handler().postDelayed(()-> onItemClickListener.onItemClick(v, p, pos), 200));
+        holder.imgSetText.setOnClickListener(v -> new Handler().postDelayed(()-> onItemActionClickListener.onItemActionClick(v, p, pos), 200));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -69,17 +89,13 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
         return items.size();
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, String viewModel, int pos);
-    }
-
     public void refreshItems() {
         this.items = getSearchHistory();
         Collections.reverse(this.items);
         notifyDataSetChanged();
     }
 
-    private class SearchObject implements Serializable {
+    private static class SearchObject implements Serializable {
         public SearchObject(List<String> items) {
             this.items = items;
         }
@@ -96,13 +112,18 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
         searchObject.items.add(s);
         if (searchObject.items.size() > MAX_HISTORY_ITEMS) searchObject.items.remove(0);
         String json = new Gson().toJson(searchObject, SearchObject.class);
-        prefs.edit().putString(SEARCH_HISTORY_KEY, json).apply();
+        sharedPreferences.edit().putString(SEARCH_HISTORY_KEY, json).apply();
     }
 
     private List<String> getSearchHistory() {
-        String json = prefs.getString(SEARCH_HISTORY_KEY, "");
+        String json = sharedPreferences.getString(SEARCH_HISTORY_KEY, "");
         if (json.equals("")) return new ArrayList<>();
         SearchObject searchObject = new Gson().fromJson(json, SearchObject.class);
         return searchObject.items;
     }
+
+    public void clearSearchHistory() {
+        sharedPreferences.edit().clear().apply();
+    }
+
 }

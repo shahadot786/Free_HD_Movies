@@ -1,10 +1,7 @@
 package com.watchfreemovies.freehdcinema786.activities;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
@@ -18,14 +15,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.watchfreemovies.freehdcinema786.R;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
+import com.watchfreemovies.freehdcinema786.models.Value;
+import com.watchfreemovies.freehdcinema786.rests.ApiInterface;
+import com.watchfreemovies.freehdcinema786.rests.RestAdapter;
 import com.watchfreemovies.freehdcinema786.utils.Constant;
-import com.watchfreemovies.freehdcinema786.utils.NetworkCheck;
 import com.watchfreemovies.freehdcinema786.utils.Tools;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import id.solodroid.validationlibrary.Rule;
 import id.solodroid.validationlibrary.Validator;
@@ -33,6 +28,9 @@ import id.solodroid.validationlibrary.annotation.Email;
 import id.solodroid.validationlibrary.annotation.Password;
 import id.solodroid.validationlibrary.annotation.Required;
 import id.solodroid.validationlibrary.annotation.TextRule;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ActivityUserRegister extends AppCompatActivity implements Validator.ValidationListener {
 
@@ -51,39 +49,38 @@ public class ActivityUserRegister extends AppCompatActivity implements Validator
 
     private Validator validator;
 
-    Button btnsignup, btn_login;
-    TextView txt_terms;
-    String strFullname, strEmail, strPassword, strMessage;
+    Button btnSignUp, btnLogin;
+    TextView txtTerms;
+    String strFullName, strEmail, strPassword;
 
+    SharedPref sharedPref;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Tools.getTheme(this);
         setContentView(R.layout.activity_user_register);
+        Tools.setNavigation(this);
 
-        if (UiConfig.ENABLE_RTL_MODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            }
-        }
+        sharedPref = new SharedPref(this);
 
         edtFullName = findViewById(R.id.edt_user);
         edtEmail = findViewById(R.id.edt_email);
         edtPassword = findViewById(R.id.edt_password);
 
-        txt_terms = findViewById(R.id.txt_terms);
-        btnsignup = findViewById(R.id.btn_update);
-        btn_login = findViewById(R.id.btn_login);
+        txtTerms = findViewById(R.id.txt_terms);
+        btnSignUp = findViewById(R.id.btn_register);
+        btnLogin = findViewById(R.id.btn_login);
 
-        txt_terms.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), ActivityPrivacyPolicy.class)));
+        txtTerms.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), ActivityPrivacyPolicy.class)));
 
-        btn_login.setOnClickListener(v -> {
+        btnLogin.setOnClickListener(v -> {
             finish();
             startActivity(new Intent(getApplicationContext(), ActivityUserLogin.class));
         });
 
-        btnsignup.setOnClickListener(v -> validator.validateAsync());
+        btnSignUp.setOnClickListener(v -> validator.validateAsync());
 
         validator = new Validator(this);
         validator.setValidationListener(this);
@@ -92,20 +89,14 @@ public class ActivityUserRegister extends AppCompatActivity implements Validator
 
     @Override
     public void onValidationSucceeded() {
-        strFullname = edtFullName.getText().toString().replace(" ", "%20");
+        strFullName = edtFullName.getText().toString().replace(" ", "%20");
         strEmail = edtEmail.getText().toString();
         strPassword = edtPassword.getText().toString();
 
-
-        if (NetworkCheck.isNetworkAvailable(ActivityUserRegister.this)) {
-            new MyTaskRegister().execute(Constant.REGISTER_URL + strFullname + "&email=" + strEmail + "&password=" + strPassword);
+        if (Tools.isConnect(ActivityUserRegister.this)) {
+            doRegister(strFullName, strEmail, strPassword);
         } else {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle(R.string.whops);
-            dialog.setMessage(R.string.msg_no_network);
-            dialog.setPositiveButton(R.string.dialog_ok, null);
-            dialog.setCancelable(false);
-            dialog.show();
+            dialogFailed();
         }
 
     }
@@ -116,98 +107,76 @@ public class ActivityUserRegister extends AppCompatActivity implements Validator
         if (failedView instanceof EditText) {
             failedView.requestFocus();
             ((EditText) failedView).setError(message);
-        } else {
-            Toast.makeText(this, "Record Not Saved", Toast.LENGTH_SHORT).show();
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private class MyTaskRegister extends AsyncTask<String, Void, String> {
+    private void doRegister(String name, String email, String password) {
 
-        ProgressDialog progressDialog;
+        progressDialog = new ProgressDialog(ActivityUserRegister.this);
+        progressDialog.setTitle(getResources().getString(R.string.title_please_wait));
+        progressDialog.setMessage(getResources().getString(R.string.register_process));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(ActivityUserRegister.this);
-            progressDialog.setTitle(getResources().getString(R.string.title_please_wait));
-            progressDialog.setMessage(getResources().getString(R.string.register_process));
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
+        ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
+        Call<Value> call = apiInterface.userRegister(name, email, password);
+        call.enqueue(new Callback<Value>() {
+            @Override
+            public void onResponse(Call<Value> call, Response<Value> response) {
+                assert response.body() != null;
+                String value = response.body().value;
 
-        @Override
-        protected String doInBackground(String... params) {
-            return NetworkCheck.getJSONString(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            if (null == result || result.length() == 0) {
-                showToast("No Data Found!!!");
-            } else {
-
-                try {
-                    JSONObject mainJson = new JSONObject(result);
-                    JSONArray jsonArray = mainJson.getJSONArray(Constant.CATEGORY_ARRAY_NAME);
-                    JSONObject objJson = null;
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        objJson = jsonArray.getJSONObject(i);
-                        strMessage = objJson.getString(Constant.MSG);
-                        Constant.GET_SUCCESS_MSG = objJson.getInt(Constant.SUCCESS);
+                new Handler().postDelayed(() -> {
+                    progressDialog.dismiss();
+                    if (value.equals("0")) {
+                        dialogEmailAlreadyUsed();
+                    } else if (value.equals("1")) {
+                        dialogSuccess();
                     }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (null != progressDialog && progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
-                        setResult();
-                    }
-                }, Constant.DELAY_PROGRESS_DIALOG);
+                }, Constant.DELAY_REFRESH);
             }
 
-        }
+            @Override
+            public void onFailure(Call<Value> call, Throwable t) {
+                t.printStackTrace();
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), getString(R.string.msg_no_network), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    public void setResult() {
-
-        if (Constant.GET_SUCCESS_MSG == 0) {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(ActivityUserRegister.this);
-            dialog.setTitle(R.string.whops);
-            dialog.setMessage(R.string.register_exist);
-            dialog.setPositiveButton(R.string.dialog_ok, null);
-            dialog.setCancelable(false);
-            dialog.show();
-
-            edtEmail.setText("");
-            edtEmail.requestFocus();
-        } else {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(ActivityUserRegister.this);
-            dialog.setTitle(R.string.register_title);
-            dialog.setMessage(R.string.register_success);
-            dialog.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    Intent intent = new Intent(getApplicationContext(), ActivityUserLogin.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-                }
-            });
-            dialog.setCancelable(false);
-            dialog.show();
-        }
+    public void dialogEmailAlreadyUsed() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(ActivityUserRegister.this);
+        dialog.setTitle(R.string.whops);
+        dialog.setMessage(R.string.register_exist);
+        dialog.setPositiveButton(R.string.dialog_ok, null);
+        dialog.setCancelable(false);
+        dialog.show();
+        edtEmail.setText("");
+        edtEmail.requestFocus();
     }
 
-    public void showToast(String msg) {
-        Toast.makeText(ActivityUserRegister.this, msg, Toast.LENGTH_LONG).show();
+    public void dialogSuccess() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(ActivityUserRegister.this);
+        dialog.setTitle(R.string.register_title);
+        dialog.setMessage(R.string.register_success);
+        dialog.setPositiveButton(R.string.dialog_ok, (dialogInterface, i) -> {
+            Intent intent = new Intent(getApplicationContext(), ActivityUserLogin.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        });
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    public void dialogFailed() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(R.string.whops);
+        dialog.setMessage(R.string.msg_no_network);
+        dialog.setPositiveButton(R.string.dialog_ok, null);
+        dialog.setCancelable(false);
+        dialog.show();
     }
 
     @Override

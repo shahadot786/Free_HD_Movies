@@ -1,13 +1,17 @@
 package com.watchfreemovies.freehdcinema786.adapter;
 
-import android.app.Activity;
+import static com.watchfreemovies.freehdcinema786.utils.Constant.NATIVE_AD_POST_LIST;
+import static com.solodroid.ads.sdk.util.Constant.ADMOB;
+import static com.solodroid.ads.sdk.util.Constant.APPLOVIN;
+import static com.solodroid.ads.sdk.util.Constant.APPLOVIN_MAX;
+import static com.solodroid.ads.sdk.util.Constant.STARTAPP;
+
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -15,69 +19,43 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdOptionsView;
-import com.facebook.ads.NativeAd;
-import com.facebook.ads.NativeAdLayout;
-import com.facebook.ads.NativeAdListener;
-import com.watchfreemovies.freehdcinema786.BuildConfig;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.config.AppConfig;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
-import com.watchfreemovies.freehdcinema786.models.News;
-import com.watchfreemovies.freehdcinema786.utils.AdsPref;
+import com.watchfreemovies.freehdcinema786.database.prefs.AdsPref;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
+import com.watchfreemovies.freehdcinema786.models.Post;
 import com.watchfreemovies.freehdcinema786.utils.Constant;
-import com.watchfreemovies.freehdcinema786.utils.NativeTemplateStyle;
-import com.watchfreemovies.freehdcinema786.utils.TemplateView;
-import com.watchfreemovies.freehdcinema786.utils.ThemePref;
 import com.watchfreemovies.freehdcinema786.utils.Tools;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.nativead.MediaView;
-import com.squareup.picasso.Picasso;
-import com.startapp.sdk.ads.nativead.NativeAdDetails;
-import com.startapp.sdk.ads.nativead.NativeAdPreferences;
-import com.startapp.sdk.ads.nativead.StartAppNativeAd;
-import com.startapp.sdk.adsbase.Ad;
-import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.solodroid.ads.sdk.format.NativeAdViewHolder;
 
-import org.ocpsoft.prettytime.PrettyTime;
-
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import static com.watchfreemovies.freehdcinema786.utils.Constant.ADMOB;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.AD_STATUS_ON;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.FAN;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.STARTAPP;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.STARTAPP_IMAGE_MEDIUM;
 
 public class AdapterRecent extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    Context context;
     private final int VIEW_PROG = 0;
     private final int VIEW_HEAD = 1;
     private final int VIEW_ITEM = 2;
     private final int VIEW_AD = 3;
 
-    private List<Object> items;
+    List<Post> posts;
 
     private boolean loading;
     private OnLoadMoreListener onLoadMoreListener;
 
-    private Context context;
     private OnItemClickListener mOnItemClickListener;
+    boolean scrolling = false;
 
-    private StartAppNativeAd startAppNativeAd;
-    private NativeAdDetails nativeAdDetails = null;
+    SharedPref sharedPref;
+    AdsPref adsPref;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, News obj, int position);
+        void onItemClick(View view, Post obj, int position);
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -85,315 +63,74 @@ public class AdapterRecent extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public AdapterRecent(Context context, RecyclerView view, List<Object> items) {
-        this.items = items;
+    public AdapterRecent(Context context, RecyclerView view, List<Post> posts) {
+        this.posts = posts;
         this.context = context;
+        this.sharedPref = new SharedPref(context);
+        this.adsPref = new AdsPref(context);
         lastItemViewDetector(view);
+        view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    scrolling = true;
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    scrolling = false;
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
 
-    public class HeadingViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
+    public static class HeadingViewHolder extends RecyclerView.ViewHolder {
+
         public TextView title;
-        public ImageView ic_date;
+        public TextView excerpt;
+        public ImageView icDate;
         public TextView date;
-        public TextView category;
         public TextView comment;
         public ImageView image;
-        public ImageView thumbnail_video;
-        public RelativeLayout lyt_parent;
-        public LinearLayout lyt_comment;
+        public ImageView thumbnailVideo;
+        public RelativeLayout lytParent;
+        public LinearLayout lytComment;
 
         public HeadingViewHolder(View v) {
             super(v);
             title = v.findViewById(R.id.title);
-            ic_date = v.findViewById(R.id.ic_date);
+            icDate = v.findViewById(R.id.ic_date);
             date = v.findViewById(R.id.date);
-            category = v.findViewById(R.id.category_name);
+            excerpt = v.findViewById(R.id.excerpt);
             comment = v.findViewById(R.id.comment);
             image = v.findViewById(R.id.image);
-            thumbnail_video = v.findViewById(R.id.thumbnail_video);
-            lyt_parent = v.findViewById(R.id.lyt_parent);
-            lyt_comment = v.findViewById(R.id.lyt_comment);
+            thumbnailVideo = v.findViewById(R.id.thumbnail_video);
+            lytParent = v.findViewById(R.id.lyt_parent);
+            lytComment = v.findViewById(R.id.lyt_comment);
         }
     }
 
-    public class OriginalViewHolder extends RecyclerView.ViewHolder {
+    public static class OriginalViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView title;
-        public ImageView ic_date;
+        public TextView excerpt;
+        public ImageView icDate;
         public TextView date;
-        public TextView category;
         public TextView comment;
         public ImageView image;
-        public ImageView thumbnail_video;
-        public LinearLayout lyt_parent;
-        public LinearLayout lyt_comment;
+        public ImageView thumbnailVideo;
+        public LinearLayout lytParent;
+        public LinearLayout lytComment;
 
         public OriginalViewHolder(View v) {
             super(v);
             title = v.findViewById(R.id.title);
-            ic_date = v.findViewById(R.id.ic_date);
+            icDate = v.findViewById(R.id.ic_date);
             date = v.findViewById(R.id.date);
-            category = v.findViewById(R.id.category_name);
+            excerpt = v.findViewById(R.id.excerpt);
             comment = v.findViewById(R.id.comment);
             image = v.findViewById(R.id.image);
-            thumbnail_video = v.findViewById(R.id.thumbnail_video);
-            lyt_parent = v.findViewById(R.id.lyt_parent);
-            lyt_comment = v.findViewById(R.id.lyt_comment);
-        }
-
-    }
-
-    public class AdViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        public TextView title;
-        public ImageView ic_date;
-        public TextView date;
-        public TextView category;
-        public TextView comment;
-        public ImageView image;
-        public ImageView thumbnail_video;
-        public LinearLayout lyt_parent;
-        public LinearLayout lyt_comment;
-
-        //AdMob
-        LinearLayout lyt_native_ad;
-        TemplateView admob_native_template;
-        MediaView admob_media_view;
-        TextView primary;
-        TextView secondary;
-        TextView body;
-
-        //FAN
-        private NativeAd nativeAd;
-        RelativeLayout lyt_fan_native;
-        private NativeAdLayout nativeAdLayout;
-        private LinearLayout nativeAdView;
-
-        //StartApp
-        RelativeLayout lyt_startapp_native;
-        ImageView startapp_native_image;
-        TextView startapp_native_title;
-        TextView startapp_native_description;
-        Button startapp_native_button;
-
-        public AdViewHolder(View v) {
-            super(v);
-            title = v.findViewById(R.id.title);
-            ic_date = v.findViewById(R.id.ic_date);
-            date = v.findViewById(R.id.date);
-            category = v.findViewById(R.id.category_name);
-            comment = v.findViewById(R.id.comment);
-            image = v.findViewById(R.id.image);
-            thumbnail_video = v.findViewById(R.id.thumbnail_video);
-            lyt_parent = v.findViewById(R.id.lyt_parent);
-            lyt_comment = v.findViewById(R.id.lyt_comment);
-
-            //admob native ad
-            lyt_native_ad = v.findViewById(R.id.lyt_native_ad);
-            admob_native_template = v.findViewById(R.id.native_template);
-            admob_media_view = v.findViewById(R.id.media_view);
-            primary = v.findViewById(R.id.primary);
-            secondary = v.findViewById(R.id.secondary);
-            body = v.findViewById(R.id.body);
-
-            //fan native ad
-            lyt_fan_native = v.findViewById(R.id.lyt_fan_native);
-            nativeAdLayout = v.findViewById(R.id.native_ad_container);
-
-            //startapp native ad
-            lyt_startapp_native = v.findViewById(R.id.lyt_startapp_native);
-            startapp_native_image = v.findViewById(R.id.startapp_native_image);
-            startapp_native_title = v.findViewById(R.id.startapp_native_title);
-            startapp_native_description = v.findViewById(R.id.startapp_native_description);
-            startapp_native_button = v.findViewById(R.id.startapp_native_button);
-            startapp_native_button.setOnClickListener(v1 -> itemView.performClick());
-        }
-
-        private void bindAdMobNativeAdView() {
-            final ThemePref themePref = new ThemePref(context);
-            final AdsPref adsPref = new AdsPref(context);
-            AdLoader adLoader = new AdLoader.Builder(context, adsPref.getAdMobNativeId())
-                    .forNativeAd(nativeAd -> {
-                        if (themePref.getIsDarkTheme()) {
-                            ColorDrawable colorDrawable = new ColorDrawable(ContextCompat.getColor(context, R.color.colorBackgroundDark));
-                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(colorDrawable).build();
-                            admob_native_template.setStyles(styles);
-                            primary.setBackgroundResource(R.color.colorBackgroundDark);
-                            secondary.setBackgroundResource(R.color.colorBackgroundDark);
-                            body.setBackgroundResource(R.color.colorBackgroundDark);
-                        } else {
-                            ColorDrawable colorDrawable = new ColorDrawable(ContextCompat.getColor(context, R.color.colorBackgroundLight));
-                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(colorDrawable).build();
-                            admob_native_template.setStyles(styles);
-                            primary.setBackgroundResource(R.color.colorBackgroundLight);
-                            secondary.setBackgroundResource(R.color.colorBackgroundLight);
-                            body.setBackgroundResource(R.color.colorBackgroundLight);
-                        }
-                        admob_media_view.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
-                        admob_native_template.setNativeAd(nativeAd);
-                    }).withAdListener(new AdListener() {
-                        @Override
-                        public void onAdLoaded() {
-                            super.onAdLoaded();
-                            if (getAdapterPosition() % adsPref.getNativeAdInterval() == adsPref.getNativeAdIndex()) {
-                                admob_native_template.setVisibility(View.VISIBLE);
-                                lyt_native_ad.setVisibility(View.VISIBLE);
-                            } else {
-                                admob_native_template.setVisibility(View.GONE);
-                                lyt_native_ad.setVisibility(View.GONE);
-                            }
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(LoadAdError adError) {
-                            admob_native_template.setVisibility(View.GONE);
-                            lyt_native_ad.setVisibility(View.GONE);
-                        }
-                    })
-                    .build();
-            adLoader.loadAd(Tools.getAdRequest((Activity) context));
-        }
-
-        private void bindFanNativeAdView() {
-            final AdsPref adsPref = new AdsPref(context);
-            final ThemePref themePref = new ThemePref(context);
-            if (BuildConfig.DEBUG) {
-                nativeAd = new NativeAd(context, "IMG_16_9_APP_INSTALL#" + adsPref.getFanNativeUnitId());
-            } else {
-                nativeAd = new NativeAd(context, adsPref.getFanNativeUnitId());
-            }
-            NativeAdListener nativeAdListener = new NativeAdListener() {
-                @Override
-                public void onMediaDownloaded(com.facebook.ads.Ad ad) {
-
-                }
-
-                @Override
-                public void onError(com.facebook.ads.Ad ad, AdError adError) {
-
-                }
-
-                @Override
-                public void onAdLoaded(com.facebook.ads.Ad ad) {
-                    // Race condition, load() called again before last ad was displayed
-                    if (getAdapterPosition() % adsPref.getNativeAdInterval() == adsPref.getNativeAdIndex()) {
-                        lyt_fan_native.setVisibility(View.VISIBLE);
-                        if (nativeAd == null || nativeAd != ad) {
-                            return;
-                        }
-                        // Inflate Native Ad into Container
-                        //inflateAd(nativeAd);
-                        nativeAd.unregisterView();
-                        // Add the Ad view into the ad container.
-                        LayoutInflater inflater = LayoutInflater.from(context);
-                        // Inflate the Ad view.  The layout referenced should be the one you created in the last step.
-
-                        nativeAdView = (LinearLayout) inflater.inflate(R.layout.gnt_fan_small_template, nativeAdLayout, false);
-
-                        nativeAdLayout.addView(nativeAdView);
-
-                        // Add the AdOptionsView
-                        LinearLayout adChoicesContainer = nativeAdView.findViewById(R.id.ad_choices_container);
-                        AdOptionsView adOptionsView = new AdOptionsView(context, nativeAd, nativeAdLayout);
-                        adChoicesContainer.removeAllViews();
-                        adChoicesContainer.addView(adOptionsView, 0);
-
-                        // Create native UI using the ad metadata.
-                        TextView nativeAdTitle = nativeAdView.findViewById(R.id.native_ad_title);
-                        com.facebook.ads.MediaView nativeAdMedia = nativeAdView.findViewById(R.id.native_ad_media);
-                        TextView nativeAdSocialContext = nativeAdView.findViewById(R.id.native_ad_social_context);
-                        TextView nativeAdBody = nativeAdView.findViewById(R.id.native_ad_body);
-                        TextView sponsoredLabel = nativeAdView.findViewById(R.id.native_ad_sponsored_label);
-                        Button nativeAdCallToAction = nativeAdView.findViewById(R.id.native_ad_call_to_action);
-                        LinearLayout ad_unit = nativeAdView.findViewById(R.id.ad_unit);
-
-                        if (themePref.getIsDarkTheme()) {
-                            nativeAdTitle.setBackgroundResource(R.color.colorBackgroundDark);
-                        } else {
-                            nativeAdTitle.setBackgroundResource(R.color.colorBackgroundLight);
-                        }
-
-                        // Set the Text.
-                        nativeAdTitle.setText(nativeAd.getAdvertiserName());
-                        nativeAdBody.setText(nativeAd.getAdBodyText());
-                        nativeAdSocialContext.setText(nativeAd.getAdSocialContext());
-                        nativeAdCallToAction.setVisibility(nativeAd.hasCallToAction() ? View.VISIBLE : View.INVISIBLE);
-                        nativeAdCallToAction.setText(nativeAd.getAdCallToAction());
-                        sponsoredLabel.setText(nativeAd.getSponsoredTranslation());
-
-                        // Create a list of clickable views
-                        List<View> clickableViews = new ArrayList<>();
-                        clickableViews.add(nativeAdTitle);
-                        clickableViews.add(ad_unit);
-                        clickableViews.add(nativeAdCallToAction);
-
-                        // Register the Title and CTA button to listen for clicks.
-                        nativeAd.registerViewForInteraction(nativeAdView, nativeAdMedia, clickableViews);
-                    } else {
-                        lyt_fan_native.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onAdClicked(com.facebook.ads.Ad ad) {
-
-                }
-
-                @Override
-                public void onLoggingImpression(com.facebook.ads.Ad ad) {
-
-                }
-            };
-
-            NativeAd.NativeLoadAdConfig loadAdConfig = nativeAd.buildLoadAdConfig().withAdListener(nativeAdListener).build();
-            nativeAd.loadAd(loadAdConfig);
-        }
-
-        private void bindStartAppNativeAdView() {
-            startAppNativeAd = new StartAppNativeAd(context);
-            final AdsPref adsPref = new AdsPref(context);
-            final ThemePref themePref = new ThemePref(context);
-            NativeAdPreferences nativePrefs = new NativeAdPreferences()
-                    .setAdsNumber(1)
-                    .setAutoBitmapDownload(true)
-                    .setPrimaryImageSize(STARTAPP_IMAGE_MEDIUM);
-            AdEventListener adListener = new AdEventListener() {
-                @Override
-                public void onReceiveAd(Ad arg0) {
-                    if (getAdapterPosition() % adsPref.getNativeAdInterval() == adsPref.getNativeAdIndex()) {
-                        ArrayList<NativeAdDetails> nativeAdsList = startAppNativeAd.getNativeAds();
-                        if (nativeAdsList.size() > 0) {
-                            nativeAdDetails = nativeAdsList.get(0);
-                        }
-                        if (nativeAdDetails != null) {
-                            startapp_native_image.setImageBitmap(nativeAdDetails.getImageBitmap());
-
-                            if (themePref.getIsDarkTheme()) {
-                                startapp_native_title.setBackgroundResource(R.color.colorBackgroundDark);
-                                startapp_native_description.setBackgroundResource(R.color.colorBackgroundDark);
-                            } else {
-                                startapp_native_title.setBackgroundResource(R.color.colorBackgroundLight);
-                                startapp_native_description.setBackgroundResource(R.color.colorBackgroundLight);
-                            }
-
-                            startapp_native_title.setText(nativeAdDetails.getTitle());
-                            startapp_native_description.setText(nativeAdDetails.getDescription());
-                            startapp_native_button.setText(nativeAdDetails.isApp() ? "Install" : "Open");
-                            nativeAdDetails.registerViewForInteraction(itemView);
-                        }
-                        lyt_startapp_native.setVisibility(View.VISIBLE);
-                    } else {
-                        lyt_startapp_native.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onFailedToReceiveAd(Ad arg0) {
-                    lyt_startapp_native.setVisibility(View.GONE);
-                }
-            };
-            startAppNativeAd.loadAd(nativePrefs, adListener);
+            thumbnailVideo = v.findViewById(R.id.thumbnail_video);
+            lytParent = v.findViewById(R.id.lyt_parent);
+            lytComment = v.findViewById(R.id.lyt_comment);
         }
 
     }
@@ -411,227 +148,173 @@ public class AdapterRecent extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case VIEW_HEAD:
-                View headingItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_heading, parent, false);
-                return new HeadingViewHolder(headingItemView);
-            case VIEW_ITEM:
-                View menuItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_recent, parent, false);
-                return new OriginalViewHolder(menuItemView);
-            case VIEW_AD:
-                View adItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_native_ad, parent, false);
-                return new AdViewHolder(adItemView);
-            case VIEW_PROG:
-                // fall through
-            default:
-                View loadMoreView = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_load_more, parent, false);
-                return new ProgressViewHolder(loadMoreView);
+        RecyclerView.ViewHolder vh;
+        if (viewType == VIEW_HEAD) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_heading, parent, false);
+            vh = new HeadingViewHolder(v);
+        } else if (viewType == VIEW_ITEM) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_news, parent, false);
+            vh = new OriginalViewHolder(v);
+        } else if (viewType == VIEW_AD) {
+            View v;
+            if (Constant.NATIVE_AD_STYLE.equals("news")) {
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_native_ad_news, parent, false);
+            } else {
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_native_ad_medium, parent, false);
+            }
+            vh = new NativeAdViewHolder(v);
+        } else {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lsv_item_load_more, parent, false);
+            vh = new ProgressViewHolder(v);
         }
-
+        return vh;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
-        int viewType = getItemViewType(position);
+        if (holder instanceof HeadingViewHolder) {
+            final Post p = (Post) posts.get(position);
+            HeadingViewHolder vItem = (HeadingViewHolder) holder;
 
-        switch (viewType) {
-            case VIEW_HEAD:
-                final News p = (News) items.get(position);
-                HeadingViewHolder vItem = (HeadingViewHolder) holder;
-                vItem.title.setText(Html.fromHtml(p.news_title));
+            vItem.title.setText(Html.fromHtml(p.news_title));
+            vItem.excerpt.setText(Html.fromHtml(p.news_description));
 
-                if (UiConfig.ENABLE_DATE_DISPLAY) {
-                    vItem.date.setVisibility(View.VISIBLE);
-                    vItem.ic_date.setVisibility(View.VISIBLE);
-                } else {
-                    vItem.date.setVisibility(View.GONE);
-                    vItem.ic_date.setVisibility(View.GONE);
+            if (AppConfig.ENABLE_DATE_DISPLAY) {
+                vItem.date.setVisibility(View.VISIBLE);
+                vItem.icDate.setVisibility(View.VISIBLE);
+            } else {
+                vItem.date.setVisibility(View.GONE);
+                vItem.icDate.setVisibility(View.GONE);
+            }
+
+            if (AppConfig.DATE_DISPLAY_AS_TIME_AGO) {
+                vItem.date.setText(Tools.getTimeAgo(p.news_date));
+            } else {
+                vItem.date.setText(Tools.getFormatedDateSimple(p.news_date));
+            }
+
+            if (!sharedPref.getLoginFeature().equals("yes")) {
+                vItem.lytComment.setVisibility(View.GONE);
+            }
+
+            vItem.comment.setText(p.comments_count + "");
+
+            if (p.content_type != null && p.content_type.equals("Post")) {
+                vItem.thumbnailVideo.setVisibility(View.GONE);
+            } else {
+                vItem.thumbnailVideo.setVisibility(View.VISIBLE);
+            }
+
+            if (p.content_type != null && p.content_type.equals("youtube")) {
+                Glide.with(context)
+                        .load(Constant.YOUTUBE_IMG_FRONT + p.video_id + Constant.YOUTUBE_IMG_BACK)
+                        .placeholder(R.drawable.ic_thumbnail)
+                        .thumbnail(0.1f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(vItem.image);
+            } else {
+                Glide.with(context)
+                        .load(sharedPref.getBaseUrl() + "/upload/" + p.news_image.replace(" ", "%20"))
+                        .placeholder(R.drawable.ic_thumbnail)
+                        .thumbnail(0.1f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(vItem.image);
+            }
+
+            vItem.lytParent.setOnClickListener(view -> {
+                if (mOnItemClickListener != null) {
+                    mOnItemClickListener.onItemClick(view, p, position);
                 }
+            });
+        } else if (holder instanceof OriginalViewHolder) {
+            final Post p = (Post) posts.get(position);
+            final OriginalViewHolder vItem = (OriginalViewHolder) holder;
 
-                if (UiConfig.DATE_DISPLAY_AS_TIME_AGO) {
-                    PrettyTime prettyTime = new PrettyTime();
-                    long timeAgo = Tools.timeStringtoMilis(p.news_date);
-                    vItem.date.setText(prettyTime.format(new Date(timeAgo)));
-                } else {
-                    vItem.date.setText(Tools.getFormatedDateSimple(p.news_date));
+            vItem.title.setText(Html.fromHtml(p.news_title));
+            vItem.excerpt.setText(Html.fromHtml(p.news_description));
+
+            if (AppConfig.ENABLE_EXCERPT_IN_POST_LIST) {
+                vItem.title.setMaxLines(2);
+                vItem.excerpt.setVisibility(View.VISIBLE);
+            } else {
+                vItem.title.setMaxLines(4);
+                vItem.excerpt.setVisibility(View.GONE);
+            }
+
+            if (AppConfig.ENABLE_DATE_DISPLAY) {
+                vItem.date.setVisibility(View.VISIBLE);
+                vItem.icDate.setVisibility(View.VISIBLE);
+            } else {
+                vItem.date.setVisibility(View.GONE);
+                vItem.icDate.setVisibility(View.GONE);
+            }
+
+            if (AppConfig.DATE_DISPLAY_AS_TIME_AGO) {
+                vItem.date.setText(Tools.getTimeAgo(p.news_date));
+            } else {
+                vItem.date.setText(Tools.getFormatedDateSimple(p.news_date));
+            }
+
+            if (!sharedPref.getLoginFeature().equals("yes")) {
+                vItem.lytComment.setVisibility(View.GONE);
+            }
+
+            vItem.comment.setText(p.comments_count + "");
+
+            if (p.content_type != null && p.content_type.equals("Post")) {
+                vItem.thumbnailVideo.setVisibility(View.GONE);
+            } else {
+                vItem.thumbnailVideo.setVisibility(View.VISIBLE);
+            }
+
+            if (p.content_type != null && p.content_type.equals("youtube")) {
+                Glide.with(context)
+                        .load(Constant.YOUTUBE_IMG_FRONT + p.video_id + Constant.YOUTUBE_IMG_BACK)
+                        .placeholder(R.drawable.ic_thumbnail)
+                        .thumbnail(0.1f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(vItem.image);
+            } else {
+                Glide.with(context)
+                        .load(sharedPref.getBaseUrl() + "/upload/" + p.news_image.replace(" ", "%20"))
+                        .placeholder(R.drawable.ic_thumbnail)
+                        .thumbnail(0.1f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(vItem.image);
+            }
+
+            vItem.lytParent.setOnClickListener(view -> {
+                if (mOnItemClickListener != null) {
+                    mOnItemClickListener.onItemClick(view, p, position);
                 }
+            });
+        } else if (holder instanceof NativeAdViewHolder) {
 
-                if (UiConfig.DISABLE_COMMENT) {
-                    vItem.lyt_comment.setVisibility(View.GONE);
-                }
+            final NativeAdViewHolder vItem = (NativeAdViewHolder) holder;
 
-                vItem.category.setText(Html.fromHtml(p.news_description));
+            vItem.loadNativeAd(context,
+                    adsPref.getAdStatus(),
+                    NATIVE_AD_POST_LIST,
+                    adsPref.getAdType(),
+                    adsPref.getBackupAds(),
+                    adsPref.getAdMobNativeId(),
+                    adsPref.getAppLovinNativeAdManualUnitId(),
+                    sharedPref.getIsDarkTheme(),
+                    AppConfig.USE_LEGACY_GDPR_EU_CONSENT,
+                    Constant.NATIVE_AD_STYLE
+            );
 
-                vItem.comment.setText(p.comments_count + "");
+            if (!Constant.NATIVE_AD_STYLE.equals("news")) {
+                vItem.setNativeAdPadding(
+                        context.getResources().getDimensionPixelOffset(R.dimen.padding_large),
+                        context.getResources().getDimensionPixelOffset(R.dimen.padding_small),
+                        context.getResources().getDimensionPixelOffset(R.dimen.padding_large),
+                        context.getResources().getDimensionPixelOffset(R.dimen.padding_small)
+                );
+            }
 
-                if (p.content_type != null && p.content_type.equals("Post")) {
-                    vItem.thumbnail_video.setVisibility(View.GONE);
-                } else {
-                    vItem.thumbnail_video.setVisibility(View.VISIBLE);
-                }
-
-                if (p.content_type != null && p.content_type.equals("youtube")) {
-                    Picasso.get()
-                            .load(Constant.YOUTUBE_IMG_FRONT + p.video_id + Constant.YOUTUBE_IMG_BACK)
-                            .placeholder(R.drawable.ic_thumbnail)
-                            .into(vItem.image);
-                } else {
-                    Picasso.get()
-                            .load(AppConfig.ADMIN_PANEL_URL + "/upload/" + p.news_image.replace(" ", "%20"))
-                            .placeholder(R.drawable.ic_thumbnail)
-                            .into(vItem.image);
-                }
-
-                vItem.lyt_parent.setOnClickListener(view -> {
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, p, position);
-                    }
-                });
-                break;
-
-            case VIEW_ITEM:
-                final News news_item = (News) items.get(position);
-                final OriginalViewHolder item_holder = (OriginalViewHolder) holder;
-
-                item_holder.title.setText(Html.fromHtml(news_item.news_title));
-
-                if (UiConfig.ENABLE_DATE_DISPLAY) {
-                    item_holder.date.setVisibility(View.VISIBLE);
-                    item_holder.ic_date.setVisibility(View.VISIBLE);
-                } else {
-                    item_holder.date.setVisibility(View.GONE);
-                    item_holder.ic_date.setVisibility(View.GONE);
-                }
-
-                if (UiConfig.DATE_DISPLAY_AS_TIME_AGO) {
-                    PrettyTime prettyTime = new PrettyTime();
-                    long timeAgo = Tools.timeStringtoMilis(news_item.news_date);
-                    item_holder.date.setText(prettyTime.format(new Date(timeAgo)));
-                } else {
-                    item_holder.date.setText(Tools.getFormatedDateSimple(news_item.news_date));
-                }
-
-                if (UiConfig.DISABLE_COMMENT) {
-                    item_holder.lyt_comment.setVisibility(View.GONE);
-                }
-
-                item_holder.category.setText(Html.fromHtml(news_item.news_description));
-
-                item_holder.comment.setText(news_item.comments_count + "");
-
-                if (news_item.content_type != null && news_item.content_type.equals("Post")) {
-                    item_holder.thumbnail_video.setVisibility(View.GONE);
-                } else {
-                    item_holder.thumbnail_video.setVisibility(View.VISIBLE);
-                }
-
-                if (news_item.content_type != null && news_item.content_type.equals("youtube")) {
-                    Picasso.get()
-                            .load(Constant.YOUTUBE_IMG_FRONT + news_item.video_id + Constant.YOUTUBE_IMG_BACK)
-                            .placeholder(R.drawable.ic_thumbnail)
-                            .into(item_holder.image);
-                } else {
-                    Picasso.get()
-                            .load(AppConfig.ADMIN_PANEL_URL + "/upload/" + news_item.news_image.replace(" ", "%20"))
-                            .placeholder(R.drawable.ic_thumbnail)
-                            .into(item_holder.image);
-                }
-
-                item_holder.lyt_parent.setOnClickListener(view -> {
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, news_item, position);
-                    }
-                });
-
-                break;
-
-            case VIEW_AD:
-                final News ad_item = (News) items.get(position);
-                final AdViewHolder ad_holder = (AdViewHolder) holder;
-
-                final AdsPref adsPref = new AdsPref(context);
-                int LIMIT_NATIVE_AD = (Constant.MAX_NUMBER_OF_NATIVE_AD_DISPLAYED * adsPref.getNativeAdInterval()) + adsPref.getNativeAdIndex();
-                if (adsPref.getAdStatus().equals(AD_STATUS_ON)) {
-                    for (int i = adsPref.getNativeAdIndex(); i < LIMIT_NATIVE_AD; i += adsPref.getNativeAdInterval()) {
-                        if (position == i) {
-                            switch (adsPref.getAdType()) {
-                                case ADMOB:
-                                    if (!adsPref.getAdMobNativeId().equals("0")) {
-                                        ad_holder.bindAdMobNativeAdView();
-                                    }
-                                    break;
-                                case FAN:
-                                    if (!adsPref.getFanNativeUnitId().equals("0")) {
-                                        ad_holder.bindFanNativeAdView();
-                                    }
-                                    break;
-                                case STARTAPP:
-                                    if (!adsPref.getStartappAppID().equals("0")) {
-                                        ad_holder.bindStartAppNativeAdView();
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-                }
-
-                ad_holder.title.setText(Html.fromHtml(ad_item.news_title));
-
-                if (UiConfig.ENABLE_DATE_DISPLAY) {
-                    ad_holder.date.setVisibility(View.VISIBLE);
-                    ad_holder.ic_date.setVisibility(View.VISIBLE);
-                } else {
-                    ad_holder.date.setVisibility(View.GONE);
-                    ad_holder.ic_date.setVisibility(View.GONE);
-                }
-
-                if (UiConfig.DATE_DISPLAY_AS_TIME_AGO) {
-                    PrettyTime prettyTime = new PrettyTime();
-                    long timeAgo = Tools.timeStringtoMilis(ad_item.news_date);
-                    ad_holder.date.setText(prettyTime.format(new Date(timeAgo)));
-                } else {
-                    ad_holder.date.setText(Tools.getFormatedDateSimple(ad_item.news_date));
-                }
-
-                if (UiConfig.DISABLE_COMMENT) {
-                    ad_holder.lyt_comment.setVisibility(View.GONE);
-                }
-
-                ad_holder.category.setText(Html.fromHtml(ad_item.news_description));
-
-                ad_holder.comment.setText(ad_item.comments_count + "");
-
-                if (ad_item.content_type != null && ad_item.content_type.equals("Post")) {
-                    ad_holder.thumbnail_video.setVisibility(View.GONE);
-                } else {
-                    ad_holder.thumbnail_video.setVisibility(View.VISIBLE);
-                }
-
-                if (ad_item.content_type != null && ad_item.content_type.equals("youtube")) {
-                    Picasso.get()
-                            .load(Constant.YOUTUBE_IMG_FRONT + ad_item.video_id + Constant.YOUTUBE_IMG_BACK)
-                            .placeholder(R.drawable.ic_thumbnail)
-                            .into(ad_holder.image);
-                } else {
-                    Picasso.get()
-                            .load(AppConfig.ADMIN_PANEL_URL + "/upload/" + ad_item.news_image.replace(" ", "%20"))
-                            .placeholder(R.drawable.ic_thumbnail)
-                            .into(ad_holder.image);
-                }
-
-                ad_holder.lyt_parent.setOnClickListener(view -> {
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, ad_item, position);
-                    }
-                });
-
-                break;
-
-            case VIEW_PROG:
-                //fall through
-            default:
-                ((ProgressViewHolder) holder).progressBar.setIndeterminate(true);
+        } else {
+            ((ProgressViewHolder) holder).progressBar.setIndeterminate(true);
         }
 
     }
@@ -639,25 +322,22 @@ public class AdapterRecent extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return items.size();
+        return posts.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) != null) {
+        Post post = posts.get(position);
+        if (post != null) {
             if (position == 0) {
-                if (UiConfig.DISPLAY_HEADER_VIEW) {
+                if (AppConfig.DISPLAY_HEADER_VIEW) {
                     return VIEW_HEAD;
                 } else {
                     return VIEW_ITEM;
                 }
             } else {
-                final AdsPref adsPref = new AdsPref(context);
-                int LIMIT_NATIVE_AD = (Constant.MAX_NUMBER_OF_NATIVE_AD_DISPLAYED * adsPref.getNativeAdInterval()) + adsPref.getNativeAdIndex();
-                for (int i = adsPref.getNativeAdIndex(); i < LIMIT_NATIVE_AD; i += adsPref.getNativeAdInterval()) {
-                    if (position == i) {
-                        return VIEW_AD;
-                    }
+                if (post.news_title == null || post.news_title.equals("")) {
+                    return VIEW_AD;
                 }
                 return VIEW_ITEM;
             }
@@ -666,19 +346,31 @@ public class AdapterRecent extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public void insertData(List<News> items) {
+    public void insertData(List<Post> items) {
         setLoaded();
         int positionStart = getItemCount();
         int itemCount = items.size();
-        this.items.addAll(items);
+        this.posts.addAll(items);
+        notifyItemRangeInserted(positionStart, itemCount);
+    }
+
+    public void insertDataWithNativeAd(List<Post> items) {
+        setLoaded();
+        int positionStart = getItemCount();
+        if (items.size() >= adsPref.getNativeAdIndex()) {
+            items.add(adsPref.getNativeAdIndex(), new Post());
+            Log.d("item ads", "space for Native Ad");
+        }
+        int itemCount = items.size();
+        this.posts.addAll(items);
         notifyItemRangeInserted(positionStart, itemCount);
     }
 
     public void setLoaded() {
         loading = false;
         for (int i = 0; i < getItemCount(); i++) {
-            if (items.get(i) == null) {
-                items.remove(i);
+            if (posts.get(i) == null) {
+                posts.remove(i);
                 notifyItemRemoved(i);
             }
         }
@@ -686,14 +378,14 @@ public class AdapterRecent extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void setLoading() {
         if (getItemCount() != 0) {
-            this.items.add(null);
+            this.posts.add(null);
             notifyItemInserted(getItemCount() - 1);
             loading = true;
         }
     }
 
     public void resetListData() {
-        this.items.clear();
+        this.posts.clear();
         notifyDataSetChanged();
     }
 
@@ -702,16 +394,33 @@ public class AdapterRecent extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void lastItemViewDetector(RecyclerView recyclerView) {
-        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
-            final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+        if (recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
+            final StaggeredGridLayoutManager layoutManager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    int lastPos = layoutManager.findLastVisibleItemPosition();
+                    int lastPos = getLastVisibleItem(layoutManager.findLastVisibleItemPositions(null));
                     if (!loading && lastPos == getItemCount() - 1 && onLoadMoreListener != null) {
-                        if (onLoadMoreListener != null) {
-                            int current_page = getItemCount() / UiConfig.LOAD_MORE;
+                        if (NATIVE_AD_POST_LIST != 0) {
+                            switch (adsPref.getAdType()) {
+                                case ADMOB:
+                                case STARTAPP:
+                                case APPLOVIN:
+                                case APPLOVIN_MAX: {
+                                    int current_page = getItemCount() / (AppConfig.LOAD_MORE + 1); //posts per page plus 1 Ad
+                                    onLoadMoreListener.onLoadMore(current_page);
+                                    break;
+                                }
+                                default: {
+                                    int current_page = getItemCount() / (AppConfig.LOAD_MORE);
+                                    onLoadMoreListener.onLoadMore(current_page);
+                                    break;
+                                }
+                            }
+                        } else {
+                            int current_page = getItemCount() / (AppConfig.LOAD_MORE);
                             onLoadMoreListener.onLoadMore(current_page);
                         }
                         loading = true;
@@ -723,6 +432,14 @@ public class AdapterRecent extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public interface OnLoadMoreListener {
         void onLoadMore(int current_page);
+    }
+
+    private int getLastVisibleItem(int[] into) {
+        int lastIdx = into[0];
+        for (int i : into) {
+            if (lastIdx < i) lastIdx = i;
+        }
+        return lastIdx;
     }
 
 }

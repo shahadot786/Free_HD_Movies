@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -24,44 +23,40 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.watchfreemovies.freehdcinema786.R;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
-import com.watchfreemovies.freehdcinema786.utils.ThemePref;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
 import com.watchfreemovies.freehdcinema786.utils.Tools;
 
 public class ActivityWebView extends AppCompatActivity {
 
     WebView webView;
     ProgressBar progressBar;
-    Button btn_failed_retry;
-    View lyt_failed;
-    String str_url;
+    Button btnFailedRetry;
+    View lytFailed;
+    String strTitle = "";
+    String strUrl = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Tools.getTheme(this);
         setContentView(R.layout.activity_webview);
-
-        if (UiConfig.ENABLE_RTL_MODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            }
-        }
+        Tools.setNavigation(this);
 
         webView = findViewById(R.id.webView);
         progressBar = findViewById(R.id.progressBar);
-        btn_failed_retry = findViewById(R.id.failed_retry);
-        lyt_failed = findViewById(R.id.lyt_failed);
+        btnFailedRetry = findViewById(R.id.failed_retry);
+        lytFailed = findViewById(R.id.lyt_failed);
 
         Intent intent = getIntent();
         if (null != intent) {
-            str_url = intent.getStringExtra("url");
+            strTitle = intent.getStringExtra("title");
+            strUrl = intent.getStringExtra("url");
         }
 
         displayData();
 
-        btn_failed_retry.setOnClickListener(view -> {
-            lyt_failed.setVisibility(View.GONE);
+        btnFailedRetry.setOnClickListener(view -> {
+            lytFailed.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             displayData();
         });
@@ -74,8 +69,8 @@ public class ActivityWebView extends AppCompatActivity {
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ThemePref themePref = new ThemePref(this);
-        if (themePref.getIsDarkTheme()) {
+        SharedPref sharedPref = new SharedPref(this);
+        if (sharedPref.getIsDarkTheme()) {
             toolbar.setBackgroundColor(getResources().getColor(R.color.colorToolbarDark));
         } else {
             toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -85,7 +80,7 @@ public class ActivityWebView extends AppCompatActivity {
         if (actionBar != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setTitle(str_url);
+            getSupportActionBar().setTitle(strTitle);
         }
     }
 
@@ -103,18 +98,10 @@ public class ActivityWebView extends AppCompatActivity {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-
         webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        if (Build.VERSION.SDK_INT >= 19) {
-            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        } else {
-            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
-
         webView.setWebViewClient(new PQClient());
         webView.setWebViewClient(new MyWebViewClient());
-        webView.loadUrl(str_url);
+        webView.loadUrl(strUrl);
     }
 
     private class MyWebViewClient extends WebViewClient {
@@ -333,7 +320,7 @@ public class ActivityWebView extends AppCompatActivity {
                 return true;
 
             case R.id.open_in_browser:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(str_url)));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(strUrl)));
 
                 return true;
 

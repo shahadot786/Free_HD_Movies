@@ -4,13 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<ImageView
-        android:id="@+id/img_splash"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/pi_splash_light"
-        android:scaleType="centerCrop"/>-->
     <LinearLayout
+        android:id="@+id/splash_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -18,61 +13,50 @@
         android:paddingLeft="20dp"
         android:paddingTop="0dp"
         android:paddingRight="20dp"
-        android:paddingBottom="0dp"
-        android:background="@drawable/bg_splash_dark">
+        android:paddingBottom="0dp">
 
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/logo1" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/main_logo" />
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:fontFamily="@font/acme"
+            android:id="@+id/app_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:gravity="center"
             android:text="@string/app_name"
-            android:textColor="@color/colorSplash"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:id="@+id/app_slogan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:fontFamily="@font/acme"
             android:gravity="center"
-            android:text="@string/app_slogan2"
-            android:textColor="@color/colorSplash_sub"
+            android:text="@string/app_slogan"
             android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/app_version"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/acme"
+            android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="@string/app_slogan"
-            android:textColor="@color/colorSplash_sub"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/acme"
-            android:gravity="center"
-            android:text="@string/app_version"
-            android:textColor="@color/colorSplash_sub"
-            android:textSize="12sp"
+            android:text=""
+            android:textSize="16sp"
             android:textStyle="bold" />
 
 
     </LinearLayout>
+
 
     <ProgressBar
         android:id="@+id/progressBar"

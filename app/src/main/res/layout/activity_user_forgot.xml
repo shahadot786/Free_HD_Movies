@@ -4,28 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.startapp.sdk.ads.banner.Banner
-        android:id="@+id/startAppBanner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
     <LinearLayout
-        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical"
         android:padding="20dp">
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="25dp"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center"
+            android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/logo1"
-            app:riv_corner_radius="8dp" />
+            android:src="@mipmap/ic_launcher"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Image.Circular" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,18 +32,14 @@
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:drawableLeft="@drawable/ic_edt_email"
-                android:drawableStart="@drawable/ic_edt_email"
-                android:drawablePadding="12dp"
                 android:hint="@string/edt_email"
                 android:inputType="textEmailAddress" />
 
@@ -60,30 +49,18 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="@string/forgot_message" />
 
-        <com.balysv.materialripple.MaterialRippleLayout
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnForgot"
+            style="@style/MaterialButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            app:mrl_rippleAlpha="0.2"
-            app:mrl_rippleColor="@color/colorRipple"
-            app:mrl_rippleHover="true"
-            app:mrl_rippleOverlay="true">
-
-            <Button
-                android:id="@+id/btnForgot"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/bg_button_background"
-                android:text="@string/btn_send"
-                android:textColor="@color/colorWhite"
-                android:textStyle="bold" />
-
-        </com.balysv.materialripple.MaterialRippleLayout>
+            android:text="@string/btn_send" />
 
     </LinearLayout>
 

@@ -1,6 +1,8 @@
 package com.watchfreemovies.freehdcinema786.models;
 
-public class Images {
+import java.io.Serializable;
+
+public class Images implements Serializable {
 
     public long nid = -1;
     public String image_name = "";

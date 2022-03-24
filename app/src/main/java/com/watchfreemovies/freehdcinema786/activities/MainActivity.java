@@ -1,359 +1,145 @@
 package com.watchfreemovies.freehdcinema786.activities;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import static com.watchfreemovies.freehdcinema786.utils.Constant.BANNER_HOME;
+import static com.watchfreemovies.freehdcinema786.utils.Constant.INTERSTITIAL_POST_LIST;
+
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.IntentSender;
 import android.content.res.AssetManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
-
-import com.duolingo.open.rtlviewpager.RtlViewPager;
 import com.watchfreemovies.freehdcinema786.BuildConfig;
 import com.watchfreemovies.freehdcinema786.R;
-import com.watchfreemovies.freehdcinema786.callbacks.CallbackSettings;
 import com.watchfreemovies.freehdcinema786.callbacks.CallbackUser;
 import com.watchfreemovies.freehdcinema786.config.AppConfig;
-import com.watchfreemovies.freehdcinema786.config.UiConfig;
-import com.watchfreemovies.freehdcinema786.fragment.FragmentCategory;
-import com.watchfreemovies.freehdcinema786.fragment.FragmentFavorite;
-import com.watchfreemovies.freehdcinema786.fragment.FragmentRecent;
-import com.watchfreemovies.freehdcinema786.fragment.FragmentVideo;
-import com.watchfreemovies.freehdcinema786.models.Setting;
+import com.watchfreemovies.freehdcinema786.database.prefs.AdsPref;
+import com.watchfreemovies.freehdcinema786.database.prefs.SharedPref;
 import com.watchfreemovies.freehdcinema786.models.User;
-import com.watchfreemovies.freehdcinema786.notification.NotificationUtils;
 import com.watchfreemovies.freehdcinema786.rests.ApiInterface;
 import com.watchfreemovies.freehdcinema786.rests.RestAdapter;
-import com.watchfreemovies.freehdcinema786.utils.AdsPref;
+import com.watchfreemovies.freehdcinema786.utils.AdsManager;
 import com.watchfreemovies.freehdcinema786.utils.AppBarLayoutBehavior;
 import com.watchfreemovies.freehdcinema786.utils.Constant;
-import com.watchfreemovies.freehdcinema786.utils.GDPR;
-import com.watchfreemovies.freehdcinema786.utils.HttpTask;
-import com.watchfreemovies.freehdcinema786.utils.NetworkCheck;
-import com.watchfreemovies.freehdcinema786.utils.ThemePref;
+import com.watchfreemovies.freehdcinema786.utils.RtlViewPager;
 import com.watchfreemovies.freehdcinema786.utils.Tools;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.AdapterStatus;
+import com.watchfreemovies.freehdcinema786.utils.ViewPagerHelper;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.ump.ConsentDebugSettings;
-import com.google.android.ump.ConsentForm;
-import com.google.android.ump.ConsentInformation;
-import com.google.android.ump.ConsentRequestParameters;
-import com.google.android.ump.UserMessagingPlatform;
-import com.squareup.picasso.Picasso;
-import com.startapp.sdk.adsbase.StartAppAd;
-import com.startapp.sdk.adsbase.StartAppSDK;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.tasks.Task;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.watchfreemovies.freehdcinema786.config.UiConfig.USE_LEGACY_GDPR_EU_CONSENT;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.ADMOB;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.AD_STATUS_ON;
-import static com.watchfreemovies.freehdcinema786.utils.Constant.STARTAPP;
-
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private long exitTime = 0;
     MyApplication myApplication;
     private BottomNavigationView navigation;
     private ViewPager viewPager;
     private RtlViewPager viewPagerRTL;
-    private TextView title_toolbar;
-    MenuItem prevMenuItem;
-    int pager_number = 4;
-    SharedPreferences preferences;
-    BroadcastReceiver broadcastReceiver;
-    View view;
+    TextView titleToolbar;
     User user;
-    Setting post;
-    String androidId;
-    private Call<CallbackUser> callbackCall = null;
-    private Call<CallbackSettings> callbackCallSettings = null;
-    ImageView img_profile;
-    RelativeLayout btn_profile;
-    ImageButton btn_search;
-    ImageButton btn_overflow;
-    ThemePref themePref;
-    private BottomSheetDialog mBottomSheetDialog;
+    Call<CallbackUser> callbackCall = null;
+    ImageView imgProfile;
+    RelativeLayout btnProfile;
+    ImageButton btnSearch;
+    ImageButton btnSettings;
+    SharedPref sharedPref;
     AdsPref adsPref;
-    private ConsentInformation consentInformation;
-    private ConsentForm consentForm;
-
+    AdsManager adsManager;
+    CoordinatorLayout parentView;
+    ViewPagerHelper viewPagerHelper;
+    private AppUpdateManager appUpdateManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Tools.getTheme(this);
         adsPref = new AdsPref(this);
-        if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(STARTAPP)) {
-            StartAppSDK.init(MainActivity.this, adsPref.getStartappAppID(), true);
-            StartAppSDK.enableReturnAds(true);
-        }
-        if (UiConfig.ENABLE_RTL_MODE) {
-            setContentView(R.layout.activity_main_rtl);
-        } else {
-            setContentView(R.layout.activity_main);
-        }
+        setContentView(R.layout.activity_main);
 
-        view = findViewById(android.R.id.content);
+        Tools.setNavigation(this);
 
-        themePref = new ThemePref(this);
-
-        preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        if (UiConfig.ENABLE_RTL_MODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-            }
-        }
-
-        if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(STARTAPP)) {
-            StartAppSDK.setUserConsent(this, "pas", System.currentTimeMillis(), true);
-            /*StartAppSDK.setTestAdsEnabled(true);
-            StartAppAd.disableSplash();*/
-
-        }
-
-        if (adsPref.getAdStatus().equals(AD_STATUS_ON) && adsPref.getAdType().equals(ADMOB)) {
-            MobileAds.initialize(this, initializationStatus -> {
-                Map<String, AdapterStatus> statusMap = initializationStatus.getAdapterStatusMap();
-                for (String adapterClass : statusMap.keySet()) {
-                    AdapterStatus status = statusMap.get(adapterClass);
-                    Log.d("MyApp", String.format(
-                            "Adapter name: %s, Description: %s, Latency: %d",
-                            adapterClass, status.getDescription(), status.getLatency()));
-                }
-            });
-            if (USE_LEGACY_GDPR_EU_CONSENT) {
-                GDPR.updateConsentStatus(this);
-            } else {
-                updateConsentStatus();
-            }
-        }
+        sharedPref = new SharedPref(this);
+        viewPagerHelper = new ViewPagerHelper(this);
+        adsManager = new AdsManager(this);
 
         AppBarLayout appBarLayout = findViewById(R.id.tab_appbar_layout);
         ((CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams()).setBehavior(new AppBarLayoutBehavior());
 
         myApplication = MyApplication.getInstance();
 
-        title_toolbar = findViewById(R.id.title_toolbar);
-        img_profile = findViewById(R.id.img_profile);
+        parentView = findViewById(R.id.tab_coordinator_layout);
+        titleToolbar = findViewById(R.id.title_toolbar);
+        imgProfile = findViewById(R.id.img_profile);
 
-        if (UiConfig.ENABLE_RTL_MODE) {
-            initViewPagerRTL();
+        navigation = findViewById(R.id.navigation);
+        navigation.getMenu().clear();
+        if (sharedPref.getVideoMenu().equals("yes")) {
+            navigation.inflateMenu(R.menu.menu_navigation_default);
         } else {
-            initViewPager();
+            navigation.inflateMenu(R.menu.menu_navigation_no_video);
+        }
+        navigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+
+        viewPager = findViewById(R.id.viewpager);
+        viewPagerRTL = findViewById(R.id.viewpager_rtl);
+        if (AppConfig.ENABLE_RTL_MODE) {
+            viewPagerHelper.setupViewPagerRTL(viewPagerRTL, navigation, titleToolbar);
+        } else {
+            viewPagerHelper.setupViewPager(viewPager, navigation, titleToolbar);
         }
 
-        if (UiConfig.ENABLE_FIXED_BOTTOM_NAVIGATION) {
-            navigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-        }
+        Tools.notificationOpenHandler(this, getIntent());
 
-        onReceiveNotification();
-
-        NotificationUtils.oneSignalNotificationHandler(this, getIntent());
-        NotificationUtils.fcmNotificationHandler(this, getIntent());
-
-        requestUpdateToken();
         initToolbarIcon();
         displayUserProfile();
-        getAdsLog();
-
         adsPref.saveCounter(1);
-        validate();
+
+        adsManager.initializeAd();
+        adsManager.updateConsentStatus();
+        adsManager.loadBannerAd(BANNER_HOME);
+        adsManager.loadInterstitialAd(INTERSTITIAL_POST_LIST, adsPref.getInterstitialAdInterval());
+
+        if (!BuildConfig.DEBUG) {
+            appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
+            inAppUpdate();
+            inAppReview();
+        }
 
     }
 
-    public void initViewPager() {
-        viewPager = findViewById(R.id.viewpager);
-        viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
-        viewPager.setOffscreenPageLimit(pager_number);
-
-        navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    viewPager.setCurrentItem(0);
-                    return true;
-                case R.id.navigation_category:
-                    viewPager.setCurrentItem(1);
-                    return true;
-                case R.id.navigation_video:
-                    viewPager.setCurrentItem(2);
-                    return true;
-                case R.id.navigation_favorite:
-                    viewPager.setCurrentItem(3);
-                    return true;
-            }
-            return false;
-        });
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (prevMenuItem != null) {
-                    prevMenuItem.setChecked(false);
-                } else {
-                    navigation.getMenu().getItem(0).setChecked(false);
-                }
-                navigation.getMenu().getItem(position).setChecked(true);
-                prevMenuItem = navigation.getMenu().getItem(position);
-
-                if (viewPager.getCurrentItem() == 0) {
-                    title_toolbar.setText(getResources().getString(R.string.app_name));
-                } else if (viewPager.getCurrentItem() == 1) {
-                    title_toolbar.setText(getResources().getString(R.string.title_nav_category));
-                } else if (viewPager.getCurrentItem() == 2) {
-                    title_toolbar.setText(getResources().getString(R.string.title_nav_video));
-                } else if (viewPager.getCurrentItem() == 3) {
-                    title_toolbar.setText(getResources().getString(R.string.title_nav_favorite));
-                }
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-    }
-
-    public void initViewPagerRTL() {
-        viewPagerRTL = findViewById(R.id.viewpager_rtl);
-        viewPagerRTL.setAdapter(new MyAdapter(getSupportFragmentManager()));
-        viewPagerRTL.setOffscreenPageLimit(pager_number);
-
-        navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    viewPagerRTL.setCurrentItem(0);
-                    return true;
-                case R.id.navigation_category:
-                    viewPagerRTL.setCurrentItem(1);
-                    return true;
-                case R.id.navigation_video:
-                    viewPagerRTL.setCurrentItem(2);
-                    return true;
-                case R.id.navigation_favorite:
-                    viewPagerRTL.setCurrentItem(3);
-                    return true;
-            }
-            return false;
-        });
-
-        viewPagerRTL.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (prevMenuItem != null) {
-                    prevMenuItem.setChecked(false);
-                } else {
-                    navigation.getMenu().getItem(0).setChecked(false);
-                }
-                navigation.getMenu().getItem(position).setChecked(true);
-                prevMenuItem = navigation.getMenu().getItem(position);
-
-                if (viewPagerRTL.getCurrentItem() == 0) {
-                    title_toolbar.setText(getResources().getString(R.string.app_name));
-                } else if (viewPagerRTL.getCurrentItem() == 1) {
-                    title_toolbar.setText(getResources().getString(R.string.title_nav_category));
-                } else if (viewPagerRTL.getCurrentItem() == 2) {
-                    title_toolbar.setText(getResources().getString(R.string.title_nav_video));
-                } else if (viewPagerRTL.getCurrentItem() == 3) {
-                    title_toolbar.setText(getResources().getString(R.string.title_nav_favorite));
-                }
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-    }
-
-    public class MyAdapter extends FragmentPagerAdapter {
-
-        MyAdapter(FragmentManager fm) {
-            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        }
-
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-
-            switch (position) {
-                case 0:
-                    return new FragmentRecent();
-                case 1:
-                    return new FragmentCategory();
-                case 2:
-                    return new FragmentVideo();
-                case 3:
-                    return new FragmentFavorite();
-            }
-            return null;
-        }
-
-        @Override
-        public int getCount() {
-            return pager_number;
-        }
-
+    public void showInterstitialAd() {
+        adsManager.showInterstitialAd();
     }
 
     @Override
@@ -363,39 +149,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initToolbarIcon() {
-
-        if (themePref.getIsDarkTheme()) {
+        if (sharedPref.getIsDarkTheme()) {
             findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.colorToolbarDark));
             navigation.setBackgroundColor(getResources().getColor(R.color.colorToolbarDark));
         } else {
             findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         }
 
-        btn_search = findViewById(R.id.btn_search);
-        btn_search.setOnClickListener(view -> new Handler().postDelayed(() -> startActivity(new Intent(getApplicationContext(), ActivitySearch.class)), 50));
+        btnSearch = findViewById(R.id.btn_search);
+        btnSearch.setOnClickListener(view -> new Handler().postDelayed(() -> startActivity(new Intent(getApplicationContext(), ActivitySearch.class)), 50));
 
-        btn_profile = findViewById(R.id.btn_profile);
-        btn_profile.setOnClickListener(view -> new Handler().postDelayed(() -> startActivity(new Intent(getApplicationContext(), ActivityProfile.class)), 50));
+        btnProfile = findViewById(R.id.btn_profile);
+        btnProfile.setOnClickListener(view -> new Handler().postDelayed(() -> startActivity(new Intent(getApplicationContext(), ActivityProfile.class)), 50));
 
-        btn_overflow = findViewById(R.id.btn_overflow);
-        btn_overflow.setOnClickListener(view -> showBottomSheetDialog());
+        btnSettings = findViewById(R.id.btn_settings);
+        btnSettings.setOnClickListener(view -> new Handler().postDelayed(() -> startActivity(new Intent(getApplicationContext(), ActivityProfile.class)), 50));
 
-        if (UiConfig.DISABLE_COMMENT) {
-            btn_profile.setVisibility(View.GONE);
-            btn_overflow.setVisibility(View.VISIBLE);
+        if (sharedPref.getLoginFeature().equals("yes")) {
+            btnProfile.setVisibility(View.VISIBLE);
+            btnSettings.setVisibility(View.GONE);
         } else {
-            btn_profile.setVisibility(View.VISIBLE);
-            btn_overflow.setVisibility(View.GONE);
+            btnProfile.setVisibility(View.GONE);
+            btnSettings.setVisibility(View.VISIBLE);
         }
+        //Tools.validate(this);
     }
 
     @Override
     public void onBackPressed() {
-        if (UiConfig.ENABLE_RTL_MODE) {
+        if (AppConfig.ENABLE_RTL_MODE) {
             if (viewPagerRTL.getCurrentItem() != 0) {
                 viewPagerRTL.setCurrentItem((0), true);
             } else {
-                if (UiConfig.ENABLE_EXIT_DIALOG) {
+                if (AppConfig.ENABLE_EXIT_DIALOG) {
                     exitDialog();
                 } else {
                     exitApp();
@@ -405,8 +191,7 @@ public class MainActivity extends AppCompatActivity {
             if (viewPager.getCurrentItem() != 0) {
                 viewPager.setCurrentItem((0), true);
             } else {
-                if (UiConfig.ENABLE_EXIT_DIALOG) {
-                    StartAppAd.onBackPressed(this);
+                if (AppConfig.ENABLE_EXIT_DIALOG) {
                     exitDialog();
                 } else {
                     exitApp();
@@ -418,11 +203,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void exitApp() {
         if ((System.currentTimeMillis() - exitTime) > 2000) {
-            Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show();
+            showSnackBar(getString(R.string.press_again_to_exit));
             exitTime = System.currentTimeMillis();
         } else {
             finish();
         }
+    }
+
+    public void showSnackBar(String msg) {
+        Snackbar.make(parentView, msg, Snackbar.LENGTH_SHORT).show();
     }
 
     public void exitDialog() {
@@ -443,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         dialog.setNeutralButton(R.string.dialog_option_more, (dialogInterface, i) -> {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.play_more_apps))));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(sharedPref.getMoreAppsUrl())));
 
             finish();
         });
@@ -454,12 +243,12 @@ public class MainActivity extends AppCompatActivity {
         if (myApplication.getIsLogin()) {
             requestUserData();
         } else {
-            img_profile.setImageResource(R.drawable.ic_account_circle_white);
+            imgProfile.setImageResource(R.drawable.ic_account_circle_white);
         }
     }
 
     private void requestUserData() {
-        ApiInterface apiInterface = RestAdapter.createAPI();
+        ApiInterface apiInterface = RestAdapter.createAPI(sharedPref.getBaseUrl());
         callbackCall = apiInterface.getUser(myApplication.getUserId());
         callbackCall.enqueue(new Callback<CallbackUser>() {
             @Override
@@ -468,179 +257,24 @@ public class MainActivity extends AppCompatActivity {
                 if (resp != null && resp.status.equals("ok")) {
                     user = resp.response;
                     if (user.image.equals("")) {
-                        img_profile.setImageResource(R.drawable.ic_account_circle_white);
+                        imgProfile.setImageResource(R.drawable.ic_account_circle_white);
                     } else {
-                        Picasso.get()
-                                .load(AppConfig.ADMIN_PANEL_URL + "/upload/avatar/" + user.image.replace(" ", "%20"))
-                                .resize(54, 54)
+                        Glide.with(MainActivity.this)
+                                .load(sharedPref.getBaseUrl() + "/upload/avatar/" + user.image.replace(" ", "%20"))
+                                .apply(new RequestOptions().override(54, 54))
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .centerCrop()
                                 .placeholder(R.drawable.ic_account_circle_white)
-                                .into(img_profile);
+                                .into(imgProfile);
                     }
-                } else {
-                    onFailRequest();
                 }
             }
 
             @Override
             public void onFailure(Call<CallbackUser> call, Throwable t) {
-                if (!call.isCanceled()) onFailRequest();
             }
 
         });
-    }
-
-    private void validate() {
-        ApiInterface api = RestAdapter.createAPI();
-        callbackCallSettings = api.getSettings();
-        callbackCallSettings.enqueue(new Callback<CallbackSettings>() {
-            @Override
-            public void onResponse(Call<CallbackSettings> call, Response<CallbackSettings> response) {
-                CallbackSettings resp = response.body();
-                if (resp != null && resp.status.equals("ok")) {
-                    post = resp.post;
-                    if (BuildConfig.APPLICATION_ID.equals(post.package_name)) {
-                        Log.d("ACTIVITY_MAIN", "Package Name Validated");
-                    } else {
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-                        dialog.setTitle(getResources().getString(R.string.whops));
-                        dialog.setMessage(getResources().getString(R.string.msg_validate));
-                        dialog.setPositiveButton(getResources().getString(R.string.dialog_ok), (dialogInterface, i) -> finish());
-                        dialog.setCancelable(false);
-                        dialog.show();
-                        Log.d("ACTIVITY_MAIN", "Package Name NOT Validated");
-                    }
-                } else {
-                    onFailRequest();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CallbackSettings> call, Throwable t) {
-                if (!call.isCanceled()) onFailRequest();
-            }
-
-        });
-    }
-
-    private void requestUpdateToken() {
-        ApiInterface apiInterface = RestAdapter.createAPI();
-        callbackCall = apiInterface.getUserToken('"' + androidId + '"');
-        callbackCall.enqueue(new Callback<CallbackUser>() {
-            @Override
-            public void onResponse(Call<CallbackUser> call, Response<CallbackUser> response) {
-                CallbackUser resp = response.body();
-                if (resp != null && resp.status.equals("ok")) {
-                    user = resp.response;
-                    String token = user.token;
-                    String unique_id = user.user_unique_id;
-                    String pref_token = preferences.getString("fcm_token", null);
-
-                    if (token.equals(pref_token) && unique_id.equals(androidId)) {
-                        Log.d("TOKEN", "FCM Token already exists");
-                    } else {
-                        updateRegistrationIdToBackend();
-                    }
-                } else {
-                    onFailRequest();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CallbackUser> call, Throwable t) {
-                if (!call.isCanceled()) onFailRequest();
-            }
-
-        });
-    }
-
-    private void onFailRequest() {
-        if (NetworkCheck.isConnect(this)) {
-            sendRegistrationIdToBackend();
-        } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.msg_no_network), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void sendRegistrationIdToBackend() {
-
-        Log.d("FCM_TOKEN", "Send data to server...");
-
-        String token = preferences.getString("fcm_token", null);
-        String appVersion = BuildConfig.VERSION_CODE + " (" + BuildConfig.VERSION_NAME + ")";
-        String osVersion = currentVersion() + " " + Build.VERSION.RELEASE;
-        String model = android.os.Build.MODEL;
-        String manufacturer = android.os.Build.MANUFACTURER;
-
-        if (token != null) {
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-            nameValuePairs.add(new BasicNameValuePair("user_android_token", token));
-            nameValuePairs.add(new BasicNameValuePair("user_unique_id", androidId));
-            nameValuePairs.add(new BasicNameValuePair("user_app_version", appVersion));
-            nameValuePairs.add(new BasicNameValuePair("user_os_version", osVersion));
-            nameValuePairs.add(new BasicNameValuePair("user_device_model", model));
-            nameValuePairs.add(new BasicNameValuePair("user_device_manufacturer", manufacturer));
-            new HttpTask(null, MainActivity.this, AppConfig.ADMIN_PANEL_URL + "/token-register.php", nameValuePairs, false).execute();
-            Log.d("FCM_TOKEN_VALUE", token + " " + androidId);
-        }
-
-    }
-
-    private void updateRegistrationIdToBackend() {
-
-        Log.d("FCM_TOKEN", "Update data to server...");
-        String token = preferences.getString("fcm_token", null);
-        if (token != null) {
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-            nameValuePairs.add(new BasicNameValuePair("user_android_token", token));
-            nameValuePairs.add(new BasicNameValuePair("user_unique_id", androidId));
-            new HttpTask(null, MainActivity.this, AppConfig.ADMIN_PANEL_URL + "/token-update.php", nameValuePairs, false).execute();
-            Log.d("FCM_TOKEN_VALUE", token + " " + androidId);
-        }
-
-    }
-
-    public static String currentVersion() {
-        double release = Double.parseDouble(Build.VERSION.RELEASE.replaceAll("(\\d+[.]\\d+)(.*)", "$1"));
-        String codeName = "Unsupported";
-        if (release >= 4.1 && release < 4.4) codeName = "Jelly Bean";
-        else if (release < 5) codeName = "Kit Kat";
-        else if (release < 6) codeName = "Lollipop";
-        else if (release < 7) codeName = "Marshmallow";
-        else if (release < 8) codeName = "Nougat";
-        else if (release < 9) codeName = "Oreo";
-        else if (release < 10) codeName = "Pie";
-        else if (release < 11) codeName = "R";
-        return codeName;
-    }
-
-    private void showPopupOverflow(View view) {
-        PopupMenu popup = new PopupMenu(MainActivity.this, view);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_popup, popup.getMenu());
-        popup.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.menu_popup_privacy:
-                    startActivity(new Intent(getApplicationContext(), ActivityPrivacyPolicy.class));
-                    return true;
-
-                case R.id.menu_popup_rate:
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
-                    return true;
-
-                case R.id.menu_popup_more:
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.play_more_apps))));
-                    return true;
-
-                case R.id.menu_popup_about:
-                    aboutDialog();
-                    return true;
-
-                default:
-            }
-            return false;
-        });
-        popup.show();
     }
 
     public void aboutDialog() {
@@ -654,111 +288,15 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void showBottomSheetDialog() {
-
-        final View view = getLayoutInflater().inflate(R.layout.lyt_bottom_sheet, null);
-
-        FrameLayout lyt_bottom_sheet = view.findViewById(R.id.bottom_sheet);
-
-        Switch switch_theme = view.findViewById(R.id.switch_theme);
-
-        if (themePref.getIsDarkTheme()) {
-            switch_theme.setChecked(true);
-            lyt_bottom_sheet.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_rounded_dark));
-        } else {
-            switch_theme.setChecked(false);
-            lyt_bottom_sheet.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_rounded_default));
-        }
-
-        switch_theme.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Log.e("INFO", "" + isChecked);
-            themePref.setIsDarkTheme(isChecked);
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        });
-
-        view.findViewById(R.id.btn_privacy_policy).setOnClickListener(action -> startActivity(new Intent(getApplicationContext(), ActivityPrivacyPolicy.class)));
-        view.findViewById(R.id.btn_rate).setOnClickListener(action -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID))));
-        view.findViewById(R.id.btn_more).setOnClickListener(action -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.play_more_apps)))));
-        view.findViewById(R.id.btn_about).setOnClickListener(action -> aboutDialog());
-
-        mBottomSheetDialog = new BottomSheetDialog(this, R.style.SheetDialog);
-        mBottomSheetDialog.setContentView(view);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBottomSheetDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-
-        mBottomSheetDialog.show();
-        mBottomSheetDialog.setOnDismissListener(dialog -> mBottomSheetDialog = null);
-
-    }
-
-    public void onReceiveNotification() {
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Constant.PUSH_NOTIFICATION)) {
-                    NotificationUtils.showDialogNotification(MainActivity.this, intent);
-                }
-            }
-        };
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(Constant.REGISTRATION_COMPLETE));
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(Constant.PUSH_NOTIFICATION));
         displayUserProfile();
     }
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         super.onPause();
-    }
-
-    public void updateConsentStatus() {
-        if (BuildConfig.DEBUG) {
-            ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(this)
-                    .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_NOT_EEA)
-                    .addTestDeviceHashedId("TEST-DEVICE-HASHED-ID")
-                    .build();
-            ConsentRequestParameters params = new ConsentRequestParameters.Builder().setConsentDebugSettings(debugSettings).build();
-            consentInformation = UserMessagingPlatform.getConsentInformation(this);
-            consentInformation.requestConsentInfoUpdate(this, params, () -> {
-                        if (consentInformation.isConsentFormAvailable()) {
-                            loadForm();
-                        }
-                    },
-                    formError -> {
-                    });
-        } else {
-            ConsentRequestParameters params = new ConsentRequestParameters.Builder().build();
-            consentInformation = UserMessagingPlatform.getConsentInformation(this);
-            consentInformation.requestConsentInfoUpdate(this, params, () -> {
-                        if (consentInformation.isConsentFormAvailable()) {
-                            loadForm();
-                        }
-                    },
-                    formError -> {
-                    });
-        }
-    }
-
-    public void loadForm() {
-        UserMessagingPlatform.loadConsentForm(this, consentForm -> {
-                    MainActivity.this.consentForm = consentForm;
-                    if (consentInformation.getConsentStatus() == ConsentInformation.ConsentStatus.REQUIRED) {
-                        consentForm.show(MainActivity.this, formError -> {
-                            loadForm();
-                        });
-                    }
-                },
-                formError -> {
-                }
-        );
     }
 
     @Override
@@ -766,14 +304,62 @@ public class MainActivity extends AppCompatActivity {
         return getResources().getAssets();
     }
 
-    public void getAdsLog() {
-        Log.d("ads_response", adsPref.getAdStatus());
-        Log.d("ads_response", adsPref.getAdType());
-        Log.d("ads_response", adsPref.getAdMobPublisherId());
-        Log.d("ads_response", adsPref.getAdMobAppId());
-        Log.d("ads_response_fan", adsPref.getFanBannerUnitId());
-        Log.d("ads_response", "" + adsPref.getNativeAdIndex());
-        Log.d("ads_response", "" + adsPref.getYoutubeAPIKey());
+    private void inAppReview() {
+        if (sharedPref.getInAppReviewToken() <= 3) {
+            sharedPref.updateInAppReviewToken(sharedPref.getInAppReviewToken() + 1);
+        } else {
+            ReviewManager manager = ReviewManagerFactory.create(this);
+            Task<ReviewInfo> request = manager.requestReviewFlow();
+            request.addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    ReviewInfo reviewInfo = task.getResult();
+                    manager.launchReviewFlow(MainActivity.this, reviewInfo).addOnFailureListener(e -> {
+                    }).addOnCompleteListener(complete -> {
+                                Log.d(TAG, "In-App Review Success");
+                            }
+                    ).addOnFailureListener(failure -> {
+                        Log.d(TAG, "In-App Review Rating Failed");
+                    });
+                }
+            }).addOnFailureListener(failure -> Log.d("In-App Review", "In-App Request Failed " + failure));
+        }
+        Log.d(TAG, "in app review token : " + sharedPref.getInAppReviewToken());
     }
+
+    private void inAppUpdate() {
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                startUpdateFlow(appUpdateInfo);
+            } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                startUpdateFlow(appUpdateInfo);
+            }
+        });
+    }
+
+    private void startUpdateFlow(AppUpdateInfo appUpdateInfo) {
+        try {
+            appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.IMMEDIATE, this, Constant.IMMEDIATE_APP_UPDATE_REQ_CODE);
+        } catch (IntentSender.SendIntentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constant.IMMEDIATE_APP_UPDATE_REQ_CODE) {
+            if (resultCode == RESULT_CANCELED) {
+                showSnackBar(getString(R.string.msg_cancel_update));
+            } else if (resultCode == RESULT_OK) {
+                showSnackBar(getString(R.string.msg_success_update));
+            } else {
+                showSnackBar(getString(R.string.msg_failed_update));
+                inAppUpdate();
+            }
+        }
+    }
+
 
 }

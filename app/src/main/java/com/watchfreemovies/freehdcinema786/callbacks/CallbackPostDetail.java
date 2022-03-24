@@ -1,17 +1,16 @@
 package com.watchfreemovies.freehdcinema786.callbacks;
 
 import com.watchfreemovies.freehdcinema786.models.Images;
-import com.watchfreemovies.freehdcinema786.models.News;
+import com.watchfreemovies.freehdcinema786.models.Post;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CallbackPostDetail implements Serializable {
+public class CallbackPostDetail {
 
     public String status = "";
-    public News post = null;
+    public Post post = null;
     public List<Images> images = new ArrayList<>();
-    public List<News> related = new ArrayList<>();
+    public List<Post> related = new ArrayList<>();
 
 }
