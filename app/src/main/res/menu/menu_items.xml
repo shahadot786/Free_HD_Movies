@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_search"
+        android:title="@string/search"
+        android:icon="@drawable/ic_search_icon"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/notification"
+        android:title="@string/notification"
+        android:icon="@drawable/ic_notification_icon"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/settings"
+        android:title=""
+        android:icon="@drawable/ic_settings_white_24dp"
+        app:showAsAction="always">
+
+        <menu>
+            <item
+                android:id="@+id/upgrade_pro"
+                android:visible="true"
+                android:icon="@drawable/ic_pro_white_24dp"
+                android:title="@string/upgrade_pro"/>
+            <item
+                android:id="@+id/share"
+                android:icon="@drawable/ic_share_24dp"
+                android:title="@string/share_knowledge"/>
+            <item
+                android:id="@+id/feedback"
+                android:icon="@drawable/ic_feedback_white_24dp"
+                android:title="@string/feedback"/>
+            <item
+                android:id="@+id/rate"
+                android:icon="@drawable/ic_rate_white_24dp"
+                android:title="@string/rate_now"/>
+            <item
+                android:id="@+id/follow_us"
+                android:icon="@drawable/ic_follow_us_white_24dp"
+                android:title="@string/follow_us"/>
+            <item
+                android:id="@+id/more_apps"
+                android:icon="@drawable/ic_more_apps_white_24dp"
+                android:title="@string/more_apps"/>
+            <item
+                android:id="@+id/privacy"
+                android:icon="@drawable/ic_privacy_icon"
+                android:title="@string/privacy_policy"/>
+            <item
+                android:id="@+id/contact_us"
+                android:icon="@drawable/ic_contact_us_24dp"
+                android:title="@string/contact_us"/>
+            <item
+                android:id="@+id/about"
+                android:title="@string/about_disclaimer"
+                android:icon="@drawable/ic_about_icon"/>
+
+            <item
+                android:id="@+id/logout"
+                android:title="@string/signOut"
+                android:icon="@drawable/ic_logout_white_24dp"/>
+
+        </menu>
+
+    </item>
+
+</menu>

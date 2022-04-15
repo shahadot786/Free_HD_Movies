@@ -1,0 +1,792 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.EditMoviesActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/toolbar_bg"
+        android:textSize="40sp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:titleTextColor="@color/textColorGrey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="60dp"
+        android:paddingBottom="40dp"
+        android:fillViewport="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2"
+        tools:ignore="SpeakableTextPresentCheck">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="120dp"
+            android:background="@drawable/ic_round_bg_1"
+            android:paddingBottom="55dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_profile_default_image"
+                app:civ_border_color="@color/activeRed"
+                app:civ_border_width="1dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/username"
+                app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+                app:layout_constraintStart_toEndOf="@+id/profileImage"
+                app:layout_constraintTop_toTopOf="@+id/profileImage" />
+
+            <ImageView
+                android:id="@+id/proBadge"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:contentDescription="@string/profile_image"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/userName"
+                app:layout_constraintStart_toEndOf="@+id/userName"
+                app:layout_constraintTop_toTopOf="@+id/userName"
+                app:srcCompat="@drawable/pro_big" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/update_movie"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/profileImage"
+                app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/usernameet"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/textView11"
+                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_username"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                android:visibility="gone"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="25"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/textView">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/usernameEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_your_username"
+                    android:inputType="text"
+                    android:maxLength="25"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/movie_name"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_username" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_movieName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textView22"
+                app:layout_constraintTop_toBottomOf="@+id/textView22">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/movieNameEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_your_movie_name"
+                    android:inputType="text"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/year"
+                app:layout_constraintStart_toStartOf="@+id/textView22"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_movieName" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_movieYear"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textView22"
+                app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/movieYearEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_your_year"
+                    android:inputType="text"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textView40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/type"
+                app:layout_constraintStart_toStartOf="@+id/textView22"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_movieYear" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_type"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textView22"
+                app:layout_constraintTop_toBottomOf="@+id/textView40">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/typeEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_your_type"
+                    android:inputType="text"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/descriptions"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_type" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_descriptions"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView12">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/descriptionsEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="@string/write_movie_descriptions"
+                    android:inputType="textMultiLine|textPersonName"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textView120"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/keywords"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_descriptions" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_keywords"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView120">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/keywordsEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="@string/write_keywords"
+                    android:inputType="textMultiLine|textPersonName"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--Facebook link-->
+            <TextView
+                android:id="@+id/proUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/image"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_keywords" />
+
+
+            <!--Instagram link-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/moviesImagesEdit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:inputType="textMultiLine|textPersonName"
+                android:overScrollMode="always"
+                android:scrollbars="vertical"
+                android:textColor="@color/colorWhite"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/text_input_descriptions"
+                app:layout_constraintStart_toStartOf="@+id/proUserName"
+                app:layout_constraintTop_toBottomOf="@+id/proUserName"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <Button
+                android:id="@+id/movieImageUpload"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/upload_movie_image"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/text_input_descriptions"
+                app:layout_constraintStart_toStartOf="@+id/text_input_descriptions"
+                app:layout_constraintTop_toBottomOf="@+id/moviesImagesEdit" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genres"
+                app:layout_constraintStart_toStartOf="@+id/movieImageUpload"
+                app:layout_constraintTop_toBottomOf="@+id/movieImageUpload" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_genre"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView14">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/genreEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_movie_categories_or_genres"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textView24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/genre_1"
+                app:layout_constraintStart_toStartOf="@+id/text_input_genre"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_genre" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_genre1"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView24">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/genre1EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_movie_categories_or_genres"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/genre_2"
+                app:layout_constraintStart_toStartOf="@+id/text_input_genre1"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_genre1" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_genre2"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView28">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/genre2EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_movie_categories_or_genres"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--Github link-->
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/rating"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_genre2" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_rating"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView15">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ratingEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_movie_rating"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--imdb_link-->
+            <TextView
+                android:id="@+id/textView26"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/imdb_info_link"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_rating" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_imdb_link"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView26">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/imdb_linkEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_movie_imdb_link"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp"
+                    tools:ignore="DuplicateSpeakableTextCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--Trailer link-->
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:text="@string/play_link"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_imdb_link" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_trailer_link"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView17">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/play_linkEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_movie_play_link"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!--Server 1 link-->
+            <TextView
+                android:id="@+id/server_1Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/server_1"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_trailer_link" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_server_1"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/server_1Text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/server_1EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_server_1_link"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--Server 2 link-->
+            <TextView
+                android:id="@+id/server_2Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/server_2"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_server_1" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_server_2"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/server_2Text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/server_2EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_server_2_link"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--Server 3 link-->
+            <TextView
+                android:id="@+id/server_3Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/server_3"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_server_2" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_server_3"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/server_3Text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/server_3EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_server_3_link"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!--Server 4 link-->
+            <TextView
+                android:id="@+id/server_4Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/server_3"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_server_3" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_server_4"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/server_4Text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/server_4EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_server_4_link"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/updateMoviesBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="32dp"
+                android:fontFamily="@font/oswald"
+                android:text="@string/update_movie"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_server_4" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

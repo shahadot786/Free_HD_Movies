@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/moviesRVSample"
+    android:layout_width="115dp"
+    android:layout_height="250dp"
+    android:layout_margin="5dp"
+    android:background="@drawable/ic_round_bg_1"
+    android:paddingBottom="5dp">
+
+    <ImageView
+        android:id="@+id/movieImage"
+        android:layout_width="0dp"
+        android:layout_height="170dp"
+        android:contentDescription="@string/add_movies_sample_image"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_placeholder_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ImageContrastCheck" />
+
+    <View
+        android:id="@+id/view12"
+        android:layout_width="0dp"
+        android:layout_height="170dp"
+        android:background="#751E1E1E"
+        app:layout_constraintBottom_toTopOf="@+id/movieName"
+        app:layout_constraintEnd_toEndOf="@+id/movieImage"
+        app:layout_constraintStart_toStartOf="@+id/movieImage"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/play_button"
+        android:src="@drawable/ic_movie_play_button_icon_48"
+        app:layout_constraintBottom_toBottomOf="@+id/movieImage"
+        app:layout_constraintEnd_toEndOf="@+id/movieImage" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="4dp"
+        android:gravity="center"
+        android:text="@string/_0"
+        android:textColor="@color/color_text_discuss"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        app:drawableLeftCompat="@drawable/ic_rating_icon_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/movieImage" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/activeRed"
+        android:fontFamily="cursive"
+        android:paddingStart="1dp"
+        android:paddingEnd="1dp"
+        android:text="@string/hd"
+        android:textColor="@color/colorWhite"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/movieName"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:text="@string/username"
+        android:textColor="#88AB89"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/countLikes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/movieImage" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/countLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:drawablePadding="4dp"
+        android:gravity="center"
+        android:text="@string/_0"
+        android:textColor="@color/color_text_discuss"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        app:drawableLeftCompat="@drawable/ic__like_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/views"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:drawablePadding="4dp"
+        android:gravity="center"
+        android:text="@string/_0"
+        android:textColor="@color/color_text_discuss"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        app:drawableLeftCompat="@drawable/ic_watch_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/countLikes" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

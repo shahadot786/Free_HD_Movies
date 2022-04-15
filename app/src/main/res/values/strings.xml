@@ -1,182 +1,389 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!--app info-->
+    <!--Main-->
     <string name="app_name">HD Movies</string>
-    <string name="app_slogan">Watch daily new free movies</string>
-    <string name="copyright">Copyright © 2021 MD Shahadot Hossain Developer. \nAll right reserved</string>
-    <string name="share_content">I Would like to share this HD Movies with you. Here You Can Download This Application from PlayStore for watching the Video.</string>
+    <string name="app_name_for_app">HD Movies 2022</string>
+    <string name="copyright">Copyright © 2021 SHR_Creation. \nAll right reserved</string>
 
-    <!--bottom navigation title-->
-    <string name="title_nav_home">Home</string>
-    <string name="title_nav_category">Category</string>
-    <string name="title_nav_video">Movies</string>
-    <string name="title_nav_favorite">Favorite</string>
+    <!--Play Store -->
+    <string name="url_play_more_apps">https://play.google.com/store/apps/dev?id=5967016763322581246</string>
+    <string name="url_play_privacy_policy">https://shrcreation.com/privacy.html</string>
+    <string name="play_console_license_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAntKjxTFg1tIwTNxHBs80Cw3ktVUnn3m743epByX7aPDsasXVrZMCguEvnFjOh3Plw3C21Bx5D4ghlXHFl+ZafMznS+fk+kR6kvN0UqnYBqNl5q/z+1jP1AVZ1vtw6GOouZGWVGOSidw3QHjLrW1J2JHP7jdmDzSXc3/KBgKZXUrWDqJrF4JBs1qbtVyyPz+V8Zj60hFsxHrJv29VRjFbmWQmuaen1z6xyZcmS/cbggZ5bMLkvGBdNF0avpMpwiihg6PPkmRhw8hguLJp4OtjxHGnIDGKVn1kBUMfrFiMACXEUbj8XqEzG7D6vHQamobVnnSfww6N4gwT19OOoV5enwIDAQAB</string>
+    <string name="play_name">SHR_Creation</string>
+    <string name="play_email">shrcreation.media\'@gmail.com</string>
+    <string name="play_website">https://www.shrcreation.com</string>
+    <string name="play_rate_now">https://play.google.com/store/apps/details?id=com.watchfreemovies.freehdcinema786</string>
+    <string name="shr_creation">SHR Creation</string>
+    <string name="ad_attribution">AD</string>
 
-    <!-- toolbar and title-->
-    <string name="title_menu_profile">Profile</string>
-    <string name="title_menu_edit_profile">Edit Profile</string>
-    <string name="title_menu_close">Close</string>
-    <string name="title_menu_save">Save</string>
-    <string name="title_menu_font_size">Font Size</string>
-    <string name="title_menu_later">Favorite</string>
-    <string name="title_menu_share">Share</string>
-    <string name="title_menu_search">Search&#8230;</string>
-    <string name="title_menu_browser">Open In Browser</string>
-    <string name="title_menu_settings">Settings</string>
-    <string name="title_login">LOGIN</string>
-    <string name="title_register">REGISTER</string>
-    <string name="title_forgot_password">FORGOT PASSWORD</string>
-    <string name="txt_suggested">Suggested</string>
-
-    <!--favorite-->
-    <string name="whops">Whoops!</string>
-    <string name="favorite_added">Added to Favorite</string>
-    <string name="favorite_removed">Removed from Favorite</string>
-    <string name="no_favorite_found">Your favorite list is empty because you don\'t add any news in the favorite menu.</string>
-
-    <!--register-->
-    <string name="register_title">Thanks for Register</string>
-    <string name="register_success">Register successfully&#8230;</string>
-    <string name="register_process">Registering your account&#8230;</string>
-    <string name="register_exist">Email address already used!</string>
-    <string name="terms_text">By creating an account, you agree with our</string>
-    <string name="terms_n_privacy">Terms &amp; Privacy</string>
-    <string name="title_please_wait">Please Wait&#8230;</string>
-    <string name="already_have_account">Already have an account?</string>
-
-    <!--login-->
-    <string name="login_title">Good Job!</string>
-    <string name="login_process">Processing login to your account&#8230;</string>
-    <string name="login_success">Login Successfully&#8230;</string>
-    <string name="login_failed">Invalid Email or Password!</string>
-    <string name="login_disabled">Account has been disabled, please contact administrator to enable your account</string>
-    <string name="do_not_have_account">Don\'t have an account?</string>
-    <string name="register_now">Register Now</string>
-    <string name="txt_login_now">LOGIN NOW</string>
-
-    <!--logout-->
-    <string name="logout_title">Logout</string>
-    <string name="btn_logout">LOGOUT</string>
-    <string name="logout_message">Are you sure want to logout?</string>
-    <string name="logout_process">Processing logout to your account&#8230;</string>
-    <string name="logout_success">Logout Successfully</string>
-
-    <!--forgot password-->
-    <string name="forgot_message">Enter the email that used during registration.</string>
-    <string name="forgot_verify_email">is verifying your email</string>
-    <string name="forgot_send_email">is sending forgot password request to your email.</string>
-    <string name="forgot_failed_message">Email is not found in our database!</string>
-    <string name="forgot_success_message">The password has been sent to your email, please check your inbox, if it is not found in your inbox, please check your spam folder.</string>
-    <string name="forgot_password">Forgot Password?</string>
-
-    <!--profile-->
-    <string name="txt_profile_welcome">Welcome!</string>
-    <string name="txt_profile_not_registered">Not registered?</string>
-    <string name="txt_profile_register_now">Register Now</string>
-    <string name="txt_profile_login">LOGIN</string>
-    <string name="updating_profile">Updating Profile</string>
-    <string name="success_updating_profile">Update Successfully</string>
-    <string name="waiting_message">Please wait&#8230;</string>
-    <string name="title_setting_share">Share to friends</string>
-
-    <!--comments-->
-    <string name="title_comments">Comments</string>
-    <string name="txt_no_comment">Write your first comment&#8230;</string>
-    <string name="msg_no_comment">no comments yet, write your first comment.</string>
-    <string name="comment_hint">Write your comment&#8230;</string>
-    <string name="confirm_send_comment">Send this comment?</string>
-    <string name="confirm_delete_comment">Are you sure want to delete your comment?</string>
-    <string name="sending_comment">Sending comment&#8230;</string>
-    <string name="updating_comment">Updating comment&#8230;</string>
-    <string name="msg_comment_success">You have successfully posted a comment</string>
-    <string name="msg_comment_failed">Failed post comment!</string>
-    <string name="msg_comment_update">Your comment successfully updated</string>
-    <string name="msg_update_comment_failed">Failed update comment</string>
-    <string name="msg_comment_approval">Thank you, your comments will be reviewed soon and will be displayed immediately after getting approval.</string>
-    <string name="msg_write_comment">Please write your message first&#8230;</string>
-    <string name="msg_write_comment_character">your message at least 6 character&#8230;</string>
-    <string name="msg_success_delete_comment">Your comment was deleted successfully.</string>
-    <string name="msg_failed_delete_comment">Whoops! failed to delete comment!</string>
-    <string name="btn_update">UPDATE</string>
-    <string name="hint_update_comment">Update Comment</string>
-    <string name="txt_read">Read</string>
-    <string name="txt_comment">Comment</string>
-    <string name="txt_comments">Comments</string>
-    <string name="txt_you">you</string>
-    <string name="txt_title_update_comment">Update Comment</string>
-    <string name="txt_dialog_edit">Edit</string>
-    <string name="txt_dialog_delete">Delete</string>
-    <string name="txt_dialog_reply">Reply</string>
-    <string name="img_content_description">TODO</string>
-
-    <!--settings and others-->
-    <string name="title_setting_theme">Dark Mode</string>
-    <string name="sub_title_setting_theme">Better eyesight and power saving</string>
-    <string name="title_setting_text_size">Text Size</string>
-    <string name="sub_title_setting_text_size">Preferred text size for posts description</string>
-    <string name="title_setting_notification">Push Notification</string>
-    <string name="sub_title_setting_notification">Manage push notification settings</string>
-    <string name="title_setting_clear_search_history">Clear search history</string>
-    <string name="title_setting_privacy">Privacy Policy</string>
-    <string name="title_setting_publisher">Disclaimer</string>
-    <string name="title_setting_rate">Rate us</string>
-    <string name="title_setting_more_apps">More apps</string>
-    <string name="title_setting_about">About</string>
-    <string name="title_about_privacy">Privacy Policy</string>
-    <string name="title_about_publisher">Disclaimer Info</string>
-    <string name="title_dialog_clear_search_history">Clear Search History</string>
-    <string name="msg_dialog_clear_search_history">Are you sure want to clear your search history?</string>
-    <string name="clearing_process">Clearing search history&#8230;</string>
-    <string name="clearing_success">Search history cleared successfully&#8230;</string>
-    <string name="clearing_empty">Your search history is empty</string>
-
-    <!--network message-->
-    <string name="offline">You\'re offline</string>
-    <string name="msg_offline">The next time you\'re online, try saving some videos to favorite that you can watch without an Internet connection.</string>
-    <string name="msg_no_news">Oops, it looks like there are no videos available for this category at this time.</string>
-    <string name="msg_no_category">Oops, No Category Found!</string>
-    <string name="msg_no_news_found">Oops, No Videos Found! if you want to continue search, please try enter another keyword!</string>
-    <string name="msg_no_network">Oops, there is something problem with your network or the server is currently down, please try it again later.</string>
-    <string name="msg_search_input">Please Fill Search Input</string>
-    <string name="btn_retry">RETRY</string>
-    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
-    <string name="msg_cancel_update">Update canceled</string>
-    <string name="msg_success_update">Update success!</string>
-    <string name="msg_failed_update">Update Failed!</string>
-
-    <!--dialog choose option-->
-    <string name="dialog_success">Success!</string>
-    <string name="dialog_yes">Yes</string>
-    <string name="dialog_no">No</string>
-    <string name="dialog_ok">OK</string>
-    <string name="dialog_cancel">Cancel</string>
-
-    <!--font size name -->
-    <string name="title_dialog_font_size">Select Font Size</string>
-    <string name="font_size_xsmall">Extra Small</string>
-    <string name="font_size_small">Small</string>
-    <string name="font_size_medium">Medium</string>
-    <string name="font_size_large">Large</string>
-    <string name="font_size_xlarge">Extra Large</string>
-
-    <!--dialog close app-->
-    <string name="dialog_close_title">Thank You</string>
-    <string name="dialog_close_msg">Thank you for using our app, please give us your suggestions or feedback</string>
-    <string name="dialog_option_quit">QUIT</string>
-    <string name="dialog_option_rate_us">RATE US</string>
-    <string name="dialog_option_more">MORE APPS</string>
+    <!--Ads Real-->
+    <string name="applovin_sdk_key">h_SI4RH8q40T3xf1aRSRtbznFChbszL2K2PUQpTxxskOwo6LGumFvQgemqzfycGOwb2mKDFZoEecwDCsvaB0uD</string>
+    <string name="banner_ad_unit_id">d4d88b4ae4fa4ca9</string>
+    <string name="interstitial_ad_unit_id">4fe9a34c3ef9384c</string>
+    <string name="rewarded_ad_unit_id">13b9c5221d90909c</string>
+    <string name="mrec_ad_unit_id">01300249931833ea</string>
+    <string name="native_small_ad_unit_id">b8dc6dcf7317353d</string>
+    <string name="native_medium_ad_unit_id">9a29b536830656f5</string>
+    <!--Main Activity-->
     <string name="press_again_to_exit">Press again to exit app</string>
 
-    <!--form-->
-    <string name="edt_name">Name</string>
-    <string name="edt_email">Email</string>
-    <string name="edt_password">Password</string>
+    <!--Feeds-->
+    <string name="hello">Hello</string>
+    <string name="username">Anonymous</string>
+    <string name="share">Share</string>
 
-    <!--button-->
-    <string name="btn_login">LOGIN</string>
-    <string name="btn_register">REGISTER</string>
-    <string name="btn_send">SEND</string>
+    <!--Sign Up-->
+    <string name="signup">Sign Up</string>
+    <string name="lets_start_learning">Let\'s start Watching</string>
+    <string name="an_account">Already have an account?</string>
+    <string name="signIn">Sign In</string>
+    <string name="email">Email</string>
+    <string name="email2">Email : </string>
+    <string name="password">Password</string>
+    <string name="password2">Password : </string>
+    <string name="register">Register</string>
+    <string name="sign_up_policy_message">By clicking Register, you agree to our</string>
+    <string name="privacy_term">Privacy &amp; Policy</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="or_sign_up_with_email">Sign up with Email</string>
+    <string name="or_sign_in_with_google">Or Sign in with Google</string>
+    <string name="refund_policy">Refund Policy</string>
+    <string name="refund_message">* Refunds can be issued only if you send a request for refund within 48 hours of your order. \n\n * To request a refund, you can mail us your order number and date (from your Google Play Order Receipt) to our email: info@shrcreation.com</string>
+
+    <!--Sign In-->
+    <string name="log_in">Sign In</string>
+    <string name="login_message">Hello Again!</string>
+    <string name="login_message2">Welcome back you\'ve missed!</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="welcome_message">Welcome back, Read our..</string>
+
+    <!--Forgot Password-->
+    <string name="forgot_password">Forgot Password</string>
+    <string name="forgot_message">Please enter your registered email address</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="remember_my_password">Remember password!</string>
+
+    <!--Bottom Navigation-->
+    <string name="menu_jscript">Home</string>
+    <string name="menu_learn">Genres</string>
+    <string name="menu_discuss">Feed</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_pro">PRO</string>
+
+
+    <!--Follow Us-->
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="linkedin">LinkedIn</string>
+    <string name="twitter">Twitter</string>
+    <string name="play_store">Play Store</string>
+    <string name="github">GitHub</string>
+    <string name="website">Website</string>
+
+    <!--Link-->
+    <string name="link_instagram">https://www.instagram.com/shrcreation4/</string>
+    <string name="link_facebook">https://www.facebook.com/shrcreation</string>
+    <string name="link_linkedin">https://www.linkedin.com/in/shr-creation-a80602227/</string>
+    <string name="link_twitter">https://twitter.com/ShrCreation</string>
+    <string name="link_github">https://github.com/shrcreation</string>
+
+    <!--Fragments String-->
+    <string name="feedback">Feedback</string>
+    <string name="rate_now">Rate Now</string>
+    <string name="follow_us">Follow Us</string>
+    <string name="more_apps">More Apps</string>
+    <string name="signOut">Sign Out</string>
+    <string name="upgrade_pro">Upgrade PRO</string>
+    <string name="privacy_policy">Privacy &amp; Policy</string>
+    <string name="share_knowledge">Invite Friends</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="exclamation">!</string>
+    <string name="log_in_details">Info</string>
+    <string name="feedback_message">Please provide your message here..</string>
+    <string name="feedback_message2">What\'s bothering you! Share anything you want or Request movies &amp; Tv-Series</string>
+    <string name="feedback_email">Write your email here..</string>
+    <string name="send">Send</string>
+
+    <!--Alert Dialog-->
+    <string name="dialog_feedback">Feedback Submitted</string>
+    <string name="dialog_feed_message">We value every piece of feedback we receive and use it to improve your HD Movies experience.</string>
+    <string name="dialog_ok">OK</string>
+    <string name="message">Message :</string>
+
+    <!--dialog close app-->
+    <string name="dialog_close_title">Thank You For Using Our App</string>
+    <string name="dialog_close_msg">Before low rate please share your problems.
+        Your ratings and feedback will help us make the app better and deliver the best experience to you.
+     Love this app, please rate us 5 star to support our developers!!!</string>
+    <string name="dialog_option_quit">QUIT</string>
+    <string name="dialog_option_rate_us">RATE US</string>
+
+    <!--Sign Out-->
+    <string name="yes_signout">Yes, SignOut</string>
+    <string name="cancel">Cancel</string>
+    <string name="are_you_sure_you_want_to_signout">Are you sure want to sign out?</string>
+    <string name="we_wish_to_see_you_back_real_soon">We wish to see you back real soon</string>
+    <string name="bye">Bye!</string>
+
+    <!--Pro Fragment-->
+    <string name="upgrade_to_pro">Upgrade to PRO</string>
+    <string name="congratulations">Congratulations, Welcome to Premium</string>
+    <string name="welcome_to_pro">Welcome to Premium</string>
+    <string name="pro_des">Celebrate Your Love For Code With PRO Access</string>
+    <string name="pro_des_1">Unlimited Access For All PRO Content</string>
+    <string name="pro_des_2">Get Ready For New Movies</string>
+    <string name="pro_des_3">Free Exclusive Premium Movies</string>
+    <string name="pro_des_4">Remove Ads</string>
+    <string name="pro_des_5">And Much More!</string>
+    <string name="try_free_for_7_days">Upgrade to Premium Now</string>
+    <string name="_95">95%</string>
+    <string name="best_value">BEST VALUE</string>
+    <string name="_12_months">Lifetime</string>
+    <string name="app_price">$0.99</string>
+
+    <!--profile-->
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="just_one_tap_to_go">Just one tap to go</string>
+    <string name="limited_time_offer">Limited time offer</string>
+    <string name="buy_now">Upgrade Now</string>
+    <string name="profile_bio_default_text">Add a bio..</string>
+
+    <!--Edit Profile-->
+    <string name="write_your_profession">Write your profession</string>
+    <string name="profession">Profession</string>
+    <string name="update_your_profile">Update your profile</string>
+    <string name="facebook_link">Facebook Link</string>
+    <string name="about_or_bio">About or Bio</string>
+    <string name="write_about_yourself">Write about yourself</string>
+    <string name="write_your_facebook_link">Write your facebook link start with (https:// ot http://)</string>
+    <string name="write_your_instagram_link">Write your instagram link start with (https:// ot http://)</string>
+    <string name="write_your_github_link">Write your netflix link start with (https:// ot http://)</string>
+    <string name="write_your_linkedin_link">Write your linkedin link start with (https:// ot http://)</string>
+    <string name="write_your_twitter_link">Write your twitter link start with (https:// ot http://)</string>
+    <string name="instagram_link">Instagram Link</string>
+    <string name="github_link">Netflix Link</string>
+    <string name="linkedin_link">LinkedIn Link</string>
+    <string name="twitter_link">Twitter Link</string>
+    <string name="update">Update</string>
+    <string name="usernameet">Username</string>
+    <string name="write_your_username">Write your username</string>
+
+    <!--Share Message-->
+    <string name="share_message">Hey check out this app to watch new movies:</string>
+    <string name="share_message2">Daily watch and downloads new premium movies</string>
+    <string name="share_message3">Downloads 1000+ new movies in HD Quality</string>
+    <string name="share_message4">Watch movies in different categories</string>
+
+    <!--Extras-->
+    <string name="network_connected">Network Connection Successful</string>
+    <string name="no_connection_text">You\'re offline, please connect to network first</string>
+    <string name="enter_register_email">Please enter your registered email address</string>
+    <string name="net_connection_check">Please check your email address!</string>
+    <string name="correct_email">Enter correct email address!</string>
+    <string name="Service_Disconnected">Service Disconnected</string>
+    <string name="Error">Error</string>
+    <string name="PurchaseItemnotFound">Purchase Item not Found</string>
+    <string name="PurchaseCanceled">Purchase Canceled</string>
+    <string name="ErrorinvalidPurchase">Error : invalid Purchase</string>
+    <string name="ItemPurchased">Item Purchased</string>
+    <string name="PurchaseisPending">Purchase is Pending. Please complete Transaction</string>
+    <string name="PurchaseStatusUnknown">Purchase Status Unknown</string>
+    <string name="PleaseCorrectPassword">Please enter a correct password!</string>
+    <string name="SignInSuccessfully">Sign In Successfully</string>
+    <string name="WeakPassword">Weak password</string>
+    <string name="EmailAlreadyExist">Email already exist</string>
+    <string name="SignUpSuccessfully">Sign Up Successfully</string>
+    <string name="PostedSuccessfully">Posted Successfully</string>
+    <string name="Please_select_an_option">Please select an option</string>
+    <string name="Pleaseupdateyourprofilefirst">Please update your profile first</string>
+    <string name="valid_input">Please insert valid input in your update profile</string>
+    <string name="UploadSuccessfully">Upload Successfully</string>
+    <string name="WrongImageUpload">Image Upload Failed</string>
+    <string name="get_started">Get Started</string>
+    <string name="slider_item_image">slider_item_image</string>
+    <string name="categories">Genres</string>
+    <string name="tvSeries">TV Series</string>
+    <string name="a_minute_ago">a minute ago</string>
+    <string name="add_movies">Add</string>
+    <string name="add_new_movies">Add New Movies &amp; TV-Series</string>
+    <string name="movie_name">Name</string>
+    <string name="write_your_movie_name">Write your name…</string>
+    <string name="descriptions">Descriptions</string>
+    <string name="write_movie_descriptions">Write your descriptions here…</string>
+    <string name="image">Image</string>
+    <string name="upload_movie_image">Upload Image</string>
+    <string name="write_movie_categories_or_genres">Write genre…</string>
+    <string name="rating">Rating</string>
+    <string name="write_movie_rating">Write your rating here…</string>
+    <string name="download_link">Download Link</string>
+    <string name="write_movie_download_link">Write your download link</string>
+    <string name="write_movie_imdb_link">Write your imdb link</string>
+    <string name="play_link">Trailer Link</string>
+    <string name="write_movie_play_link">Write your trailer link</string>
+    <string name="write_your_answer_here">Write something here</string>
+    <string name="genres">Genres</string>
+    <string name="download">Download</string>
+    <string name="trailer">Trailer</string>
+    <string name="_0">0</string>
+    <string name="add_movies_sample_image">add_movies_sample_image</string>
+    <string name="profile_image">Profile_image</string>
+    <string name="pro_badge">pro_badge</string>
+    <string name="comment_post_image">comment_post_image</string>
+    <string name="checked_icon_image">checked_icon_image</string>
+    <string name="cancle_btn_image">cancle_btn_image</string>
+    <string name="main_icon_image">Main_icon_image</string>
+    <string name="cover_image">cover_image</string>
+    <string name="add_image_plus_icon">add_image_plus_icon</string>
+    <string name="edit_profile_icon">edit_profile_icon</string>
+    <string name="social_image_icon">social_image_icon</string>
+    <string name="failed_to_load_ad">Failed to load ad. Try again..</string>
+    <string name="imdb_info">More Info…</string>
+    <string name="be_happy_with_your_love">Be, happy with your love! 💚</string>
+    <string name="stay_with_your_feelings">Stay with your feelings ❤</string>
+    <string name="value_your_choice">Value your choice 💙</string>
+    <string name="imdb_info_link">IMDb Info Link</string>
+    <string name="play_button">play_button</string>
+    <string name="install">Install</string>
+    <string name="add_tv_series">Add TV-Series</string>
+    <string name="ad_new_tv_series">Ad New Tv-Series</string>
+    <string name="tv_series_name">Tv-Series Name</string>
+    <string name="what_s_on_your_mind">What\'s on your mind 🤔</string>
+    <string name="post">POST</string>
+    <string name="description_is_required">Description is required.</string>
+    <string name="image_is_required">Image is required.</string>
+    <string name="report_submitted">Thanks for your report</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="movies">Movies</string>
+    <string name="tv_series">Tv-Series</string>
+    <string name="link_not_found">Link not found</string>
+    <string name="thriller">Thriller</string>
+    <string name="romantic">Romance</string>
+    <string name="drama">Drama</string>
+    <string name="new_movies">New</string>
+    <string name="korean">Korean</string>
+    <string name="horror">Horror</string>
+    <string name="chinese">Chinese</string>
+    <string name="comedy">Comedy</string>
+    <string name="fantasy">Fantasy</string>
+    <string name="my_choices">Favorites</string>
+    <string name="please_save_some_movies_tv_series_first"><![CDATA[Please Save Some Movies & Tv-Series First]]></string>
+    <string name="save">Save</string>
+    <string name="empty_list">Empty</string>
+    <string name="please_use_different_keywords">Please use different keyword or search in generes search option…</string>
+    <string name="search">Search…</string>
+    <string name="not_found">Not found</string>
+    <string name="notification">Notification</string>
+    <string name="no_notification_yet">No Notification yet..</string>
+    <string name="my_post">My Post</string>
+    <string name="please_add_some_post">No post here..</string>
+    <string name="year">Year</string>
+    <string name="write_your_year">Write your year</string>
+    <string name="war">War</string>
+    <string name="sci_fi">Sci-Fi</string>
+    <string name="_2022">2022</string>
+    <string name="family">Family</string>
+    <string name="animation">Animation</string>
+    <string name="history">History</string>
+    <string name="music">Music</string>
+    <string name="documentary">Documentary</string>
+    <string name="western">Western</string>
+    <string name="mystery">Mystery</string>
+    <string name="_2021">2021</string>
+    <string name="more">More</string>
+    <string name="_2015_2020">Old Is Gold</string>
+    <string name="type">Type</string>
+    <string name="write_your_type">Write your type</string>
+    <string name="please_come_back_after_some_time">Please come back after some time</string>
+    <string name="watch_link">Watch Link</string>
+    <string name="write_your_watch_link">Write your watch link</string>
+    <string name="watch_now">Watch Now</string>
+    <string name="keywords">Keywords</string>
+    <string name="write_keywords">Write keywords</string>
+    <string name="hd">HD</string>
+    <string name="action">Action</string>
+    <string name="adventure">Adventure</string>
+    <string name="crime">Crime</string>
+    <string name="related_movies">Related Movies</string>
+    <string name="play">Play</string>
+    <string name="download_now">Download Now</string>
+    <string name="about_disclaimer">About &amp; Disclaimer</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="disclaimer_text">The content provided in this app is hosted by a public video website and is available in the public domain. We do not upload any videos. This app is just an organized way to browse and view the discovered videos on the public website. If you are the owner of any video just email us, and we will remove your videos within 1 working day.</string>
+    <string name="evergreen_movies">All Time Hits</string>
+    <string name="action_movies">Top Action Movies</string>
+    <string name="top_rated_movies">Top Rated Movies</string>
+    <string name="latest_updated_movies">Trending This Week</string>
+    <string name="sci_fi_movies">Sci-Fi Movies</string>
+    <string name="horror_movies">Horror Movies</string>
+    <string name="comedy_movies">Comedy Movies</string>
+    <string name="crime_movies">Crime Movies</string>
+    <string name="korean_movies">Korean Movies</string>
+    <string name="adventure_movies">Adventure Movies</string>
+    <string name="_2015_2020_movies">Old Is Gold Movies</string>
+    <string name="mystery_movies">Mystery Movies</string>
+    <string name="animation_movies">Animation Movies</string>
+    <string name="romantic_movies">Romantic Movies</string>
+    <string name="thriller_movies">Top Thriller Movies</string>
+    <string name="popular_tv_shows">Popular TV Shows</string>
+    <string name="flex_favorites">HD Movies Favorites</string>
+    <string name="chinese_movies">Chinese Movies</string>
+    <string name="about_yourself">About</string>
+    <string name="saved_post">Saved Post</string>
+    <string name="follow">Follow</string>
+    <string name="no_link_found">No link found</string>
+    <string name="update_movie">Update Movie</string>
+    <string name="genre_1">Genre-1</string>
+    <string name="genre_2">Genre-2</string>
+    <string name="rotate_phone">Rotate phone for full-screen.</string>
+    <string name="select_server">Select Server</string>
+    <string name="server_1">Server-1</string>
+    <string name="server_2">Server-2</string>
+    <string name="server_3">Server-3</string>
+    <string name="server_4">Server-4</string>
+    <string name="write_server_4_link">Write server_4 Link</string>
+    <string name="write_server_3_link">Write server_3 Link</string>
+    <string name="write_server_2_link">Write server_2 Link</string>
+    <string name="write_server_1_link" tools:ignore="Typos">Write server_1 Link</string>
+    <string name="why_are_you_reporting_this">Why are you reporting this?</string>
+    <string name="not_speak_english">Not speak english</string>
+    <string name="no_subtitle">No subtitle</string>
+    <string name="can_t_play">Can\'t Play</string>
+    <string name="no_sound">No sound</string>
+    <string name="not_downloading">Not downloading</string>
+    <string name="title_not_match_with_movie">Title not match with movie</string>
+    <string name="inappropriate_post">Adult Post</string>
+    <string name="block_the_account">Block the account</string>
+    <string name="requesting_for_delete_the_post">Requesting for delete the post</string>
+    <string name="this_account_may_have_been_hacked">This account may have been hacked</string>
+    <string name="it_s_spam_a_scam_or_a_fake_account">It\'s spam, a scam or a fake account</string>
+    <string name="this_is_inappropriate_for_flex">This is inappropriate for HD Movies</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+    <string name="close">CLOSE</string>
+    <string name="biography">Biography</string>
+    <string name="_2020">2020</string>
+    <string name="_2019">2019</string>
+    <string name="_2018">2018</string>
+    <string name="_2017">2017</string>
+    <string name="_2016">2016</string>
+    <string name="_2014">2014</string>
+    <string name="_2015">2015</string>
+    <string name="_2013">2013</string>
+    <string name="_2012">2012</string>
+    <string name="_2010">2010</string>
+    <string name="_2011">2011</string>
+    <string name="conformation">Conformation</string>
+    <string name="are_you_sure_you_want_to_post_this_you_cannot_edit_or_delete_it">Are you sure you want to post this? You cannot edit or delete it.</string>
+    <string name="yes">Yes!</string>
+    <string name="back_arrow">back arrow</string>
 
 
 </resources>

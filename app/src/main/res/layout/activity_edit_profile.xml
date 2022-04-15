@@ -1,172 +1,455 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".Activities.EditProfileActivity">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize" />
 
-    <RelativeLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:padding="6dp">
+        android:background="@drawable/toolbar_bg"
+        android:textSize="40sp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:titleTextColor="@color/textColorGrey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
-        <RelativeLayout
-            android:id="@+id/lyt_profile"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="60dp"
+        android:paddingBottom="40dp"
+        android:fillViewport="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2"
+        tools:ignore="SpeakableTextPresentCheck">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="120dp"
+            android:background="@drawable/ic_round_bg_1"
+            android:paddingBottom="55dp">
 
-            <ScrollView
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_profile_default_image"
+                app:civ_border_color="@color/activeRed"
+                app:civ_border_width="1dp"
+                android:contentDescription="@string/profile_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/username"
+                app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+                app:layout_constraintStart_toEndOf="@+id/profileImage"
+                app:layout_constraintTop_toTopOf="@+id/profileImage" />
+
+            <ImageView
+                android:id="@+id/proBadge"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:contentDescription="@string/pro_badge"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/userName"
+                app:layout_constraintStart_toEndOf="@+id/userName"
+                app:layout_constraintTop_toTopOf="@+id/userName"
+                app:srcCompat="@drawable/pro_big" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/update_your_profile"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/profileImage"
+                app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/usernameet"
+                app:layout_constraintStart_toStartOf="@+id/textView11"
+                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_username"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="25"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/textView">
 
-                <LinearLayout
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/usernameEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="15dp">
+                    android:hint="@string/write_your_username"
+                    android:inputType="text"
+                    android:maxLength="25"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <RelativeLayout
-                        android:id="@+id/lyt_img_profile"
-                        android:layout_width="144dp"
-                        android:layout_height="144dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="20dp">
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/profession"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_username" />
 
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:cardUseCompatPadding="false"
-                            card_view:cardCornerRadius="@dimen/circular_corner_radius"
-                            card_view:cardPreventCornerOverlap="false">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_profession"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="40"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textView22"
+                app:layout_constraintTop_toBottomOf="@+id/textView22">
 
-                            <RelativeLayout
-                                android:layout_width="144dp"
-                                android:layout_height="144dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/professionEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_your_profession"
+                    android:inputType="text"
+                    android:maxLength="40"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                                <ImageView
-                                    android:id="@+id/profile_image"
-                                    android:layout_width="144dp"
-                                    android:layout_height="144dp"
-                                    android:scaleType="centerCrop"
-                                    android:src="@drawable/ic_user_account" />
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/about_or_bio"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_profession" />
 
-                                <ImageView
-                                    android:id="@+id/tmp_image"
-                                    android:layout_width="144dp"
-                                    android:layout_height="144dp"
-                                    android:layout_centerHorizontal="true"
-                                    android:scaleType="centerCrop" />
 
-                            </RelativeLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_bio"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="250"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView12">
 
-                        </androidx.cardview.widget.CardView>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/bioEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="@string/write_about_yourself"
+                    android:inputType="textMultiLine|textPersonName"
+                    android:maxLength="250"
+                    android:maxLines="4"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:id="@+id/btn_change_image"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentBottom="true"
-                            android:contentDescription="@string/img_content_description"
-                            android:src="@drawable/ic_camera_white"
-                            app:backgroundTint="@color/colorPrimary"
-                            app:rippleColor="@color/colorRipple"
-                            app:tint="@color/colorWhite" />
+            <!--Facebook link-->
+            <TextView
+                android:id="@+id/proUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/facebook_link"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_bio" />
 
-                    </RelativeLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/padding_large">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_fblink"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/proUserName">
 
-                        <EditText
-                            android:id="@+id/edt_user"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_edt_name"
-                            android:drawablePadding="12dp"
-                            android:hint="@string/edt_name"
-                            android:inputType="text" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fblinkEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_your_facebook_link"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    </com.google.android.material.textfield.TextInputLayout>
+            <!--Instagram link-->
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/instagram_link"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_fblink" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp">
 
-                        <EditText
-                            android:id="@+id/edt_email"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_edt_email"
-                            android:drawablePadding="12dp"
-                            android:hint="@string/edt_email"
-                            android:inputType="textEmailAddress" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_instalink"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView14">
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/instalinkEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_your_instagram_link"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp">
+            <!--Github link-->
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/github_link"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_instalink" />
 
-                        <EditText
-                            android:id="@+id/edt_password"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_edt_password"
-                            android:drawablePadding="12dp"
-                            android:hint="@string/edt_password"
-                            android:inputType="textPassword" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_githublink"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView15">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_update"
-                        style="@style/MaterialButtonStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/button_height"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="20dp"
-                        android:text="@string/btn_update" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/githublinkEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_your_github_link"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_logout"
-                        style="@style/MaterialButtonStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/button_height"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="4dp"
-                        android:text="@string/btn_logout" />
+            <!--LinkedIn link-->
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/linkedin_link"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_githublink" />
 
-                </LinearLayout>
 
-            </ScrollView>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_linkedinlink"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView16">
 
-        </RelativeLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/linkedinlinkEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_your_linkedin_link"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp"
+                    tools:ignore="DuplicateSpeakableTextCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <ProgressBar
-            android:id="@+id/progressBar1"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="gone" />
+            <!--Twitter link-->
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/twitter_link"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_linkedinlink" />
 
-    </RelativeLayout>
 
-</RelativeLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_twitterlink"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:textColorHint="@color/textColorPlaceholder"
+                app:boxBackgroundColor="@color/colorSecondary"
+                app:boxStrokeColor="@color/activeGreen"
+                app:boxStrokeWidthFocused="1dp"
+                app:counterTextColor="@color/textColorGrey"
+                app:hintTextColor="@color/activeGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView17">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/twitterlinkEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_your_twitter_link"
+                    android:inputType="text"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/updateBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="32dp"
+                android:fontFamily="@font/oswald"
+                android:text="@string/update"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_input_twitterlink" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+    <com.applovin.mediation.ads.MaxAdView
+        xmlns:maxads="http://schemas.applovin.com/android/1.0"
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/banner_height"
+        android:visibility="gone"
+        maxads:adUnitId="@string/banner_ad_unit_id"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+    </com.applovin.mediation.ads.MaxAdView>
+</androidx.constraintlayout.widget.ConstraintLayout>

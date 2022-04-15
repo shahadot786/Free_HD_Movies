@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "324899387666",
+    "firebase_url": "https://free-hd-movies-7b0e8-default-rtdb.firebaseio.com",
     "project_id": "free-hd-movies-7b0e8",
     "storage_bucket": "free-hd-movies-7b0e8.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "324899387666-2l3t424l88k1bur714ci8p74ke7lm61t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.watchfreemovies.freehdcinema786",
+            "certificate_hash": "1ed9540682f2a3e9b01431a84b27ad7a4cfb9a8e"
+          }
+        },
         {
           "client_id": "324899387666-1hrjs1fsjsj25mgrnsci4slb8ctdce22.apps.googleusercontent.com",
           "client_type": 3

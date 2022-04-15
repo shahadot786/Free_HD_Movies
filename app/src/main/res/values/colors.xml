@@ -1,32 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--default theme color-->
-    <color name="colorPrimary">#FFC300</color>
-    <color name="colorPrimaryDark">#FFC300</color>
-    <color name="colorAccent">#FFC300</color>
-    <color name="colorBackgroundLight">#FFFFFF</color>
+    <!--default theme colors-->
+    <!--<color name="colorPrimary">#1C1F32</color>-->
+    <color name="colorPrimary">#1E1E1E</color>
+    <color name="colorSecondary">#2A2E30</color>
+    <color name="activeGreen">#FFC300</color>
+    <color name="activeRed">#dc4036</color>
+    <color name="activeGrey">#403F3F</color>
+    <color name="activeGreenLight">#1FC600</color>
+    <color name="activeRedLight">#BF0000</color>
+    <color name="activeGreenDark">#0A5D00</color>
+    <color name="activeRedDark">#800000</color>
+    <color name="colorAccent">#162A2E43</color>
 
-    <!--dark theme color-->
-    <color name="colorToolbarDark">#222D36</color>
-    <color name="colorBackgroundDark">#101D24</color>
+    <!-- ImagePicker Crop Color  -->
+    <color name="ucrop_color_toolbar">#FFC300</color>
+    <color name="ucrop_color_statusbar">#FFC300</color>
+    <color name="ucrop_color_widget_active">#FFC300</color>
 
-    <!--others-->
-    <color name="colorSplash">#FABF1F</color>
-    <color name="colorSplash_sub">#FABF1F</color>
-    <color name="colorPi">#FF3D57</color>
-    <color name="colorPi_sub">#1E2929</color>
-    <color name="colorText">#202020</color>
+    <!--Bar colors-->
+    <color name="colorStatusBarDark">#1E1E1E</color>
+    <color name="colorToolbarDark">#16171b</color>
+
+    <!--Text Colors-->
+    <color name="textColorGrey">#B3B5BD</color>
+    <color name="textColorBlack">#22272C</color>
+    <color name="textColorPlaceholder">#A4A8A6</color>
+
+
+    <!--Extra Colors-->
+    <color name="colorGreen">#82D364</color>
+    <color name="colorRed">#F53B3B</color>
+    <color name="color3">#3A96F1</color>
+    <color name="colorYellow">#FFC300</color>
+    <color name="colorLinkBg">#16171b</color>
+
+    <!--Never Change Colors-->
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
     <color name="colorGreySoft">#BCBEC1</color>
     <color name="colorGreyMedium">#96989A</color>
     <color name="colorGreyDark">#797979</color>
-    <color name="colorGreyDarkDeep">#424242</color>
     <color name="colorCategory">#4aafff</color>
-    <color name="colorUsername">#1E88E5</color>
     <color name="colorRipple">#636363</color>
     <color name="colorOverlaySoft">#1A000000</color>
     <color name="colorOverlayDark">#33000000</color>
+    <color name="color_grey_green_soft">#0F00FF6A</color>
+    <color name="color_twitter">#00ACEE</color>
+    <color name="color_play_store">#6BC8A3</color>
+    <color name="color_github">#999999</color>
+    <color name="color_linkedin">#0077B5</color>
+    <color name="color_facebook">#7986CB</color>
+    <color name="color_instagram">#FF4081</color>
+    <color name="color_app_gradient_end">#13bc57</color>
+    <color name="color_app_gradient_start">#00601b</color>
+    <color name="color_pro_bg">#C11C1F32</color>
+    <color name="color_text_discuss">#DDDCDC</color>
+    <color name="color_codes">#171c19</color>
+    <color name="color_code">#B06139</color>
 
 </resources>
