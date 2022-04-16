@@ -35,6 +35,8 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.applovin.mediation.ads.MaxAdView;
+import com.applovin.sdk.AppLovinSdk;
+import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -92,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
         //context
         context = MainActivity.this;
         adNetwork = new AdNetwork(this);
+        // Make sure to set the mediation provider value to "max" to ensure proper functionality
+        AppLovinSdk.getInstance( this ).setMediationProvider( "max" );
+        AppLovinSdk.initializeSdk( this, new AppLovinSdk.SdkInitializationListener() {
+            @Override
+            public void onSdkInitialized(final AppLovinSdkConfiguration configuration)
+            {
+                // AppLovin SDK is initialized, start loading ads
+                adNetwork.loadInterstitialAd();
+            }
+        } );
         //firebase instance
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();

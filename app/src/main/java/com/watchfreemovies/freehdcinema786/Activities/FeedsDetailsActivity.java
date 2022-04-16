@@ -96,7 +96,6 @@ public class FeedsDetailsActivity extends AppCompatActivity {
         //ads init
         adNetwork = new AdNetwork(this);
         adNetwork.loadBannerAd();
-        adNetwork.loadInterstitialAd();
         reportDialog = new Dialog(this);
 
         //swipe refresh
@@ -737,7 +736,7 @@ public class FeedsDetailsActivity extends AppCompatActivity {
     private void addShareData() {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Watch Flex Movies & Tv-Series");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Watch HD Movies 2022");
         shareIntent.putExtra(Intent.EXTRA_TEXT, "Post Descriptions: " + postDescriptions + "\n" +
                 "Be, happy with your love & watch movies & Tv-Series together.\n\n" +
                 "Watch full post: \n" +

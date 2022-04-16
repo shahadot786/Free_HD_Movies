@@ -92,8 +92,6 @@ public class SplashActivity extends AppCompatActivity {
         fireMovies = findViewById(R.id.fireMovies);
         fireMovies.setAnimation(bottomAnim);
         //firebase init
-        auth = FirebaseAuth.getInstance();
-        currentUser = auth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
         //get offline data
         database.setPersistenceEnabled(true);
@@ -106,6 +104,9 @@ public class SplashActivity extends AppCompatActivity {
         feeds.keepSynced(true);
         users.keepSynced(true);
         notifications.keepSynced(true);
+
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
 
         //item subscribed
         if (getPurchaseValueFromPref()) {

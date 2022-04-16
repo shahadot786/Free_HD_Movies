@@ -1775,7 +1775,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
     private void addShareData() {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Watch Flex Movies");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Watch HD Movies 2022");
         shareIntent.putExtra(Intent.EXTRA_TEXT, "Movie Name: " + movieName + "\n" +
                 "Genre: " + genre + "/" + genre1 + "/" + genre2 + "\n" +
                 "Rating: " + movieRating + "\n" +
