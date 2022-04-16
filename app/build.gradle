@@ -14,8 +14,8 @@ android {
         applicationId "com.watchfreemovies.freehdcinema786"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 22
-        versionName "1.1.5.22"
+        versionCode 23
+        versionName "1.1.5.23"
         multiDexEnabled true
     }
     buildTypes {

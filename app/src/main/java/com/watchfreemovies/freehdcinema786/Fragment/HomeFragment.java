@@ -489,7 +489,7 @@ public class HomeFragment extends Fragment {
 
         //for evergreen movies
         database.getReference().child("Movies")
-                .limitToLast(120)
+                .limitToLast(210)
                 .addValueEventListener(new ValueEventListener() {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
@@ -530,7 +530,7 @@ public class HomeFragment extends Fragment {
 
         //for action movies
         database.getReference().child("Movies")
-                .limitToLast(120)
+                .limitToLast(210)
                 .addValueEventListener(new ValueEventListener() {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
@@ -906,6 +906,28 @@ public class HomeFragment extends Fragment {
                                 year2015List.add(model);
                             }else if (year.contains("1995")){
                                 year2015List.add(model);
+                            }else if (year.contains("2000")){
+                                year2015List.add(model);
+                            }else if (year.contains("2001")){
+                                year2015List.add(model);
+                            }else if (year.contains("2002")){
+                                year2015List.add(model);
+                            }else if (year.contains("2003")){
+                                year2015List.add(model);
+                            }else if (year.contains("2004")){
+                                year2015List.add(model);
+                            }else if (year.contains("2005")){
+                                year2015List.add(model);
+                            }else if (year.contains("2006")){
+                                year2015List.add(model);
+                            }else if (year.contains("2006")){
+                                year2015List.add(model);
+                            }else if (year.contains("2007")){
+                                year2015List.add(model);
+                            }else if (year.contains("2008")){
+                                year2015List.add(model);
+                            }else if (year.contains("2009")){
+                                year2015List.add(model);
                             }
 
                         }
@@ -1177,7 +1199,7 @@ public class HomeFragment extends Fragment {
 
                 //for evergreen movies
                 database.getReference().child("Movies")
-                        .limitToLast(120)
+                        .limitToLast(210)
                         .addValueEventListener(new ValueEventListener() {
                             @SuppressLint("NotifyDataSetChanged")
                             @Override
@@ -1218,7 +1240,7 @@ public class HomeFragment extends Fragment {
 
                 //for action movies
                 database.getReference().child("Movies")
-                        .limitToLast(120)
+                        .limitToLast(210)
                         .addValueEventListener(new ValueEventListener() {
                             @SuppressLint("NotifyDataSetChanged")
                             @Override
@@ -1593,6 +1615,28 @@ public class HomeFragment extends Fragment {
                                     }else if (year.contains("1968")){
                                         year2015List.add(model);
                                     }else if (year.contains("1995")){
+                                        year2015List.add(model);
+                                    }else if (year.contains("2000")){
+                                        year2015List.add(model);
+                                    }else if (year.contains("2001")){
+                                        year2015List.add(model);
+                                    }else if (year.contains("2002")){
+                                        year2015List.add(model);
+                                    }else if (year.contains("2003")){
+                                        year2015List.add(model);
+                                    }else if (year.contains("2004")){
+                                        year2015List.add(model);
+                                    }else if (year.contains("2005")){
+                                        year2015List.add(model);
+                                    }else if (year.contains("2006")){
+                                        year2015List.add(model);
+                                    }else if (year.contains("2006")){
+                                        year2015List.add(model);
+                                    }else if (year.contains("2007")){
+                                        year2015List.add(model);
+                                    }else if (year.contains("2008")){
+                                        year2015List.add(model);
+                                    }else if (year.contains("2009")){
                                         year2015List.add(model);
                                     }
 
