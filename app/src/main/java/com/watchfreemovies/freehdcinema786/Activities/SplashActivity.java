@@ -53,6 +53,11 @@ public class SplashActivity extends AppCompatActivity {
         //set fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
+        //get offline data
+        database = FirebaseDatabase.getInstance();
+        if (savedInstanceState == null) {
+            database.setPersistenceEnabled(true);
+        }
         //custom toast
         inflater = getLayoutInflater();
         toastLayout = inflater.inflate(R.layout.custom_toast_layout, findViewById(R.id.toastLayout));
@@ -92,9 +97,8 @@ public class SplashActivity extends AppCompatActivity {
         fireMovies = findViewById(R.id.fireMovies);
         fireMovies.setAnimation(bottomAnim);
         //firebase init
-        database = FirebaseDatabase.getInstance();
-        //get offline data
-        database.setPersistenceEnabled(true);
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
         //sync online data
         movies = database.getReference().child("Movies");
         feeds = database.getReference().child("Feeds");
@@ -104,9 +108,6 @@ public class SplashActivity extends AppCompatActivity {
         feeds.keepSynced(true);
         users.keepSynced(true);
         notifications.keepSynced(true);
-
-        auth = FirebaseAuth.getInstance();
-        currentUser = auth.getCurrentUser();
 
         //item subscribed
         if (getPurchaseValueFromPref()) {
