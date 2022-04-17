@@ -59,6 +59,9 @@
     <string name="login_message2">Welcome back you\'ve missed!</string>
     <string name="no_account">Don\'t have an account?</string>
     <string name="welcome_message">Welcome back, Read our..</string>
+    <string name="sendEmailVerification">Verification email is sent. Verify and Sign In!</string>
+    <string name="failed_to_send_verification_email">Failed To Send Verification Email</string>
+    <string name="verify_email">Verify your email first</string>
 
     <!--Forgot Password-->
     <string name="forgot_password">Forgot Password</string>

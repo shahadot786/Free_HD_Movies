@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
+import com.watchfreemovies.freehdcinema786.Config.UiConfig;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.databinding.ActivitySignInBinding;
 
@@ -171,11 +172,16 @@ public class SignInActivity extends AppCompatActivity {
                                     Log.d("TAG", "onComplete: " + e.getMessage());
                                 }
                             } else {
-                                dialog.show();
-                                Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                toastText.setText(R.string.SignInSuccessfully);
-                                toast.show();
+                                if (UiConfig.SEND_EMAIL_VERIFICATION_STATUS){
+                                    checkEmailVerifications();
+                                }else {
+                                    dialog.show();
+                                    Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    toastText.setText(R.string.SignInSuccessfully);
+                                    toast.show();
+                                }
+
 
                             }
                         }
@@ -191,6 +197,20 @@ public class SignInActivity extends AppCompatActivity {
     }//end of onCreate
 
     //other codes and method here
+    private void checkEmailVerifications() {
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        assert firebaseUser != null;
+        if (firebaseUser.isEmailVerified()){
+            toastText.setText(R.string.SignInSuccessfully);
+            toast.show();
+            startActivity(new Intent(SignInActivity.this,MainActivity.class));
+            finish();
+        }else {
+            toastText.setText(R.string.verify_email);
+            toast.show();
+            auth.signOut();
+        }
+    }
 
     //no internet connection dialog
     private void noConnectionDialog() {

@@ -29,7 +29,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.watchfreemovies.freehdcinema786.Config.UiConfig;
 import com.watchfreemovies.freehdcinema786.Model.UserModel;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.databinding.ActivitySignUpBinding;
@@ -141,10 +143,14 @@ public class SignUpActivity extends AppCompatActivity {
                                         database.getReference().child("UserData")
                                                 .child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
                                                 .setValue(userModel);
-                                        toastText.setText(R.string.SignUpSuccessfully);
-                                        toast.show();
-                                        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                                        startActivity(intent);
+                                        if (UiConfig.SEND_EMAIL_VERIFICATION_STATUS){
+                                            sendEmailVerification();
+                                        }else {
+                                            toastText.setText(R.string.SignUpSuccessfully);
+                                            toast.show();
+                                            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                        }
                                     }
                                 }
                             });
@@ -186,6 +192,25 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    //send email verification
+    private void sendEmailVerification(){
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        if (firebaseUser != null){
+            firebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    toastText.setText(R.string.sendEmailVerification);
+                    toast.show();
+                    startActivity(new Intent(SignUpActivity.this,SignInActivity.class));
+                    finish();
+                }
+            });
+        }else {
+            toastText.setText(R.string.failed_to_send_verification_email);
+            toast.show();
+        }
     }
 
     //Other Methods
