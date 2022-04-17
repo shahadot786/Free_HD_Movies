@@ -15,7 +15,7 @@ public class UiConfig {
     public static boolean REWARDED__AD_VISIBILITY = true;//if true then show rewarded ad
     //Premium User Check
     public static boolean PRO_VISIBILITY_STATUS_SHOW = true; // if ture then show all premium activities
-    public static boolean SEND_EMAIL_VERIFICATION_STATUS = true; // if ture then send email verification
+    public static boolean SEND_EMAIL_VERIFICATION_STATUS = false; // if ture then send email verification
     //splash screen advertise check
     public static boolean SPLASH_SCREEN_PRO = true; // if ture then show the splash screen premium activity
     //app exit check

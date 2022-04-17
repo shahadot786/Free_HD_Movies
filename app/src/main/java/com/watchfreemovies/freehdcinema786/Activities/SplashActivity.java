@@ -55,9 +55,6 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         //get offline data
         database = FirebaseDatabase.getInstance();
-        if (savedInstanceState == null) {
-            database.setPersistenceEnabled(true);
-        }
         //custom toast
         inflater = getLayoutInflater();
         toastLayout = inflater.inflate(R.layout.custom_toast_layout, findViewById(R.id.toastLayout));
