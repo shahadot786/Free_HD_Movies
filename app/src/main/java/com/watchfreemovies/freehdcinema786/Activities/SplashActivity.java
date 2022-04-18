@@ -22,8 +22,6 @@ import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.watchfreemovies.freehdcinema786.BuildConfig;
 import com.watchfreemovies.freehdcinema786.Config.UiConfig;
 import com.watchfreemovies.freehdcinema786.R;
@@ -36,11 +34,6 @@ public class SplashActivity extends AppCompatActivity {
     String PREFS_NAME = "fire_movies_for_new_user";//change every update
     FirebaseUser currentUser;
     FirebaseAuth auth;
-    FirebaseDatabase database;
-    DatabaseReference movies;
-    DatabaseReference feeds;
-    DatabaseReference users;
-    DatabaseReference notifications;
     Animation bottomAnim;
     LayoutInflater inflater;
     TextView toastText,fireMovies;
@@ -53,8 +46,6 @@ public class SplashActivity extends AppCompatActivity {
         //set fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
-        //get offline data
-        database = FirebaseDatabase.getInstance();
         //custom toast
         inflater = getLayoutInflater();
         toastLayout = inflater.inflate(R.layout.custom_toast_layout, findViewById(R.id.toastLayout));
@@ -97,14 +88,14 @@ public class SplashActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
         //sync online data
-        movies = database.getReference().child("Movies");
+        /*movies = database.getReference().child("Movies");
         feeds = database.getReference().child("Feeds");
         users = database.getReference().child("UserData");
         notifications = database.getReference().child("Notifications");
         movies.keepSynced(true);
         feeds.keepSynced(true);
         users.keepSynced(true);
-        notifications.keepSynced(true);
+        notifications.keepSynced(true);*/
 
         //item subscribed
         if (getPurchaseValueFromPref()) {
