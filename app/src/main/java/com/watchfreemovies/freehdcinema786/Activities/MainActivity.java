@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 adNetwork.loadInterstitialAd();
             }
         } );
+        //AppLovinSdk.getInstance( this ).showMediationDebugger();
         //firebase instance
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
