@@ -8,6 +8,7 @@ import com.unity3d.ads.IUnityAdsLoadListener;
 import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.UnityAdsShowOptions;
+import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
 import com.watchfreemovies.freehdcinema786.Config.UiConfig;
@@ -23,18 +24,42 @@ public class AdNetwork {
     String BannerID = "Banner_Android";
     String InterstitialID = "Interstitial_Android";
     LinearLayout bannerAd;
+    BannerView bannerView;
 
     public AdNetwork(Activity context) {
         this.context = context;
         //find id
     }
 
+    BannerView.IListener bannerListener = new BannerView.IListener() {
+        @Override
+        public void onBannerLoaded(BannerView bannerView) {
+
+        }
+
+        @Override
+        public void onBannerClick(BannerView bannerView) {
+
+        }
+
+        @Override
+        public void onBannerFailedToLoad(BannerView bannerView, BannerErrorInfo bannerErrorInfo) {
+
+        }
+
+        @Override
+        public void onBannerLeftApplication(BannerView bannerView) {
+
+        }
+    };
+
     /*Unity Ads*/
     public void loadUnityBannerAd(){
         bannerAd = context.findViewById(R.id.banner_ad);
-        BannerView view = new BannerView(context,BannerID,new UnityBannerSize(320,50));
-        view.load();
-        bannerAd.addView(view);
+        bannerView = new BannerView(context,BannerID,new UnityBannerSize(320,50));
+        bannerView.setListener(bannerListener);
+        bannerView.load();
+        bannerAd.addView(bannerView);
     }
     public void loadUnityInterstitialAd() {
         if (UnityAds.isInitialized()){
