@@ -18,6 +18,17 @@
     <string name="ad_attribution">AD</string>
 
     <!--Ads Real-->
+    <!--Startapp Ads-->
+    <string name="startapp_app_id">205948484</string>
+    <!--Unity Ads-->
+    <string name="unity_game_id">4718385</string>
+    <string name="unity_banner_ad_unit_id">Banner_Android</string>
+    <string name="unity_interstitial_ad_unit_id">Interstitial_Android</string>
+    <string name="unity_rewarded_ad_unit_id">Rewarded_Android</string>
+
+
+
+    <!--Applovin Ads-->
     <string name="applovin_sdk_key">h_SI4RH8q40T3xf1aRSRtbznFChbszL2K2PUQpTxxskOwo6LGumFvQgemqzfycGOwb2mKDFZoEecwDCsvaB0uD</string>
     <string name="banner_ad_unit_id">d4d88b4ae4fa4ca9</string>
     <string name="interstitial_ad_unit_id">4fe9a34c3ef9384c</string>

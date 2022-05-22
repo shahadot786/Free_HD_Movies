@@ -40,7 +40,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         this.context = context;
 
         adNetwork = new AdNetwork((Activity) context);
-        adNetwork.loadInterstitialAd();
+        //adNetwork.loadInterstitialAd();
+        adNetwork.loadUnityInterstitialAd();
     }
 
     @NonNull
@@ -104,7 +105,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                 intent.putExtra("postedBy", notifications.getPostedBy());
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                 context.getApplicationContext().startActivity(intent);
-                adNetwork.showInterstitialAdCount();
+                //adNetwork.showInterstitialAdCount();
+                adNetwork.showUnityInterstitialAdCount();
             }
         });
 

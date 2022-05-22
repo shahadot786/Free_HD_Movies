@@ -14,8 +14,8 @@ android {
         applicationId "com.watchfreemovies.freehdcinema786"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 33
-        versionName "2.1.16.33"
+        versionCode 34
+        versionName "3.1.18.34"
         multiDexEnabled true
     }
     buildTypes {
@@ -40,6 +40,8 @@ Be careful when update dependencies, different library version may caused error 
 dependencies {
     //app main
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //noinspection GradlePath
+    implementation files('/libs/unity-ads.aar')
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.android.support:appcompat-v7:32.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
@@ -69,7 +71,6 @@ dependencies {
     implementation "com.android.billingclient:billing:4.1.0"
     implementation 'com.google.android.gms:play-services-ads:20.6.0'
     implementation 'com.applovin:applovin-sdk:11.3.3'
-    implementation 'com.google.ads.mediation:applovin:11.3.3.0'
 
     //image
     implementation 'de.hdodenhof:circleimageview:3.1.0'

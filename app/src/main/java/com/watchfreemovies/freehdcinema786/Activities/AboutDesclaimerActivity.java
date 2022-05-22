@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,16 +67,20 @@ public class AboutDesclaimerActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         adNetwork = new AdNetwork(this);
-        adNetwork.loadBannerAd();
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
+        LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
+        //adNetwork.loadBannerAd();
+        adNetwork.loadUnityBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             bannerAd.setVisibility(View.VISIBLE);
             bannerAd.startAutoRefresh();
+            unityBannerAd.setVisibility(View.VISIBLE);
         } else {
             bannerAd.setVisibility(View.GONE);
             bannerAd.stopAutoRefresh();
+            unityBannerAd.setVisibility(View.GONE);
         }
         //work with version
         binding.fwVersion.setText(BuildConfig.VERSION_NAME);

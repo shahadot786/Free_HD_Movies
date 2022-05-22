@@ -86,7 +86,8 @@ public class CategoryDetailsActivity extends AppCompatActivity {
         // Start loading ads here...
         //ads init
         adNetwork = new AdNetwork(this);
-        adNetwork.loadBannerAd();
+        //adNetwork.loadBannerAd();
+        adNetwork.loadUnityBannerAd();
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
         //check premium

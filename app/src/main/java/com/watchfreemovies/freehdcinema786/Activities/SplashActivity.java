@@ -22,6 +22,8 @@ import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.unity3d.ads.IUnityAdsInitializationListener;
+import com.unity3d.ads.UnityAds;
 import com.watchfreemovies.freehdcinema786.BuildConfig;
 import com.watchfreemovies.freehdcinema786.Config.UiConfig;
 import com.watchfreemovies.freehdcinema786.R;
@@ -40,6 +42,8 @@ public class SplashActivity extends AppCompatActivity {
     View toastLayout;
     Toast toast;
     AdNetwork adNetwork;
+    String GameID = "4718385";
+    Boolean TestMode = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +70,22 @@ public class SplashActivity extends AppCompatActivity {
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration)
             {
                 // AppLovin SDK is initialized, start loading ads
-                adNetwork.loadInterstitialAd();
+                //adNetwork.loadInterstitialAd();
             }
         } );
+
+        //unity
+        UnityAds.initialize(SplashActivity.this, GameID, TestMode, new IUnityAdsInitializationListener() {
+            @Override
+            public void onInitializationComplete() {
+                //Toast.makeText(SplashActivity.this, "SDK Working", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onInitializationFailed(UnityAds.UnityAdsInitializationError unityAdsInitializationError, String s) {
+                //Toast.makeText(SplashActivity.this, "SDK Not Working", Toast.LENGTH_SHORT).show();
+            }
+        });
         //network check
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(SplashActivity.CONNECTIVITY_SERVICE);
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||

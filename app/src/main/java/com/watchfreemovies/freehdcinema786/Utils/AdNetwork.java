@@ -1,23 +1,17 @@
 package com.watchfreemovies.freehdcinema786.Utils;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.os.Handler;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.MaxAdListener;
-import com.applovin.mediation.MaxAdViewAdListener;
-import com.applovin.mediation.MaxError;
-import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.mediation.ads.MaxInterstitialAd;
-import com.applovin.sdk.AppLovinSdkUtils;
+import com.unity3d.ads.IUnityAdsLoadListener;
+import com.unity3d.ads.IUnityAdsShowListener;
+import com.unity3d.ads.UnityAds;
+import com.unity3d.ads.UnityAdsShowOptions;
+import com.unity3d.services.banners.BannerView;
+import com.unity3d.services.banners.UnityBannerSize;
 import com.watchfreemovies.freehdcinema786.Config.UiConfig;
 import com.watchfreemovies.freehdcinema786.R;
-
-import java.util.concurrent.TimeUnit;
 
 public class AdNetwork {
 
@@ -25,13 +19,101 @@ public class AdNetwork {
     int counter = 1;
     private int retry = 0;
     private MaxInterstitialAd interstitialAd;
+    /*Unity ads*/
+    String BannerID = "Banner_Android";
+    String InterstitialID = "Interstitial_Android";
+    LinearLayout bannerAd;
 
     public AdNetwork(Activity context) {
         this.context = context;
         //find id
     }
 
-    //load banner ad
+    /*Unity Ads*/
+    public void loadUnityBannerAd(){
+        bannerAd = context.findViewById(R.id.banner_ad);
+        BannerView view = new BannerView(context,BannerID,new UnityBannerSize(320,50));
+        view.load();
+        bannerAd.addView(view);
+    }
+    public void loadUnityInterstitialAd() {
+        if (UnityAds.isInitialized()){
+            IUnityAdsLoadListener iUnityAdsLoadListener = new IUnityAdsLoadListener() {
+                @Override
+                public void onUnityAdsAdLoaded(String s) {
+
+                }
+
+                @Override
+                public void onUnityAdsFailedToLoad(String s, UnityAds.UnityAdsLoadError unityAdsLoadError, String s1) {
+
+                }
+            };
+            UnityAds.load(InterstitialID,iUnityAdsLoadListener);
+
+        }
+    }
+    public void showUnityInterstitialAd() {
+        if (UiConfig.INTERSTITIAL__AD_VISIBILITY) {
+            IUnityAdsShowListener iUnityAdsShowListener = new IUnityAdsShowListener() {
+                @Override
+                public void onUnityAdsShowFailure(String s, UnityAds.UnityAdsShowError unityAdsShowError, String s1) {
+
+                }
+
+                @Override
+                public void onUnityAdsShowStart(String s) {
+
+                }
+
+                @Override
+                public void onUnityAdsShowClick(String s) {
+
+                }
+
+                @Override
+                public void onUnityAdsShowComplete(String s, UnityAds.UnityAdsShowCompletionState unityAdsShowCompletionState) {
+
+                }
+            };
+            UnityAds.show(context,InterstitialID, new UnityAdsShowOptions(), iUnityAdsShowListener);
+        }
+    }
+    //show Interstitial ad count click
+    public void showUnityInterstitialAdCount() {
+        if (UiConfig.INTERSTITIAL__AD_VISIBILITY) {
+            IUnityAdsShowListener iUnityAdsShowListener = new IUnityAdsShowListener() {
+                @Override
+                public void onUnityAdsShowFailure(String s, UnityAds.UnityAdsShowError unityAdsShowError, String s1) {
+
+                }
+
+                @Override
+                public void onUnityAdsShowStart(String s) {
+
+                }
+
+                @Override
+                public void onUnityAdsShowClick(String s) {
+
+                }
+
+                @Override
+                public void onUnityAdsShowComplete(String s, UnityAds.UnityAdsShowCompletionState unityAdsShowCompletionState) {
+
+                }
+            };
+            if (counter == UiConfig.INTERSTITIAL_AD_INTERVAL) {
+                UnityAds.show(context,InterstitialID, new UnityAdsShowOptions(), iUnityAdsShowListener);
+                counter = 1;
+            } else {
+                counter++;
+            }
+        }
+    }
+
+    /*Applovin Ads*/
+    /*//load banner ad
     public void loadBannerAd() {
         MaxAdView adView = new MaxAdView(context.getString(R.string.banner_ad_unit_id), context);
         MaxAdView bannerAd = context.findViewById(R.id.adView);
@@ -89,7 +171,6 @@ public class AdNetwork {
         adView.loadAd();
         adView.startAutoRefresh();
     }
-
     //load MREC ad
     public void loadMrecAd() {
         MaxAdView MRECAdview = new MaxAdView(context.getString(R.string.mrec_ad_unit_id), context);
@@ -217,5 +298,5 @@ public class AdNetwork {
                 interstitialAd.showAd();
             }
         }
-    }
+    }*/
 }

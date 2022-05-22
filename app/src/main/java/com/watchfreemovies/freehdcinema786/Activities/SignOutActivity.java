@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,15 +45,15 @@ public class SignOutActivity extends AppCompatActivity {
 
         //ad initialization
         MaxAdView mRecAd = findViewById(R.id.mRec);
-        adNetwork.loadMrecAd();
-        //ads disabled code
+        //adNetwork.loadMrecAd();
+        LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
+        //adNetwork.loadBannerAd();
+        adNetwork.loadUnityBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
-            mRecAd.setVisibility(View.VISIBLE);
-            mRecAd.startAutoRefresh();
+            unityBannerAd.setVisibility(View.VISIBLE);
         } else {
-            mRecAd.setVisibility(View.GONE);
-            mRecAd.stopAutoRefresh();
+            unityBannerAd.setVisibility(View.GONE);
         }
         //toolbar
         setSupportActionBar(binding.toolbar4);

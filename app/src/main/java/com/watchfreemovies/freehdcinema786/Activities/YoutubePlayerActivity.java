@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,16 +65,21 @@ public class YoutubePlayerActivity extends AppCompatActivity {
         youTubePlayerView.toggleFullScreen();
 
         adNetwork = new AdNetwork(this);
-        adNetwork.loadBannerAd();
+        //adNetwork.loadBannerAd();
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
+        LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
+        //adNetwork.loadBannerAd();
+        adNetwork.loadUnityBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             bannerAd.setVisibility(View.VISIBLE);
             bannerAd.startAutoRefresh();
+            unityBannerAd.setVisibility(View.VISIBLE);
         } else {
             bannerAd.setVisibility(View.GONE);
             bannerAd.stopAutoRefresh();
+            unityBannerAd.setVisibility(View.GONE);
         }
     }
 

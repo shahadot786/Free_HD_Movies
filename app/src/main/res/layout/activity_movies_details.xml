@@ -436,6 +436,18 @@
         app:layout_constraintStart_toEndOf="@+id/swipeRefreshComment">
     </com.applovin.mediation.ads.MaxAdView>
 
+    <LinearLayout
+        android:id="@+id/banner_ad"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/view11"
+        app:layout_constraintEnd_toStartOf="@+id/swipeRefreshComment"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/swipeRefreshComment" />
+
     <View
         android:id="@+id/view11"
         android:layout_width="0dp"

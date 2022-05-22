@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -101,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration)
             {
                 // AppLovin SDK is initialized, start loading ads
-                adNetwork.loadInterstitialAd();
+                //adNetwork.loadInterstitialAd();
+                adNetwork.loadUnityInterstitialAd();
             }
         } );
         //AppLovinSdk.getInstance( this ).showMediationDebugger();
@@ -111,14 +113,18 @@ public class MainActivity extends AppCompatActivity {
 
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
-        adNetwork.loadBannerAd();
+        LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
+        //adNetwork.loadBannerAd();
+        adNetwork.loadUnityBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             bannerAd.setVisibility(View.VISIBLE);
             bannerAd.startAutoRefresh();
+            unityBannerAd.setVisibility(View.VISIBLE);
         } else {
             bannerAd.setVisibility(View.GONE);
             bannerAd.stopAutoRefresh();
+            unityBannerAd.setVisibility(View.GONE);
         }
 
         //MediationTestSuite.launch(MainActivity.this);
@@ -146,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                         if (UiConfig.BANNER_AD_VISIBILITY) {
                             bannerAd.setVisibility(View.VISIBLE);
                             bannerAd.startAutoRefresh();
+                            unityBannerAd.setVisibility(View.VISIBLE);
                         }
                         break;
                     /*case 1:
@@ -165,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                         if (UiConfig.BANNER_AD_VISIBILITY) {
                             bannerAd.setVisibility(View.VISIBLE);
                             bannerAd.startAutoRefresh();
+                            unityBannerAd.setVisibility(View.VISIBLE);
                         }
                         break;
                     case 2:
@@ -175,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
                         if (UiConfig.BANNER_AD_VISIBILITY) {
                             bannerAd.setVisibility(View.VISIBLE);
                             bannerAd.startAutoRefresh();
+                            unityBannerAd.setVisibility(View.VISIBLE);
                         }
                         break;
                     case 3:
@@ -185,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
                         if (UiConfig.BANNER_AD_VISIBILITY) {
                             bannerAd.setVisibility(View.GONE);
                             bannerAd.stopAutoRefresh();
+                            unityBannerAd.setVisibility(View.VISIBLE);
                         }
                         break;
 
@@ -201,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                         if (UiConfig.BANNER_AD_VISIBILITY) {
                             bannerAd.setVisibility(View.GONE);
                             bannerAd.stopAutoRefresh();
+                            unityBannerAd.setVisibility(View.GONE);
                         }
                         break;
                 }

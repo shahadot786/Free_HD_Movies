@@ -17,24 +17,25 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
     </FrameLayout>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
         android:background="@drawable/toolbar_bg"
-        app:popupTheme="@style/Theme.AppCompat.Light"
-        android:theme="@style/SearchViewStyle"
+        android:minHeight="?attr/actionBarSize"
         android:textSize="40sp"
+        android:theme="@style/SearchViewStyle"
         android:visibility="visible"
         app:collapseIcon="@drawable/ic_arrow_back_24"
-        app:titleTextColor="@color/textColorGrey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/Theme.AppCompat.Light"
+        app:titleTextColor="@color/textColorGrey" />
 
     <com.applovin.mediation.ads.MaxAdView
         android:id="@+id/adView"
@@ -49,6 +50,18 @@
         maxads:adUnitId="@string/banner_ad_unit_id">
 
     </com.applovin.mediation.ads.MaxAdView>
+
+    <LinearLayout
+        android:id="@+id/banner_ad"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <me.ibrahimsn.lib.SmoothBottomBar
         android:id="@+id/bottomBar"
