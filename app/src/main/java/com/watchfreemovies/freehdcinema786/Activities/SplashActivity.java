@@ -40,6 +40,7 @@ public class SplashActivity extends AppCompatActivity {
     View toastLayout;
     Toast toast;
     AdNetwork adNetwork;
+    TextView appVersion;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +85,10 @@ public class SplashActivity extends AppCompatActivity {
         //hooks
         fireMovies = findViewById(R.id.fireMovies);
         fireMovies.setAnimation(bottomAnim);
+        //app version
+        appVersion = findViewById(R.id.app_version);
+        appVersion.setText(BuildConfig.VERSION_NAME);
+        appVersion.setAnimation(bottomAnim);
         //firebase init
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
@@ -116,7 +121,7 @@ public class SplashActivity extends AppCompatActivity {
         //splash times
         ///check first time installer
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        int SPLASH_SCREEN = 4000;
+        int SPLASH_SCREEN = 40000;
         if (settings.getBoolean("my_first_time", true)) {
             //the app is being launched for first time, do something
             //Log.d("Comments", "First time");

@@ -5,7 +5,7 @@ plugins {
 apply plugin: 'applovin-quality-service'
 
 applovin {
-    apiKey "0HOptB3pmST0dIp0iH14ZZAAAeU80FmiD3_gG2aCIc7HKTuIH-yO4BmRToCqtBw2SkGQ05f3Ft6NKIETLiwN3F"
+    apiKey "4d3Drim-AJPr7ZcQJUkc1sI4Q3DcBowUH6WXGbHZDg26DaNe48Vq53l3fZ6UTpv4O6S5K0ScNKS0RD1eIiNb0J"
 }
 
 android {
@@ -14,8 +14,8 @@ android {
         applicationId "com.watchfreemovies.freehdcinema786"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 33
-        versionName "2.1.16.33"
+        versionCode 35
+        versionName "v2.1.21.35"
         multiDexEnabled true
     }
     buildTypes {
