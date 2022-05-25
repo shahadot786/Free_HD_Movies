@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                         transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
                         transaction.replace(R.id.container, new ProfileFragment());
                         if (UiConfig.BANNER_AD_VISIBILITY) {
-                            bannerAd.setVisibility(View.GONE);
+                            bannerAd.setVisibility(View.VISIBLE);
                             bannerAd.stopAutoRefresh();
                         }
                         break;
