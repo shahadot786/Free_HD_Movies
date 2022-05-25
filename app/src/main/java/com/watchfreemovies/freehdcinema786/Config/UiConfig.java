@@ -23,8 +23,8 @@ public class UiConfig {
 
     //Extra UI Related Static Variables
     //Hide Movies And TV
-    public static boolean HIDE_MOVIES_TV = false;//false every new update and true when upload movies.
-    public static boolean EDIT_MOVIES_BUTTON = false;//false every new update and true when update movies.
+    public static boolean HIDE_MOVIES_TV = true;//false every new update and true when upload movies.
+    public static boolean EDIT_MOVIES_BUTTON = true;//false every new update and true when update movies.
     //share count 1 user 4:1 means 2 clicks 1 share
     public static int SHARE_CLICK_COUNT = 4;
     //video player orientation

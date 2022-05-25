@@ -43,7 +43,7 @@ public class SplashActivity extends AppCompatActivity {
     Toast toast;
     AdNetwork adNetwork;
     String GameID = "4718385";
-    Boolean TestMode = false; // always false when build signed apk
+    Boolean TestMode = true; // always false when build signed apk
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
