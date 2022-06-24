@@ -132,7 +132,7 @@ public class ActivityVideoPlayer extends AppCompatActivity {
 
             }
 
-            @Override
+            //@Override
             public void onPlayerError(@NonNull ExoPlaybackException error) {
                 simpleExoPlayer.stop();
                 errorDialog();

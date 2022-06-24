@@ -43,6 +43,7 @@ import com.watchfreemovies.freehdcinema786.Model.FeedsModel;
 import com.watchfreemovies.freehdcinema786.Model.UserModel;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.Utils.AdNetwork;
+import com.watchfreemovies.freehdcinema786.Utils.NetworkChecks;
 import com.watchfreemovies.freehdcinema786.databinding.ActivityAddFeedsBinding;
 import com.squareup.picasso.Picasso;
 
@@ -91,6 +92,7 @@ public class AddFeedsActivity extends AppCompatActivity {
 
         postDialog = new Dialog(this);
         adNetwork = new AdNetwork(this);
+        NetworkChecks networkChecks = new NetworkChecks(this);
         //ad initialization
         MaxAdView mRecAd = findViewById(R.id.mRec);
         adNetwork.loadMrecAd();
@@ -195,7 +197,7 @@ public class AddFeedsActivity extends AppCompatActivity {
                             .start();
 
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -276,7 +278,7 @@ public class AddFeedsActivity extends AppCompatActivity {
 
 
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -285,25 +287,6 @@ public class AddFeedsActivity extends AppCompatActivity {
 
 
     }//ends of onCreate
-
-    private void noConnectionDialog() {
-        //custom dialog
-        Dialog noConnection;
-        TextView btnClose;
-        noConnection = new Dialog(this);
-        noConnection.setContentView(R.layout.custom_no_connections_layout);
-        noConnection.setCancelable(false);
-        noConnection.setCanceledOnTouchOutside(false);
-        noConnection.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        noConnection.show();
-        btnClose = noConnection.findViewById(R.id.closeBtn);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                noConnection.dismiss();
-            }
-        });
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

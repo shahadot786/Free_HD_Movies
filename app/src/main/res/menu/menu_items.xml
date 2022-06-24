@@ -52,9 +52,9 @@
                 android:icon="@drawable/ic_privacy_icon"
                 android:title="@string/privacy_policy"/>
             <item
-                android:id="@+id/contact_us"
-                android:icon="@drawable/ic_contact_us_24dp"
-                android:title="@string/contact_us"/>
+                android:id="@+id/update_now"
+                android:icon="@drawable/ic_play_store_24dp"
+                android:title="@string/update_now"/>
             <item
                 android:id="@+id/about"
                 android:title="@string/about_disclaimer"

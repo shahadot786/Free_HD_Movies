@@ -1,10 +1,7 @@
 package com.watchfreemovies.freehdcinema786.Activities;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -26,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.watchfreemovies.freehdcinema786.R;
+import com.watchfreemovies.freehdcinema786.Utils.NetworkChecks;
 import com.watchfreemovies.freehdcinema786.databinding.ActivityForgotPasswordBinding;
 
 import java.util.Objects;
@@ -59,6 +57,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         toast.setView(toastLayout);
         //firebase instance
         auth = FirebaseAuth.getInstance();
+        NetworkChecks networkChecks = new NetworkChecks(this);
         //find id
         textInputLayoutEmail = findViewById(R.id.text_input_email);
         emailReset = findViewById(R.id.editTextEmail);
@@ -99,7 +98,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                 }
                             });
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -113,25 +112,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
 
 
-    }
-    //no internet connection dialog
-    private void noConnectionDialog() {
-        //custom dialog
-        Dialog noConnection;
-        TextView btnClose;
-        noConnection = new Dialog(this);
-        noConnection.setContentView(R.layout.custom_no_connections_layout);
-        noConnection.setCancelable(false);
-        noConnection.setCanceledOnTouchOutside(false);
-        noConnection.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        noConnection.show();
-        btnClose = noConnection.findViewById(R.id.closeBtn);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                noConnection.dismiss();
-            }
-        });
     }
     //others methods
     //email Validation

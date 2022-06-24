@@ -4,10 +4,7 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -38,6 +35,7 @@ import com.watchfreemovies.freehdcinema786.Model.FeedsModel;
 import com.watchfreemovies.freehdcinema786.Model.UserModel;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.Utils.AdNetwork;
+import com.watchfreemovies.freehdcinema786.Utils.NetworkChecks;
 import com.watchfreemovies.freehdcinema786.databinding.ActivityUserProfilesBinding;
 import com.squareup.picasso.Picasso;
 
@@ -80,6 +78,7 @@ public class UserProfilesActivity extends AppCompatActivity {
         activity = UserProfilesActivity.this;
         //ads init
         adNetwork = new AdNetwork(this);
+        NetworkChecks networkChecks = new NetworkChecks(this);
         adNetwork.loadBannerAd();
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
@@ -119,8 +118,7 @@ public class UserProfilesActivity extends AppCompatActivity {
             //we are connected to a network
             toastText.setText(R.string.network_connected);
         } else {
-            toastText.setText(R.string.no_connection_text);
-            toast.show();
+            networkChecks.noConnectionDialog();
         }
 
         /*check if user is sign in or sign out*/
@@ -192,7 +190,7 @@ public class UserProfilesActivity extends AppCompatActivity {
                                                 startActivity(intent);
                                             }
                                         } else {
-                                            noConnectionDialog();
+                                            networkChecks.noConnectionDialog();
                                         }
                                     }
                                 });//facebook
@@ -214,7 +212,7 @@ public class UserProfilesActivity extends AppCompatActivity {
                                                 startActivity(intent);
                                             }
                                         } else {
-                                            noConnectionDialog();
+                                            networkChecks.noConnectionDialog();
                                         }
                                     }
                                 });//instagram
@@ -236,7 +234,7 @@ public class UserProfilesActivity extends AppCompatActivity {
                                                 startActivity(intent);
                                             }
                                         } else {
-                                            noConnectionDialog();
+                                            networkChecks.noConnectionDialog();
                                         }
                                     }
                                 });//github
@@ -258,7 +256,7 @@ public class UserProfilesActivity extends AppCompatActivity {
                                                 startActivity(intent);
                                             }
                                         } else {
-                                            noConnectionDialog();
+                                            networkChecks.noConnectionDialog();
                                         }
                                     }
                                 });//linkedin
@@ -280,7 +278,7 @@ public class UserProfilesActivity extends AppCompatActivity {
                                                 startActivity(intent);
                                             }
                                         } else {
-                                            noConnectionDialog();
+                                            networkChecks.noConnectionDialog();
                                         }
                                     }
                                 });//twitter
@@ -386,7 +384,7 @@ public class UserProfilesActivity extends AppCompatActivity {
                                                         startActivity(intent);
                                                     }
                                                 } else {
-                                                    noConnectionDialog();
+                                                    networkChecks.noConnectionDialog();
                                                 }
                                             }
                                         });//facebook
@@ -408,7 +406,7 @@ public class UserProfilesActivity extends AppCompatActivity {
                                                         startActivity(intent);
                                                     }
                                                 } else {
-                                                    noConnectionDialog();
+                                                    networkChecks.noConnectionDialog();
                                                 }
                                             }
                                         });//instagram
@@ -430,7 +428,7 @@ public class UserProfilesActivity extends AppCompatActivity {
                                                         startActivity(intent);
                                                     }
                                                 } else {
-                                                    noConnectionDialog();
+                                                    networkChecks.noConnectionDialog();
                                                 }
                                             }
                                         });//github
@@ -452,7 +450,7 @@ public class UserProfilesActivity extends AppCompatActivity {
                                                         startActivity(intent);
                                                     }
                                                 } else {
-                                                    noConnectionDialog();
+                                                    networkChecks.noConnectionDialog();
                                                 }
                                             }
                                         });//linkedin
@@ -474,7 +472,7 @@ public class UserProfilesActivity extends AppCompatActivity {
                                                         startActivity(intent);
                                                     }
                                                 } else {
-                                                    noConnectionDialog();
+                                                    networkChecks.noConnectionDialog();
                                                 }
                                             }
                                         });//twitter
@@ -528,24 +526,6 @@ public class UserProfilesActivity extends AppCompatActivity {
 
     }//ends of onCreate
 
-    private void noConnectionDialog() {
-        //custom dialog
-        Dialog noConnection;
-        TextView btnClose;
-        noConnection = new Dialog(activity);
-        noConnection.setContentView(R.layout.custom_no_connections_layout);
-        noConnection.setCancelable(false);
-        noConnection.setCanceledOnTouchOutside(false);
-        noConnection.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        noConnection.show();
-        btnClose = noConnection.findViewById(R.id.closeBtn);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                noConnection.dismiss();
-            }
-        });
-    }
     //option menu item select
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

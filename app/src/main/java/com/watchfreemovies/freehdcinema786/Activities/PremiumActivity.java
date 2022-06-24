@@ -39,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.watchfreemovies.freehdcinema786.Config.UiConfig;
 import com.watchfreemovies.freehdcinema786.R;
+import com.watchfreemovies.freehdcinema786.Utils.NetworkChecks;
 import com.watchfreemovies.freehdcinema786.Utils.Security;
 import com.watchfreemovies.freehdcinema786.databinding.ActivityPremiumBinding;
 
@@ -82,6 +83,7 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
         //firebase instance
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
+        NetworkChecks networkChecks = new NetworkChecks(this);
         //custom toast
         inflater = getLayoutInflater();
         toastLayout = inflater.inflate(R.layout.custom_toast_layout, findViewById(R.id.toastLayout));
@@ -113,7 +115,7 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
                     intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent1);
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -176,7 +178,7 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
                     //we are connected to a network
                     purchase();
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -468,26 +470,4 @@ public class PremiumActivity extends AppCompatActivity implements PurchasesUpdat
         Intent intent = new Intent(activity, MainActivity.class);
         startActivity(intent);
     }
-
-    //no internet connection dialog
-    private void noConnectionDialog() {
-        //custom dialog
-        Dialog noConnection;
-        TextView btnClose;
-        noConnection = new Dialog(this);
-        noConnection.setContentView(R.layout.custom_no_connections_layout);
-        noConnection.setCancelable(false);
-        noConnection.setCanceledOnTouchOutside(false);
-        noConnection.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        noConnection.show();
-        btnClose = noConnection.findViewById(R.id.closeBtn);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                noConnection.dismiss();
-            }
-        });
-    }
-
-
 }

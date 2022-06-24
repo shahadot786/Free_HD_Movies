@@ -57,6 +57,7 @@ import com.watchfreemovies.freehdcinema786.Model.ReportsModel;
 import com.watchfreemovies.freehdcinema786.Model.UserModel;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.Utils.AdNetwork;
+import com.watchfreemovies.freehdcinema786.Utils.NetworkChecks;
 import com.watchfreemovies.freehdcinema786.databinding.ActivityMoviesDetailsBinding;
 import com.squareup.picasso.Picasso;
 
@@ -114,6 +115,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
         activity = MoviesDetailsActivity.this;
         serverDialog = new Dialog(this);
         reportDialog = new Dialog(this);
+
+        NetworkChecks networkChecks = new NetworkChecks(this);
 
 
         //swipe refresh
@@ -312,7 +315,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                                                 reportDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                                                 reportDialog.show();
                                             } else {
-                                                noConnectionDialog();
+                                                networkChecks.noConnectionDialog();
                                             }
                                         }
                                     });
@@ -1109,7 +1112,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                             intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {
-                            noConnectionDialog();
+                            networkChecks.noConnectionDialog();
                         }
                     }
                 });
@@ -1128,7 +1131,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                             ShowDownloadPopup();
 
                         } else {
-                            noConnectionDialog();
+                            networkChecks.noConnectionDialog();
                         }
                     }
                 });
@@ -1147,7 +1150,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                             intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {
-                            noConnectionDialog();
+                            networkChecks.noConnectionDialog();
                         }
                     }
                 });
@@ -1164,7 +1167,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                             //showed popup
                             ShowPopup();
                         } else {
-                            noConnectionDialog();
+                            networkChecks.noConnectionDialog();
                         }
                     }
                 });
@@ -1230,7 +1233,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                                                     }
                                                 });
                                             } else {
-                                                noConnectionDialog();
+                                                networkChecks.noConnectionDialog();
                                             }
                                         }
                                     });
@@ -1292,7 +1295,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
 
 
                                             } else {
-                                                noConnectionDialog();
+                                                networkChecks.noConnectionDialog();
                                             }
                                         }
                                     });
@@ -1371,7 +1374,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                     }
 
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -1448,7 +1451,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                     adapter.notifyDataSetChanged();
 
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
                 swipeRefreshLayout.setRefreshing(false);
                 commentShimmer.hideShimmerAdapter();
@@ -1717,26 +1720,6 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
         serverDialog.setCancelable(false);
         serverDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         serverDialog.show();
-    }
-
-    //no internet connection dialog
-    private void noConnectionDialog() {
-        //custom dialog
-        Dialog noConnection;
-        TextView btnClose;
-        noConnection = new Dialog(this);
-        noConnection.setContentView(R.layout.custom_no_connections_layout);
-        noConnection.setCancelable(false);
-        noConnection.setCanceledOnTouchOutside(false);
-        noConnection.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        noConnection.show();
-        btnClose = noConnection.findViewById(R.id.closeBtn);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                noConnection.dismiss();
-            }
-        });
     }
 
     //comment button empty validation

@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.watchfreemovies.freehdcinema786.Config.UiConfig;
 import com.watchfreemovies.freehdcinema786.Model.UserModel;
 import com.watchfreemovies.freehdcinema786.R;
+import com.watchfreemovies.freehdcinema786.Utils.NetworkChecks;
 import com.watchfreemovies.freehdcinema786.databinding.ActivitySignUpBinding;
 
 import java.util.Objects;
@@ -80,6 +81,7 @@ public class SignUpActivity extends AppCompatActivity {
         toast.setGravity(Gravity.BOTTOM, 0, 100);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(toastLayout);
+        NetworkChecks networkChecks = new NetworkChecks(this);
         //dialog
         dialog = new ProgressDialog(this, ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -157,7 +159,7 @@ public class SignUpActivity extends AppCompatActivity {
                     dialog.dismiss();
 
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
 
@@ -186,7 +188,7 @@ public class SignUpActivity extends AppCompatActivity {
                     startActivity(intent1);
 
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -214,25 +216,6 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     //Other Methods
-    private void noConnectionDialog() {
-        //custom dialog
-        Dialog noConnection;
-        TextView btnClose;
-        noConnection = new Dialog(this);
-        noConnection.setContentView(R.layout.custom_no_connections_layout);
-        noConnection.setCancelable(false);
-        noConnection.setCanceledOnTouchOutside(false);
-        noConnection.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        noConnection.show();
-        btnClose = noConnection.findViewById(R.id.closeBtn);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                noConnection.dismiss();
-            }
-        });
-    }
-
     //username Validation
     private boolean validateUsername() {
         String usernameInput = textInputUserName.getEditText().getText().toString().trim();

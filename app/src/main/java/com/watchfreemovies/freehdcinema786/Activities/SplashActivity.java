@@ -78,8 +78,8 @@ public class SplashActivity extends AppCompatActivity {
             toastText.setText(R.string.network_connected);
         } else {
             toastText.setText(R.string.no_connection_text);
-            toast.show();
         }
+        toast.show();
         //animations
         bottomAnim = AnimationUtils.loadAnimation(this, R.anim.bottom_animation);
         //hooks

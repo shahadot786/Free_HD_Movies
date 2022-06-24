@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.watchfreemovies.freehdcinema786.BuildConfig;
 import com.watchfreemovies.freehdcinema786.Config.UiConfig;
 import com.watchfreemovies.freehdcinema786.R;
+import com.watchfreemovies.freehdcinema786.Utils.NetworkChecks;
 import com.watchfreemovies.freehdcinema786.databinding.ActivityFollowUsBinding;
 
 import java.util.Calendar;
@@ -48,6 +49,7 @@ public class FollowUsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         activity = FollowUsActivity.this;
+        NetworkChecks networkChecks = new NetworkChecks(this);
 
         instagram = getResources().getString(R.string.link_instagram);
         facebook = getResources().getString(R.string.link_facebook);
@@ -96,7 +98,7 @@ public class FollowUsActivity extends AppCompatActivity {
                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -113,7 +115,7 @@ public class FollowUsActivity extends AppCompatActivity {
                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -130,7 +132,7 @@ public class FollowUsActivity extends AppCompatActivity {
                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -147,7 +149,7 @@ public class FollowUsActivity extends AppCompatActivity {
                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -161,7 +163,7 @@ public class FollowUsActivity extends AppCompatActivity {
                     //we are connected to a network
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.url_play_more_apps))));
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -178,7 +180,7 @@ public class FollowUsActivity extends AppCompatActivity {
                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -195,7 +197,7 @@ public class FollowUsActivity extends AppCompatActivity {
                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -209,32 +211,11 @@ public class FollowUsActivity extends AppCompatActivity {
                     //we are connected to a network
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + "info@shrcreation.com")));
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
     }
-
-    //no internet connection dialog
-    private void noConnectionDialog() {
-        //custom dialog
-        Dialog noConnection;
-        TextView btnClose;
-        noConnection = new Dialog(this);
-        noConnection.setContentView(R.layout.custom_no_connections_layout);
-        noConnection.setCancelable(false);
-        noConnection.setCanceledOnTouchOutside(false);
-        noConnection.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        noConnection.show();
-        btnClose = noConnection.findViewById(R.id.closeBtn);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                noConnection.dismiss();
-            }
-        });
-    }
-
     //option menu item select
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

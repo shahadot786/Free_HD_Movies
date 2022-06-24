@@ -2,15 +2,12 @@ package com.watchfreemovies.freehdcinema786.Activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -23,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +49,7 @@ import com.watchfreemovies.freehdcinema786.Model.NotificationsModel;
 import com.watchfreemovies.freehdcinema786.Model.UserModel;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.Utils.AdNetwork;
+import com.watchfreemovies.freehdcinema786.Utils.NetworkChecks;
 import com.watchfreemovies.freehdcinema786.databinding.ActivityMainBinding;
 
 import java.util.Objects;
@@ -73,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private long exitTime = 0;
     Activity context;
     AdNetwork adNetwork;
+    NetworkChecks networkChecks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         //context
         context = MainActivity.this;
         adNetwork = new AdNetwork(this);
+        networkChecks = new NetworkChecks(this);
         // Make sure to set the mediation provider value to "max" to ensure proper functionality
         AppLovinSdk.getInstance( this ).setMediationProvider( "max" );
         AppLovinSdk.initializeSdk( this, new AppLovinSdk.SdkInitializationListener() {
@@ -417,6 +416,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             //rate now
             case R.id.rate:
+                //update now
+            case R.id.update_now:
                 //network check
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(MainActivity.CONNECTIVITY_SERVICE);
                 if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -424,7 +425,7 @@ public class MainActivity extends AppCompatActivity {
                     //we are connected to a network
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
                 return true;
             //follow us
@@ -441,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
                     //we are connected to a network
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.url_play_more_apps))));
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
                 return true;
             //privacy policy
@@ -457,19 +458,7 @@ public class MainActivity extends AppCompatActivity {
                     intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent1);
                 } else {
-                    noConnectionDialog();
-                }
-                return true;
-            //contact us
-            case R.id.contact_us:
-                //network check
-                ConnectivityManager connectivityManager4 = (ConnectivityManager) getSystemService(MainActivity.CONNECTIVITY_SERVICE);
-                if (connectivityManager4.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                        connectivityManager4.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-                    //we are connected to a network
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + "info@shrcreation.com")));
-                } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
                 return true;
             //about and desclaimer
@@ -540,24 +529,4 @@ public class MainActivity extends AppCompatActivity {
         });*/
         dialog.show();
     }
-
-    private void noConnectionDialog() {
-        //custom dialog
-        Dialog noConnection;
-        TextView btnClose;
-        noConnection = new Dialog(this);
-        noConnection.setContentView(R.layout.custom_no_connections_layout);
-        noConnection.setCancelable(false);
-        noConnection.setCanceledOnTouchOutside(false);
-        noConnection.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        noConnection.show();
-        btnClose = noConnection.findViewById(R.id.closeBtn);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                noConnection.dismiss();
-            }
-        });
-    }
-
 }

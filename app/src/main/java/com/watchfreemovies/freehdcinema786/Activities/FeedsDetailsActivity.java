@@ -47,6 +47,7 @@ import com.watchfreemovies.freehdcinema786.Model.ReportsModel;
 import com.watchfreemovies.freehdcinema786.Model.UserModel;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.Utils.AdNetwork;
+import com.watchfreemovies.freehdcinema786.Utils.NetworkChecks;
 import com.watchfreemovies.freehdcinema786.databinding.ActivityFeedsDetailsBinding;
 import com.squareup.picasso.Picasso;
 
@@ -95,6 +96,7 @@ public class FeedsDetailsActivity extends AppCompatActivity {
 
         //ads init
         adNetwork = new AdNetwork(this);
+        NetworkChecks networkChecks = new NetworkChecks(this);
         adNetwork.loadBannerAd();
         reportDialog = new Dialog(this);
 
@@ -207,7 +209,7 @@ public class FeedsDetailsActivity extends AppCompatActivity {
                                         reportDialog.show();
 
                                     } else {
-                                        noConnectionDialog();
+                                        networkChecks.noConnectionDialog();
                                     }
                                 }
                             });
@@ -382,7 +384,7 @@ public class FeedsDetailsActivity extends AppCompatActivity {
                                                     }
                                                 });
                                             } else {
-                                                noConnectionDialog();
+                                                networkChecks.noConnectionDialog();
                                             }
                                         }
                                     });
@@ -443,7 +445,7 @@ public class FeedsDetailsActivity extends AppCompatActivity {
 
 
                                             } else {
-                                                noConnectionDialog();
+                                                networkChecks.noConnectionDialog();
                                             }
                                         }
                                     });
@@ -591,7 +593,7 @@ public class FeedsDetailsActivity extends AppCompatActivity {
                     }
 
                 } else {
-                   noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
             }
         });
@@ -670,7 +672,7 @@ public class FeedsDetailsActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
 
                 } else {
-                    noConnectionDialog();
+                    networkChecks.noConnectionDialog();
                 }
                 swipeRefreshLayout.setRefreshing(false);
                 commentShimmer.hideShimmerAdapter();
@@ -679,25 +681,6 @@ public class FeedsDetailsActivity extends AppCompatActivity {
         });
 
 
-    }
-    //no internet connection dialog
-    private void noConnectionDialog() {
-        //custom dialog
-        Dialog noConnection;
-        TextView btnClose;
-        noConnection = new Dialog(this);
-        noConnection.setContentView(R.layout.custom_no_connections_layout);
-        noConnection.setCancelable(false);
-        noConnection.setCanceledOnTouchOutside(false);
-        noConnection.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        noConnection.show();
-        btnClose = noConnection.findViewById(R.id.closeBtn);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                noConnection.dismiss();
-            }
-        });
     }
     //comment button empty validation
     public boolean commentValidation() {

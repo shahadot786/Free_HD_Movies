@@ -51,7 +51,6 @@ public class ActivityVideoDownload extends AppCompatActivity {
 
         activity = ActivityVideoDownload.this;
         adNetwork = new AdNetwork(this);
-
         Button download=findViewById(R.id.btnDownload);
         //ad initialization
         MaxAdView mRecAd = findViewById(R.id.mRec);
@@ -82,14 +81,14 @@ public class ActivityVideoDownload extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                 requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, PERMISSIONS_REQUEST);
             } else {
-                downloadImage();
+                downloadMovies();
             }
         } else {
-            downloadImage();
+            downloadMovies();
         }
     }
 
-    public void downloadImage() {
+    public void downloadMovies() {
         try {
             DownloadManager dm = (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
             Uri downloadUri = Uri.parse(downloadUrl);

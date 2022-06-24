@@ -30,6 +30,7 @@ import com.watchfreemovies.freehdcinema786.Config.UiConfig;
 import com.watchfreemovies.freehdcinema786.Model.MoviesModel;
 import com.watchfreemovies.freehdcinema786.R;
 import com.watchfreemovies.freehdcinema786.Utils.AdNetwork;
+import com.watchfreemovies.freehdcinema786.Utils.NetworkChecks;
 import com.watchfreemovies.freehdcinema786.databinding.ActivityFavoriteListBinding;
 
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class FavoriteListActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         adNetwork = new AdNetwork(this);
+        NetworkChecks networkChecks = new NetworkChecks(this);
         adNetwork.loadBannerAd();
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
@@ -107,9 +109,9 @@ public class FavoriteListActivity extends AppCompatActivity {
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             //we are connected to a network
+
         } else {
-            toastText.setText(R.string.no_connection_text);
-            toast.show();
+            networkChecks.noConnectionDialog();
         }
 
         database.getReference().child("Movies")
