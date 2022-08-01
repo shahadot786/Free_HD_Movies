@@ -142,22 +142,15 @@ public class HomeFragment extends Fragment {
         nativeAdContainer2 = view.findViewById( R.id.native_medium_ad_layout );
         nativeAdContainer4 = view.findViewById( R.id.native_medium_ad_layout2 );
 
-        loadNativeAd();
+        /*loadNativeAd();
         loadMediumNativeAd();
         loadNativeAd2();
-        loadMediumNativeAd2();
+        loadMediumNativeAd2();*/
         //pro check
-        if (UiConfig.BANNER_AD_VISIBILITY){
-            nativeAdContainer.setVisibility(View.VISIBLE);
-            nativeAdContainer2.setVisibility(View.VISIBLE);
-            nativeAdContainer3.setVisibility(View.VISIBLE);
-            nativeAdContainer4.setVisibility(View.VISIBLE);
-        }else {
-            nativeAdContainer.setVisibility(View.GONE);
-            nativeAdContainer2.setVisibility(View.GONE);
-            nativeAdContainer3.setVisibility(View.GONE);
-            nativeAdContainer4.setVisibility(View.GONE);
-        }
+        nativeAdContainer.setVisibility(View.GONE);
+        nativeAdContainer2.setVisibility(View.GONE);
+        nativeAdContainer3.setVisibility(View.GONE);
+        nativeAdContainer4.setVisibility(View.GONE);
 
         //mores id
         evergreenMore = view.findViewById(R.id.evergreenMore);

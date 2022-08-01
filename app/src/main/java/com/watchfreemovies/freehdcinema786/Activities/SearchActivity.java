@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,17 +81,26 @@ public class SearchActivity extends AppCompatActivity {
 
         //ads init
         adNetwork = new AdNetwork(this);
+<<<<<<< HEAD
         NetworkChecks networkChecks = new NetworkChecks(this);
         adNetwork.loadBannerAd();
+=======
+        //adNetwork.loadBannerAd();
+>>>>>>> main
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
+        LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
+        //adNetwork.loadBannerAd();
+        adNetwork.loadUnityBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             bannerAd.setVisibility(View.VISIBLE);
             bannerAd.startAutoRefresh();
+            unityBannerAd.setVisibility(View.VISIBLE);
         } else {
             bannerAd.setVisibility(View.GONE);
             bannerAd.stopAutoRefresh();
+            unityBannerAd.setVisibility(View.GONE);
         }
 
         //firebase instance

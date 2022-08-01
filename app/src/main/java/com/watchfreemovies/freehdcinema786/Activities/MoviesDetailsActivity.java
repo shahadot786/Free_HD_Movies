@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -46,6 +47,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.unity3d.ads.IUnityAdsLoadListener;
+import com.unity3d.ads.IUnityAdsShowListener;
+import com.unity3d.ads.UnityAds;
+import com.unity3d.ads.UnityAdsShowOptions;
 import com.watchfreemovies.freehdcinema786.Adapter.CommentAdapter;
 import com.watchfreemovies.freehdcinema786.BuildConfig;
 import com.watchfreemovies.freehdcinema786.Categories.CategoryDetailsActivity;
@@ -95,6 +100,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
     RadioButton radioButton;
     AdNetwork adNetwork;
     private MaxRewardedAd rewardedAd;
+    String unityRewardedAd = "Rewarded_Android";
     private int retryAttempt;
 
     @Override
@@ -141,22 +147,28 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
 
         //ads init
         adNetwork = new AdNetwork(this);
-        adNetwork.loadBannerAd();
-        adNetwork.loadInterstitialAd();
+        //adNetwork.loadBannerAd();
+        //adNetwork.loadInterstitialAd();
+        adNetwork.loadUnityInterstitialAd();
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
+        LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
+        //adNetwork.loadBannerAd();
+        adNetwork.loadUnityBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             bannerAd.setVisibility(View.VISIBLE);
             bannerAd.startAutoRefresh();
+            unityBannerAd.setVisibility(View.VISIBLE);
         } else {
             bannerAd.setVisibility(View.GONE);
             bannerAd.stopAutoRefresh();
+            unityBannerAd.setVisibility(View.GONE);
         }
 
-        rewardedAd = MaxRewardedAd.getInstance(getResources().getString(R.string.rewarded_ad_unit_id), this);
+        /*rewardedAd = MaxRewardedAd.getInstance(getResources().getString(R.string.rewarded_ad_unit_id), this);
         rewardedAd.setListener(this);
-        rewardedAd.loadAd();
+        rewardedAd.loadAd();*/
 
         //network check
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(MoviesDetailsActivity.CONNECTIVITY_SERVICE);
@@ -492,7 +504,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                                 binding.movieYear.setTextColor(getResources().getColor(R.color.colorWhite));
                                 binding.movieYear.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#dc4036")));
                         }
-                        adNetwork.showInterstitialAd();
+                        //adNetwork.showInterstitialAd();
+                        adNetwork.showUnityInterstitialAd();
                     }
                 });
                 //set genre values
@@ -681,7 +694,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                                 binding.genre2.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#dc4036")));
 
                         }
-                        adNetwork.showInterstitialAd();
+                        //adNetwork.showInterstitialAd();
+                        adNetwork.showUnityInterstitialAd();
                     }
                 });
                 binding.genre1.setOnClickListener(new View.OnClickListener() {
@@ -864,7 +878,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                                 binding.genre1.setTextColor(getResources().getColor(R.color.colorWhite));
                                 binding.genre1.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#dc4036")));
                         }
-                        adNetwork.showInterstitialAd();
+                        //adNetwork.showInterstitialAd();
+                        adNetwork.showUnityInterstitialAd();
                     }
                 });
                 binding.genre2.setOnClickListener(new View.OnClickListener() {
@@ -1047,7 +1062,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                                 binding.genre2.setTextColor(getResources().getColor(R.color.colorWhite));
                                 binding.genre2.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#dc4036")));
                         }
-                        adNetwork.showInterstitialAd();
+                        //adNetwork.showInterstitialAd();
+                        adNetwork.showUnityInterstitialAd();
                     }
                 });
 
@@ -1186,9 +1202,10 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                         intent.putExtra("keywords", keywords);
                         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
-                        if (rewardedAd.isReady()){
+                        /*if (rewardedAd.isReady()){
                             rewardedAd.showAd();
-                        }
+                        }*/
+                        adNetwork.showUnityInterstitialAd();
                     }
                 });
                 //movies likes data
@@ -1460,6 +1477,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
         });
 
 
+
+
     }//ends of onCreate
 
     private void ShowDownloadPopup() {
@@ -1482,8 +1501,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                 serverClick = 1;
                 //show rewarded ad
                 if (UiConfig.REWARDED__AD_VISIBILITY) {
-                    if (rewardedAd.isReady()) {
-                        rewardedAd.showAd();
+                    if (UnityAds.isInitialized()) {
+                        DisplayUnityRewardedAd();
                     }else {
                         Intent intent = new Intent(activity, ActivityVideoDownload.class);
                         intent.putExtra("downloadUrl", server_1);
@@ -1509,8 +1528,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                 serverClick = 2;
                 //show rewarded ad
                 if (UiConfig.REWARDED__AD_VISIBILITY) {
-                    if (rewardedAd.isReady()) {
-                        rewardedAd.showAd();
+                    if (UnityAds.isInitialized()) {
+                        DisplayUnityRewardedAd();
                     }else {
                         Intent intent = new Intent(activity, ActivityVideoDownload.class);
                         intent.putExtra("downloadUrl", server_2);
@@ -1536,8 +1555,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                 serverClick = 3;
                 //show rewarded ad
                 if (UiConfig.REWARDED__AD_VISIBILITY) {
-                    if (rewardedAd.isReady()) {
-                        rewardedAd.showAd();
+                    if (UnityAds.isInitialized()) {
+                        DisplayUnityRewardedAd();
                     }else {
                         Intent intent = new Intent(activity, ActivityVideoDownload.class);
                         intent.putExtra("downloadUrl", server_3);
@@ -1563,8 +1582,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                 serverClick = 4;
                 //show rewarded ad
                 if (UiConfig.REWARDED__AD_VISIBILITY) {
-                    if (rewardedAd.isReady()) {
-                        rewardedAd.showAd();
+                    if (UnityAds.isInitialized()) {
+                        DisplayUnityRewardedAd();
                     }else {
                         Intent intent = new Intent(activity, ActivityVideoDownload.class);
                         intent.putExtra("downloadUrl", server_4);
@@ -1616,9 +1635,9 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                 serverClick = 1;
                 //show rewarded ad
                 if (UiConfig.REWARDED__AD_VISIBILITY) {
-                    if (rewardedAd.isReady()) {
-                        rewardedAd.showAd();
-                    } else {
+                    if (UnityAds.isInitialized()) {
+                        DisplayUnityRewardedAd();
+                    }else {
                         Intent intent = new Intent(activity, ActivityVideoPlayer.class);
                         intent.putExtra("serverUrl", server_1);
                         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
@@ -1641,8 +1660,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                 serverClick = 2;
                 //show rewarded ad
                 if (UiConfig.REWARDED__AD_VISIBILITY) {
-                    if (rewardedAd.isReady()) {
-                        rewardedAd.showAd();
+                    if (UnityAds.isInitialized()) {
+                        DisplayUnityRewardedAd();
                     }else {
                         Intent intent = new Intent(activity, ActivityVideoPlayer.class);
                         intent.putExtra("serverUrl", server_2);
@@ -1666,8 +1685,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                 serverClick = 3;
                 //show rewarded ad
                 if (UiConfig.REWARDED__AD_VISIBILITY) {
-                    if (rewardedAd.isReady()) {
-                        rewardedAd.showAd();
+                    if (UnityAds.isInitialized()) {
+                        DisplayUnityRewardedAd();
                     }else {
                         Intent intent = new Intent(activity, ActivityVideoPlayer.class);
                         intent.putExtra("serverUrl", server_3);
@@ -1691,9 +1710,9 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                 serverClick = 4;
                 //show rewarded ad
                 if (UiConfig.REWARDED__AD_VISIBILITY) {
-                    if (rewardedAd.isReady()) {
-                        rewardedAd.showAd();
-                    } else {
+                    if (UnityAds.isInitialized()) {
+                        DisplayUnityRewardedAd();
+                    }else {
                         Intent intent = new Intent(activity, ActivityVideoPlayer.class);
                         intent.putExtra("serverUrl", server_4);
                         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
@@ -1914,6 +1933,164 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
 
                     }
                 });*/
+    }
+
+    //load unity rewarded ad
+    IUnityAdsLoadListener iUnityAdsLoadListener = new IUnityAdsLoadListener() {
+        @Override
+        public void onUnityAdsAdLoaded(String s) {
+            UnityAds.show(activity, unityRewardedAd,new UnityAdsShowOptions(), iUnityAdsShowListener);
+        }
+
+        @Override
+        public void onUnityAdsFailedToLoad(String s, UnityAds.UnityAdsLoadError unityAdsLoadError, String s1) {
+
+        }
+    };
+
+    //unity rewarded ads
+    IUnityAdsShowListener iUnityAdsShowListener = new IUnityAdsShowListener() {
+        @Override
+        public void onUnityAdsShowFailure(String s, UnityAds.UnityAdsShowError unityAdsShowError, String s1) {
+            // Rewarded ad was displayed and user should receive the reward
+            if (clickBtn.equals("play")) {
+                if (serverClick == 1) {
+                    Intent intent = new Intent(activity, ActivityVideoPlayer.class);
+                    intent.putExtra("serverUrl", server_1);
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_1)));
+                } else if (serverClick == 2) {
+                    Intent intent = new Intent(activity, ActivityVideoPlayer.class);
+                    intent.putExtra("serverUrl", server_2);
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_2)));
+                } else if (serverClick == 3) {
+                    Intent intent = new Intent(activity, ActivityVideoPlayer.class);
+                    intent.putExtra("serverUrl", server_3);
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_3)));
+                } else if (serverClick == 4) {
+                    Intent intent = new Intent(activity, ActivityVideoPlayer.class);
+                    intent.putExtra("serverUrl", server_4);
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_4)));
+                }
+            } else {
+                if (serverClick == 1) {
+                    Intent intent = new Intent(activity, ActivityVideoDownload.class);
+                    intent.putExtra("downloadUrl", server_1);
+                    intent.putExtra("movieName", movieName);
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_1)));
+                } else if (serverClick == 2) {
+                    Intent intent = new Intent(activity, ActivityVideoDownload.class);
+                    intent.putExtra("downloadUrl", server_2);
+                    intent.putExtra("movieName", movieName);
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_2)));
+                } else if (serverClick == 3) {
+                    Intent intent = new Intent(activity, ActivityVideoDownload.class);
+                    intent.putExtra("downloadUrl", server_3);
+                    intent.putExtra("movieName", movieName);
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_3)));
+                } else if (serverClick == 4) {
+                    Intent intent = new Intent(activity, ActivityVideoDownload.class);
+                    intent.putExtra("downloadUrl", server_4);
+                    intent.putExtra("movieName", movieName);
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_4)));
+                }
+            }
+        }
+
+        @Override
+        public void onUnityAdsShowStart(String s) {
+
+        }
+
+        @Override
+        public void onUnityAdsShowClick(String s) {
+
+        }
+
+        @Override
+        public void onUnityAdsShowComplete(String s, UnityAds.UnityAdsShowCompletionState unityAdsShowCompletionState) {
+            if (unityAdsShowCompletionState.equals(UnityAds.UnityAdsShowCompletionState.COMPLETED)){
+                // Rewarded ad was displayed and user should receive the reward
+                if (clickBtn.equals("play")) {
+                    if (serverClick == 1) {
+                        Intent intent = new Intent(activity, ActivityVideoPlayer.class);
+                        intent.putExtra("serverUrl", server_1);
+                        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_1)));
+                    } else if (serverClick == 2) {
+                        Intent intent = new Intent(activity, ActivityVideoPlayer.class);
+                        intent.putExtra("serverUrl", server_2);
+                        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_2)));
+                    } else if (serverClick == 3) {
+                        Intent intent = new Intent(activity, ActivityVideoPlayer.class);
+                        intent.putExtra("serverUrl", server_3);
+                        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_3)));
+                    } else if (serverClick == 4) {
+                        Intent intent = new Intent(activity, ActivityVideoPlayer.class);
+                        intent.putExtra("serverUrl", server_4);
+                        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_4)));
+                    }
+                } else {
+                    if (serverClick == 1) {
+                        Intent intent = new Intent(activity, ActivityVideoDownload.class);
+                        intent.putExtra("downloadUrl", server_1);
+                        intent.putExtra("movieName", movieName);
+                        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_1)));
+                    } else if (serverClick == 2) {
+                        Intent intent = new Intent(activity, ActivityVideoDownload.class);
+                        intent.putExtra("downloadUrl", server_2);
+                        intent.putExtra("movieName", movieName);
+                        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_2)));
+                    } else if (serverClick == 3) {
+                        Intent intent = new Intent(activity, ActivityVideoDownload.class);
+                        intent.putExtra("downloadUrl", server_3);
+                        intent.putExtra("movieName", movieName);
+                        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_3)));
+                    } else if (serverClick == 4) {
+                        Intent intent = new Intent(activity, ActivityVideoDownload.class);
+                        intent.putExtra("downloadUrl", server_4);
+                        intent.putExtra("movieName", movieName);
+                        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(server_4)));
+                    }
+                }
+            }else {
+                Toast.makeText(activity, "Watch Full Ad", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+    public void DisplayUnityRewardedAd(){
+        UnityAds.load(unityRewardedAd,iUnityAdsLoadListener);
     }
 
     // MAX Ad Listener

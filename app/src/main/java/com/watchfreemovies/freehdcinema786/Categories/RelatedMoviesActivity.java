@@ -84,8 +84,13 @@ public class RelatedMoviesActivity extends AppCompatActivity {
         // Start loading ads here...
         //ads init
         adNetwork = new AdNetwork(this);
+<<<<<<< HEAD
         NetworkChecks networkChecks = new NetworkChecks(this);
         adNetwork.loadBannerAd();
+=======
+        //adNetwork.loadBannerAd();
+        adNetwork.loadUnityBannerAd();
+>>>>>>> main
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
         //check premium

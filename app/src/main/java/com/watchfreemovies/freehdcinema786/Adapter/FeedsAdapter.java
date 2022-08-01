@@ -45,7 +45,8 @@ public class FeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         this.context = context;
 
         adNetwork = new AdNetwork((Activity) context);
-        adNetwork.loadInterstitialAd();
+        //adNetwork.loadInterstitialAd();
+        adNetwork.loadUnityInterstitialAd();
     }
 
     @NonNull
@@ -184,7 +185,8 @@ public class FeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                                     intent.putExtra("postedBy", model.getPostedBy());
                                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                                     context.getApplicationContext().startActivity(intent);
-                                    adNetwork.showInterstitialAdCount();
+                                    //adNetwork.showInterstitialAdCount();
+                                    adNetwork.showUnityInterstitialAdCount();
 
                                     //fetch firebase database
                                     FirebaseDatabase.getInstance().getReference()

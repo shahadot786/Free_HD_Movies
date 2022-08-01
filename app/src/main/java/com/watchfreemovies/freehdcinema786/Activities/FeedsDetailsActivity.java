@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -96,8 +97,26 @@ public class FeedsDetailsActivity extends AppCompatActivity {
 
         //ads init
         adNetwork = new AdNetwork(this);
+<<<<<<< HEAD
         NetworkChecks networkChecks = new NetworkChecks(this);
         adNetwork.loadBannerAd();
+=======
+        //banner
+        MaxAdView bannerAd = findViewById(R.id.adView);
+        LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
+        //adNetwork.loadBannerAd();
+        adNetwork.loadUnityBannerAd();
+        //check premium
+        if (UiConfig.BANNER_AD_VISIBILITY) {
+            bannerAd.setVisibility(View.VISIBLE);
+            bannerAd.startAutoRefresh();
+            unityBannerAd.setVisibility(View.VISIBLE);
+        } else {
+            bannerAd.setVisibility(View.GONE);
+            bannerAd.stopAutoRefresh();
+            unityBannerAd.setVisibility(View.GONE);
+        }
+>>>>>>> main
         reportDialog = new Dialog(this);
 
         //swipe refresh
@@ -119,18 +138,6 @@ public class FeedsDetailsActivity extends AppCompatActivity {
         dialog.setMessage("Please Wait...");
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-
-        //banner
-        MaxAdView bannerAd = findViewById(R.id.adView);
-        //check premium
-        if (UiConfig.BANNER_AD_VISIBILITY) {
-            bannerAd.setVisibility(View.VISIBLE);
-            bannerAd.startAutoRefresh();
-        } else {
-            bannerAd.setVisibility(View.GONE);
-            bannerAd.stopAutoRefresh();
-        }
-
         //network check
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(FeedsDetailsActivity.CONNECTIVITY_SERVICE);
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||

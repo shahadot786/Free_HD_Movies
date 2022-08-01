@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,15 +96,15 @@ public class AddFeedsActivity extends AppCompatActivity {
         NetworkChecks networkChecks = new NetworkChecks(this);
         //ad initialization
         MaxAdView mRecAd = findViewById(R.id.mRec);
-        adNetwork.loadMrecAd();
-        //ads disabled code
+        //banner
+        LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
+        //adNetwork.loadBannerAd();
+        adNetwork.loadUnityBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
-            mRecAd.setVisibility(View.VISIBLE);
-            mRecAd.startAutoRefresh();
+            unityBannerAd.setVisibility(View.VISIBLE);
         } else {
-            mRecAd.setVisibility(View.GONE);
-            mRecAd.stopAutoRefresh();
+            unityBannerAd.setVisibility(View.GONE);
         }
         //check pro status
         ImageView proBadge = findViewById(R.id.proBadge);

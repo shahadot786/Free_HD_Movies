@@ -39,7 +39,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.viewHold
         this.list = list;
 
         adNetwork = new AdNetwork((Activity) context);
-        adNetwork.loadInterstitialAd();
+        //adNetwork.loadInterstitialAd();
+        adNetwork.loadUnityInterstitialAd();
     }
 
     @NonNull
@@ -86,7 +87,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.viewHold
                 intent.putExtra("postedBy", comment.getCommentedBy());
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                 context.getApplicationContext().startActivity(intent);
-                adNetwork.showInterstitialAd();
+                //adNetwork.showInterstitialAd();
+                adNetwork.showUnityInterstitialAd();
 
             }
         });

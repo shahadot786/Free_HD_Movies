@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,16 +54,15 @@ public class ActivityVideoDownload extends AppCompatActivity {
         adNetwork = new AdNetwork(this);
         Button download=findViewById(R.id.btnDownload);
         //ad initialization
-        MaxAdView mRecAd = findViewById(R.id.mRec);
-        adNetwork.loadMrecAd();
-        //ads disabled code
+        //banner
+        LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
+        //adNetwork.loadBannerAd();
+        adNetwork.loadUnityBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
-            mRecAd.setVisibility(View.VISIBLE);
-            mRecAd.startAutoRefresh();
+            unityBannerAd.setVisibility(View.VISIBLE);
         } else {
-            mRecAd.setVisibility(View.GONE);
-            mRecAd.stopAutoRefresh();
+            unityBannerAd.setVisibility(View.GONE);
         }
 
         //btn download click

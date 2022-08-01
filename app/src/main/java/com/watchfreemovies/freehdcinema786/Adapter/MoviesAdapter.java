@@ -43,7 +43,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.context = context;
 
         adNetwork = new AdNetwork((Activity) context);
-        adNetwork.loadInterstitialAd();
+        //adNetwork.loadInterstitialAd();
+        adNetwork.loadUnityInterstitialAd();
     }
 
     @NonNull
@@ -140,7 +141,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                     intent.putExtra("postId", model.getPostId());
                                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                                     context.getApplicationContext().startActivity(intent);
-                                    adNetwork.showInterstitialAdCount();
+                                    //adNetwork.showInterstitialAdCount();
+                                    adNetwork.showUnityInterstitialAdCount();
                                     //fetch firebase database
                                     FirebaseDatabase.getInstance().getReference()
                                             .child("Movies")
