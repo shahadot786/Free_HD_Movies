@@ -148,13 +148,11 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
         //ads init
         adNetwork = new AdNetwork(this);
         //adNetwork.loadBannerAd();
-        //adNetwork.loadInterstitialAd();
-        adNetwork.loadUnityInterstitialAd();
+        adNetwork.loadInterstitialAd();
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
         LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
-        //adNetwork.loadBannerAd();
-        adNetwork.loadUnityBannerAd();
+        adNetwork.loadBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             bannerAd.setVisibility(View.VISIBLE);
@@ -504,8 +502,8 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                                 binding.movieYear.setTextColor(getResources().getColor(R.color.colorWhite));
                                 binding.movieYear.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#dc4036")));
                         }
-                        //adNetwork.showInterstitialAd();
-                        adNetwork.showUnityInterstitialAd();
+                        adNetwork.showInterstitialAd();
+
                     }
                 });
                 //set genre values
@@ -694,8 +692,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                                 binding.genre2.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#dc4036")));
 
                         }
-                        //adNetwork.showInterstitialAd();
-                        adNetwork.showUnityInterstitialAd();
+                        adNetwork.showInterstitialAd();
                     }
                 });
                 binding.genre1.setOnClickListener(new View.OnClickListener() {
@@ -878,8 +875,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                                 binding.genre1.setTextColor(getResources().getColor(R.color.colorWhite));
                                 binding.genre1.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#dc4036")));
                         }
-                        //adNetwork.showInterstitialAd();
-                        adNetwork.showUnityInterstitialAd();
+                        adNetwork.showInterstitialAd();
                     }
                 });
                 binding.genre2.setOnClickListener(new View.OnClickListener() {
@@ -1062,8 +1058,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                                 binding.genre2.setTextColor(getResources().getColor(R.color.colorWhite));
                                 binding.genre2.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#dc4036")));
                         }
-                        //adNetwork.showInterstitialAd();
-                        adNetwork.showUnityInterstitialAd();
+                        adNetwork.showInterstitialAd();
                     }
                 });
 
@@ -1205,7 +1200,7 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                         /*if (rewardedAd.isReady()){
                             rewardedAd.showAd();
                         }*/
-                        adNetwork.showUnityInterstitialAd();
+                        adNetwork.showInterstitialAd();
                     }
                 });
                 //movies likes data

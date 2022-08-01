@@ -11,11 +11,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.2.1'
-<<<<<<< HEAD
-        classpath 'com.google.gms:google-services:4.3.10'
-=======
         classpath 'com.google.gms:google-services:4.3.13'
->>>>>>> main
         classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:0.14.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10"
         classpath "com.applovin.quality:AppLovinQualityServiceGradlePlugin:4.3.9"

@@ -97,15 +97,12 @@ public class FeedsDetailsActivity extends AppCompatActivity {
 
         //ads init
         adNetwork = new AdNetwork(this);
-<<<<<<< HEAD
         NetworkChecks networkChecks = new NetworkChecks(this);
-        adNetwork.loadBannerAd();
-=======
+
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
         LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
-        //adNetwork.loadBannerAd();
-        adNetwork.loadUnityBannerAd();
+        adNetwork.loadBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             bannerAd.setVisibility(View.VISIBLE);
@@ -116,7 +113,6 @@ public class FeedsDetailsActivity extends AppCompatActivity {
             bannerAd.stopAutoRefresh();
             unityBannerAd.setVisibility(View.GONE);
         }
->>>>>>> main
         reportDialog = new Dialog(this);
 
         //swipe refresh

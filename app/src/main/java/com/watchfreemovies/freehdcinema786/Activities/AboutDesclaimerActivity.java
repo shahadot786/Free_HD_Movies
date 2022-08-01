@@ -1,10 +1,7 @@
 package com.watchfreemovies.freehdcinema786.Activities;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -68,16 +65,14 @@ public class AboutDesclaimerActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         adNetwork = new AdNetwork(this);
-<<<<<<< HEAD
         NetworkChecks networkChecks = new NetworkChecks(this);
         adNetwork.loadBannerAd();
-=======
->>>>>>> main
+
+
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
         LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
-        //adNetwork.loadBannerAd();
-        adNetwork.loadUnityBannerAd();
+        adNetwork.loadBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             bannerAd.setVisibility(View.VISIBLE);

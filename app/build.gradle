@@ -13,15 +13,10 @@ android {
     defaultConfig {
         applicationId "com.watchfreemovies.freehdcinema786"
         minSdkVersion 21
-<<<<<<< HEAD
-        targetSdkVersion 32
-        versionCode 37
-        versionName "v2.2.22.37.01"
-=======
         targetSdkVersion 33
         versionCode 37
-        versionName "3.1.24.37"
->>>>>>> main
+        versionName "v2.2.22.37.01"
+
         multiDexEnabled true
     }
     buildTypes {
@@ -65,13 +60,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     //firebase
     implementation platform('com.google.firebase:firebase-bom:29.0.0')
-<<<<<<< HEAD
-    implementation 'com.google.firebase:firebase-analytics:21.0.0'
-    implementation 'com.google.firebase:firebase-auth:21.0.5'
-=======
     implementation 'com.google.firebase:firebase-analytics:21.1.0'
     implementation 'com.google.firebase:firebase-auth:21.0.6'
->>>>>>> main
     implementation 'com.google.firebase:firebase-database:20.0.5'
     implementation 'com.google.firebase:firebase-core:21.1.0'
     implementation 'com.google.firebase:firebase-storage:20.0.1'
@@ -80,14 +70,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
     //noinspection GradleDependency
     implementation "com.android.billingclient:billing:4.1.0"
-<<<<<<< HEAD
-    implementation 'com.google.android.gms:play-services-ads:21.0.0'
-    implementation 'com.applovin:applovin-sdk:11.4.0'
-    implementation 'com.google.ads.mediation:applovin:11.4.0.0'
-=======
     implementation 'com.google.android.gms:play-services-ads:21.1.0'
     implementation 'com.applovin:applovin-sdk:11.4.4'
->>>>>>> main
+    implementation 'com.google.ads.mediation:applovin:11.4.4.0'
 
     //image
     implementation 'de.hdodenhof:circleimageview:3.1.0'

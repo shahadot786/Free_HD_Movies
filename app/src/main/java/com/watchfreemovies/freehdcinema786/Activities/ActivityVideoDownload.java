@@ -56,8 +56,7 @@ public class ActivityVideoDownload extends AppCompatActivity {
         //ad initialization
         //banner
         LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
-        //adNetwork.loadBannerAd();
-        adNetwork.loadUnityBannerAd();
+        adNetwork.loadBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             unityBannerAd.setVisibility(View.VISIBLE);

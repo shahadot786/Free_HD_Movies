@@ -18,7 +18,6 @@
     <string name="ad_attribution">AD</string>
 
     <!--Ads Real-->
-<<<<<<< HEAD
     <string name="applovin_sdk_key">1zWIpgA5ypdhsOvsw5LkOKHivpN2aMwgH0qMm77xmphANnQtbfRSXZTnCvCC_R3fvEXiz37ehgP2UVgypc0MCF</string>
     <string name="banner_ad_unit_id">38838a97d400381b</string>
     <string name="interstitial_ad_unit_id">1c92816cd789bdd4</string>
@@ -26,26 +25,8 @@
     <string name="mrec_ad_unit_id">be411c1fa67508e8</string>
     <string name="native_small_ad_unit_id">c6ae02242c18b598</string>
     <string name="native_medium_ad_unit_id">85b03c0ce9bbef16</string>
-=======
     <!--Startapp Ads-->
     <string name="startapp_app_id">205948484</string>
-    <!--Unity Ads-->
-    <string name="unity_game_id">4718385</string>
-    <string name="unity_banner_ad_unit_id">Banner_Android</string>
-    <string name="unity_interstitial_ad_unit_id">Interstitial_Android</string>
-    <string name="unity_rewarded_ad_unit_id">Rewarded_Android</string>
-
-
-
-    <!--Applovin Ads-->
-    <string name="applovin_sdk_key">h_SI4RH8q40T3xf1aRSRtbznFChbszL2K2PUQpTxxskOwo6LGumFvQgemqzfycGOwb2mKDFZoEecwDCsvaB0uD</string>
-    <string name="banner_ad_unit_id">d4d88b4ae4fa4ca9</string>
-    <string name="interstitial_ad_unit_id">4fe9a34c3ef9384c</string>
-    <string name="rewarded_ad_unit_id">13b9c5221d90909c</string>
-    <string name="mrec_ad_unit_id">01300249931833ea</string>
-    <string name="native_small_ad_unit_id">b8dc6dcf7317353d</string>
-    <string name="native_medium_ad_unit_id">9a29b536830656f5</string>
->>>>>>> main
     <!--Main Activity-->
     <string name="press_again_to_exit">Press again to exit app</string>
 

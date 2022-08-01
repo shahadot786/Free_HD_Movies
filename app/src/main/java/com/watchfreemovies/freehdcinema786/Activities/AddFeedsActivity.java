@@ -98,8 +98,7 @@ public class AddFeedsActivity extends AppCompatActivity {
         MaxAdView mRecAd = findViewById(R.id.mRec);
         //banner
         LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
-        //adNetwork.loadBannerAd();
-        adNetwork.loadUnityBannerAd();
+        adNetwork.loadBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             unityBannerAd.setVisibility(View.VISIBLE);

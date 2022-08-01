@@ -20,11 +20,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-<<<<<<< HEAD
-=======
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
->>>>>>> main
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -105,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration)
             {
                 // AppLovin SDK is initialized, start loading ads
-                //adNetwork.loadInterstitialAd();
-                adNetwork.loadUnityInterstitialAd();
+                adNetwork.loadInterstitialAd();
             }
         } );
         //AppLovinSdk.getInstance( this ).showMediationDebugger();
@@ -117,8 +112,7 @@ public class MainActivity extends AppCompatActivity {
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
         LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
-        //adNetwork.loadBannerAd();
-        adNetwork.loadUnityBannerAd();
+        adNetwork.loadBannerAd();
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             bannerAd.setVisibility(View.VISIBLE);

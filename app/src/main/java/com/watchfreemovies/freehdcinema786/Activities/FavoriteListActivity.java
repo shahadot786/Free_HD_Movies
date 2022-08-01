@@ -73,16 +73,13 @@ public class FavoriteListActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         adNetwork = new AdNetwork(this);
-<<<<<<< HEAD
         NetworkChecks networkChecks = new NetworkChecks(this);
-        adNetwork.loadBannerAd();
-=======
->>>>>>> main
+
         //banner
         MaxAdView bannerAd = findViewById(R.id.adView);
         LinearLayout unityBannerAd = findViewById(R.id.banner_ad);
-        //adNetwork.loadBannerAd();
-        adNetwork.loadUnityBannerAd();
+        adNetwork.loadBannerAd();
+
         //check premium
         if (UiConfig.BANNER_AD_VISIBILITY) {
             bannerAd.setVisibility(View.VISIBLE);
