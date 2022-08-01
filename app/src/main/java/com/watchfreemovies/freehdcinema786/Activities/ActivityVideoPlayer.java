@@ -23,6 +23,7 @@ import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
@@ -133,7 +134,7 @@ public class ActivityVideoPlayer extends AppCompatActivity {
             }
 
             //@Override
-            public void onPlayerError(@NonNull ExoPlaybackException error) {
+            public void onPlayerError(@NonNull PlaybackException error) {
                 simpleExoPlayer.stop();
                 errorDialog();
             }
