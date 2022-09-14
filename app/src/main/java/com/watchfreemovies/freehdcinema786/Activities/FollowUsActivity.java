@@ -32,7 +32,7 @@ import com.watchfreemovies.freehdcinema786.databinding.ActivityFollowUsBinding;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class FollowUsActivity extends AppCompatActivity {
+public class  FollowUsActivity extends AppCompatActivity {
     ActivityFollowUsBinding binding;
     LayoutInflater inflater;
     TextView toastText;

@@ -40,9 +40,8 @@ public class SignOutActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
 
-        adNetwork = new AdNetwork(this);
-
         //ad initialization
+        adNetwork = new AdNetwork(this);
         MaxAdView mRecAd = findViewById(R.id.mRec);
         adNetwork.loadMrecAd();
         //ads disabled code

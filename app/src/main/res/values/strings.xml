@@ -8,6 +8,7 @@
 
     <!--Play Store -->
     <string name="url_play_more_apps">https://play.google.com/store/apps/dev?id=5967016763322581246</string>
+    <string name="second_movies_app_url">https://play.google.com/store/apps/details?id=com.hdmovies.firemovies</string>
     <string name="url_play_privacy_policy">https://shrcreation.com/privacy.html</string>
     <string name="play_console_license_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAntKjxTFg1tIwTNxHBs80Cw3ktVUnn3m743epByX7aPDsasXVrZMCguEvnFjOh3Plw3C21Bx5D4ghlXHFl+ZafMznS+fk+kR6kvN0UqnYBqNl5q/z+1jP1AVZ1vtw6GOouZGWVGOSidw3QHjLrW1J2JHP7jdmDzSXc3/KBgKZXUrWDqJrF4JBs1qbtVyyPz+V8Zj60hFsxHrJv29VRjFbmWQmuaen1z6xyZcmS/cbggZ5bMLkvGBdNF0avpMpwiihg6PPkmRhw8hguLJp4OtjxHGnIDGKVn1kBUMfrFiMACXEUbj8XqEzG7D6vHQamobVnnSfww6N4gwT19OOoV5enwIDAQAB</string>
     <string name="play_name">SHR_Creation</string>
@@ -146,7 +147,7 @@
     <string name="_95">95%</string>
     <string name="best_value">BEST VALUE</string>
     <string name="_12_months">Lifetime</string>
-    <string name="app_price">$0.99</string>
+    <string name="app_price">$1.99</string>
 
     <!--profile-->
     <string name="title_activity_login">LoginActivity</string>
@@ -388,6 +389,8 @@
     <string name="are_you_sure_you_want_to_post_this_you_cannot_edit_or_delete_it">Are you sure you want to post this? You cannot edit or delete it.</string>
     <string name="yes">Yes!</string>
     <string name="back_arrow">back arrow</string>
+    <string name="database_error">Database Error!</string>
+    <string name="database_error_message">Sorry for the inconvenience of the database error. If you have an issue with this app, please download the new app. (For ignore click the cancel button.)</string>
 
 
 </resources>

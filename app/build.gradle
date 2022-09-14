@@ -14,8 +14,8 @@ android {
         applicationId "com.watchfreemovies.freehdcinema786"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 38
-        versionName "v2.2.22.38.01"
+        versionCode 39
+        versionName "v2.2.29.39.02"
         multiDexEnabled true
     }
     buildTypes {
@@ -40,7 +40,7 @@ Be careful when update dependencies, different library version may caused error 
 dependencies {
     //app main
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.android.support:appcompat-v7:33.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.android.support:design:33.0.1'
@@ -48,7 +48,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     // Java language implementation
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10'
-    implementation 'androidx.core:core:1.8.0'
+    implementation 'androidx.core:core:1.9.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.annotation:annotation:1.4.0'
     implementation 'com.android.support:recyclerview-v7:33.0.0'
@@ -57,17 +57,17 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     //firebase
     implementation platform('com.google.firebase:firebase-bom:29.0.0')
-    implementation 'com.google.firebase:firebase-analytics:21.1.0'
-    implementation 'com.google.firebase:firebase-auth:21.0.6'
-    implementation 'com.google.firebase:firebase-database:20.0.5'
-    implementation 'com.google.firebase:firebase-core:21.1.0'
-    implementation 'com.google.firebase:firebase-storage:20.0.1'
-    implementation 'com.google.firebase:firebase-firestore:24.2.1'
+    implementation 'com.google.firebase:firebase-analytics:21.1.1'
+    implementation 'com.google.firebase:firebase-auth:21.0.8'
+    implementation 'com.google.firebase:firebase-database:20.0.6'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'com.google.firebase:firebase-storage:20.0.2'
+    implementation 'com.google.firebase:firebase-firestore:24.3.0'
     //google ads
-    implementation 'com.google.android.gms:play-services-auth:20.2.0'
+    implementation 'com.google.android.gms:play-services-auth:20.3.0'
     //noinspection GradleDependency
     implementation "com.android.billingclient:billing:4.1.0"
-    implementation 'com.google.android.gms:play-services-ads:21.1.0'
+    implementation 'com.google.android.gms:play-services-ads:21.2.0'
     implementation 'com.applovin:applovin-sdk:11.4.4'
     implementation 'com.google.ads.mediation:applovin:11.4.4.0'
 
@@ -91,6 +91,7 @@ dependencies {
     //animations
     implementation 'com.airbnb.android:lottie:4.2.2'
     //others
+    //noinspection GradleDependency
     implementation 'com.onesignal:OneSignal:4.6.3'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'

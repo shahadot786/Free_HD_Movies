@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.watchfreemovies.freehdcinema786.Activities.AddMoviesActivity;
 import com.watchfreemovies.freehdcinema786.Activities.FeedBackActivity;
+import com.watchfreemovies.freehdcinema786.Activities.MainActivity;
 import com.watchfreemovies.freehdcinema786.Activities.SearchActivity;
 import com.watchfreemovies.freehdcinema786.Activities.UserProfilesActivity;
 import com.watchfreemovies.freehdcinema786.Adapter.MoviesAdapter;
@@ -52,8 +55,11 @@ import com.watchfreemovies.freehdcinema786.Model.UserModel;
 import com.watchfreemovies.freehdcinema786.R;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -115,6 +121,9 @@ public class HomeFragment extends Fragment {
     private MaxAd nativeAd;
     FrameLayout nativeAdContainer, nativeAdContainer2,nativeAdContainer3,nativeAdContainer4;
     private int retry;
+    Dialog databaseErrorDialog;
+    Button downloadBtn;
+    ImageView btnCancel;
 
 
     public HomeFragment() {
@@ -194,6 +203,9 @@ public class HomeFragment extends Fragment {
 
         //custom dialog
         noConnection = new Dialog(getActivity());
+
+        //database error dialog
+        databaseErrorDialog = new Dialog(getActivity());
 
         //pro status
         ImageView proBadge = view.findViewById(R.id.proBadge);
@@ -482,6 +494,9 @@ public class HomeFragment extends Fragment {
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             //we are connected to a network
+                if (UiConfig.PRO_VISIBILITY_STATUS_SHOW){
+                    databaseErrorDialog();
+                }
         } else {
             //showed dialog
             noConnectionDialog();
@@ -2177,6 +2192,32 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+    //database error dialog
+    private void databaseErrorDialog(){
+        databaseErrorDialog.setContentView(R.layout.custom_database_error_layout);
+        databaseErrorDialog.setCancelable(false);
+        databaseErrorDialog.setCanceledOnTouchOutside(false);
+        databaseErrorDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        databaseErrorDialog.show();
+        downloadBtn = databaseErrorDialog.findViewById(R.id.downloadBtn);
+        btnCancel = databaseErrorDialog.findViewById(R.id.btnCancel);
+
+        downloadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.second_movies_app_url))));
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                databaseErrorDialog.dismiss();
+            }
+        });
+
+    }
+
     //load small native ad
     public void loadNativeAd() {
         nativeAdLoader = new MaxNativeAdLoader(getResources().getString(R.string.native_small_ad_unit_id), getActivity());

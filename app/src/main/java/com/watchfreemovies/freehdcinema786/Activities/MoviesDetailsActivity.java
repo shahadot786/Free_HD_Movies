@@ -1186,8 +1186,10 @@ public class MoviesDetailsActivity extends AppCompatActivity implements MaxRewar
                         intent.putExtra("keywords", keywords);
                         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
-                        if (rewardedAd.isReady()){
-                            rewardedAd.showAd();
+                        if (UiConfig.PRO_VISIBILITY_STATUS_SHOW){
+                            if (rewardedAd.isReady()){
+                                rewardedAd.showAd();
+                            }
                         }
                     }
                 });

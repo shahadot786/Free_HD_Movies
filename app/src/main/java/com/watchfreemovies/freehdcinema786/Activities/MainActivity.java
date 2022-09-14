@@ -2,6 +2,7 @@ package com.watchfreemovies.freehdcinema786.Activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         //binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         //custom toast
         inflater = getLayoutInflater();
         toastLayout = inflater.inflate(R.layout.custom_toast_layout, findViewById(R.id.toastLayout));
