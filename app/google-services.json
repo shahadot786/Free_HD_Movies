@@ -1,42 +1,41 @@
 {
   "project_info": {
-    "project_number": "324899387666",
-    "firebase_url": "https://free-hd-movies-7b0e8-default-rtdb.firebaseio.com",
-    "project_id": "free-hd-movies-7b0e8",
-    "storage_bucket": "free-hd-movies-7b0e8.appspot.com"
+    "project_number": "795712867091",
+    "project_id": "hd-movies-online-cinema",
+    "storage_bucket": "hd-movies-online-cinema.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:324899387666:android:6a19c5112c7a8869ad1bcb",
+        "mobilesdk_app_id": "1:795712867091:android:baf7fa252826b549e028e6",
         "android_client_info": {
-          "package_name": "com.watchfreemovies.freehdcinema786"
+          "package_name": "com.hdmovies.onlinecinema"
         }
       },
       "oauth_client": [
         {
-          "client_id": "324899387666-2l3t424l88k1bur714ci8p74ke7lm61t.apps.googleusercontent.com",
+          "client_id": "795712867091-62p7gkqo8j3l88mq77q5k66pijkgtnmg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.watchfreemovies.freehdcinema786",
-            "certificate_hash": "1ed9540682f2a3e9b01431a84b27ad7a4cfb9a8e"
+            "package_name": "com.hdmovies.onlinecinema",
+            "certificate_hash": "ef1dbc98a32431f06bf4c5f0a05d6148c99513f6"
           }
         },
         {
-          "client_id": "324899387666-1hrjs1fsjsj25mgrnsci4slb8ctdce22.apps.googleusercontent.com",
+          "client_id": "795712867091-5846q85dj5qdp54o4l9pc4rv3epe89ae.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDVALxTSB55u6Smap1xFSkMCyQbzsoMZoA"
+          "current_key": "AIzaSyAdeWHYvwETTg2y2cJtp3eFIq7vnk3UCbc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "324899387666-1hrjs1fsjsj25mgrnsci4slb8ctdce22.apps.googleusercontent.com",
+              "client_id": "795712867091-5846q85dj5qdp54o4l9pc4rv3epe89ae.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
